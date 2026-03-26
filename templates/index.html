@@ -12,7 +12,7 @@
         }
 
         .container {
-            max-width: 900px;
+            max-width: 980px;
             margin: auto;
             background: white;
             padding: 25px;
@@ -142,6 +142,89 @@
             margin-top: 12px;
             font-size: 13px;
         }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .summary-box {
+            background: #ffffff;
+            border: 1px solid #dbe5ee;
+            border-radius: 8px;
+            padding: 12px;
+        }
+
+        .summary-title {
+            font-size: 12px;
+            font-weight: bold;
+            color: #5f7383;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .summary-value {
+            font-size: 15px;
+            color: #183447;
+            font-weight: bold;
+        }
+
+        .primary-card {
+            background: #eef8fd;
+            border: 1px solid #cfe4f2;
+            border-radius: 10px;
+            padding: 14px;
+            margin-top: 10px;
+        }
+
+        .primary-diagnosis {
+            font-size: 20px;
+            font-weight: bold;
+            color: #0f5f87;
+            margin-bottom: 6px;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-top: 14px;
+        }
+
+        .info-card {
+            background: #ffffff;
+            border: 1px solid #dde7ef;
+            border-radius: 8px;
+            padding: 14px;
+        }
+
+        .info-card h4 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            color: #0f5f87;
+        }
+
+        .empty-text {
+            color: #5f7383;
+            font-style: italic;
+        }
+
+        .plain-block {
+            background: #f4f6f8;
+            border: 1px solid #dde7ef;
+            border-radius: 8px;
+            padding: 12px;
+            white-space: pre-wrap;
+        }
+
+        @media (max-width: 760px) {
+            .summary-grid,
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 
@@ -179,7 +262,71 @@
 
     <div class="section">
         <h3>Răspuns clinic</h3>
-        <pre id="response">Aici va apărea analiza clinică.</pre>
+
+        <div id="clinicalStructured" class="hidden">
+            <div class="primary-card">
+                <div class="summary-title">Diagnostic principal</div>
+                <div id="primaryDiagnosis" class="primary-diagnosis">-</div>
+                <div class="summary-grid">
+                    <div class="summary-box">
+                        <div class="summary-title">Probabilitate</div>
+                        <div id="primaryProbability" class="summary-value">-</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-title">Severitate</div>
+                        <div id="severityValue" class="summary-value">-</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-title">Grad de încredere</div>
+                        <div id="confidenceValue" class="summary-value">-</div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-title">Diagnostice asociate</div>
+                        <div id="associatedDiagnoses" class="summary-value">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cards-grid">
+                <div class="info-card">
+                    <h4>Elemente care susțin diagnosticul</h4>
+                    <div id="supportsBox"></div>
+                </div>
+
+                <div class="info-card">
+                    <h4>Elemente de interpretat cu prudență</h4>
+                    <div id="limitsBox"></div>
+                </div>
+
+                <div class="info-card">
+                    <h4>Investigații recomandate</h4>
+                    <div id="testsBox"></div>
+                </div>
+
+                <div class="info-card">
+                    <h4>Conduită orientativă</h4>
+                    <div id="treatmentPlanBox"></div>
+                </div>
+
+                <div class="info-card">
+                    <h4>Red flags</h4>
+                    <div id="redFlagsBox"></div>
+                </div>
+
+                <div class="info-card">
+                    <h4>Note clinice</h4>
+                    <div id="notesBox"></div>
+                </div>
+
+                <div class="info-card">
+                    <h4>Alternative</h4>
+                    <div id="alternativesBox"></div>
+                </div>
+            </div>
+        </div>
+
+        <pre id="responseFallback" class="hidden"></pre>
+        <div id="responseLoading" class="plain-block">Aici va apărea analiza clinică.</div>
     </div>
 
     <div id="differentialSection" class="section hidden">
@@ -209,6 +356,26 @@ function safeValue(value, fallback = "-") {
     if (value === null || value === undefined) return fallback;
     const cleaned = String(value).trim();
     return cleaned ? cleaned : fallback;
+}
+
+function toArray(value) {
+    if (Array.isArray(value)) return value;
+    if (value === null || value === undefined || value === "") return [];
+    return [value];
+}
+
+function renderList(targetId, items) {
+    const target = document.getElementById(targetId);
+    const arr = toArray(items);
+
+    if (arr.length === 0) {
+        target.innerHTML = `<div class="empty-text">Nu sunt disponibile informații.</div>`;
+        return;
+    }
+
+    target.innerHTML = `<ul>${arr.map(item => `<li>${escapeHtml(
+        typeof item === "object" && item !== null ? JSON.stringify(item) : String(item)
+    )}</li>`).join("")}</ul>`;
 }
 
 function formatDifferentialItem(item) {
@@ -343,21 +510,80 @@ function formatClinicalOutput(value, indent = "") {
     return String(value);
 }
 
+function renderClinicalStructured(clinicalOutput) {
+    const structuredBox = document.getElementById("clinicalStructured");
+    const fallbackBox = document.getElementById("responseFallback");
+    const loadingBox = document.getElementById("responseLoading");
+
+    if (!clinicalOutput || typeof clinicalOutput !== "object" || Array.isArray(clinicalOutput)) {
+        structuredBox.classList.add("hidden");
+        fallbackBox.classList.remove("hidden");
+        loadingBox.classList.add("hidden");
+        fallbackBox.innerText = formatClinicalOutput(clinicalOutput);
+        return;
+    }
+
+    structuredBox.classList.remove("hidden");
+    fallbackBox.classList.add("hidden");
+    loadingBox.classList.add("hidden");
+
+    document.getElementById("primaryDiagnosis").innerText = safeValue(
+        clinicalOutput.primary_diagnosis || clinicalOutput.diagnostic_principal
+    );
+
+    document.getElementById("primaryProbability").innerText = safeValue(
+        clinicalOutput.primary_probability || clinicalOutput.probabilitate
+    );
+
+    document.getElementById("severityValue").innerText = safeValue(
+        clinicalOutput.severity || clinicalOutput.severitate
+    );
+
+    document.getElementById("confidenceValue").innerText = safeValue(
+        clinicalOutput.confidence || clinicalOutput.incredere
+    );
+
+    const associated = toArray(
+        clinicalOutput.associated_diagnosis ||
+        clinicalOutput.associated_diagnoses ||
+        clinicalOutput.diagnostice_asociate
+    );
+    document.getElementById("associatedDiagnoses").innerText = associated.length ? associated.join(", ") : "-";
+
+    renderList("supportsBox", clinicalOutput.supports || clinicalOutput.argumente_pro);
+    renderList("limitsBox", clinicalOutput.limits || clinicalOutput.limite);
+    renderList("testsBox", clinicalOutput.recommended_tests || clinicalOutput.investigatii);
+    renderList("treatmentPlanBox", clinicalOutput.treatment_plan || clinicalOutput.conduita);
+    renderList("redFlagsBox", clinicalOutput.red_flags || clinicalOutput.redflags);
+    renderList("notesBox", clinicalOutput.notes || clinicalOutput.note);
+    renderList("alternativesBox", clinicalOutput.alternatives || clinicalOutput.alternative);
+}
+
+function resetClinicalArea() {
+    document.getElementById("clinicalStructured").classList.add("hidden");
+    document.getElementById("responseFallback").classList.add("hidden");
+    document.getElementById("responseLoading").classList.remove("hidden");
+    document.getElementById("responseLoading").innerText = "Se procesează...";
+}
+
 function trimite() {
-    const responseBox = document.getElementById("response");
     const differentialSection = document.getElementById("differentialSection");
     const differentialList = document.getElementById("differentialList");
     const sourcesSection = document.getElementById("sourcesSection");
     const sourcesList = document.getElementById("sourcesList");
     const warningSection = document.getElementById("warningSection");
+    const fallbackBox = document.getElementById("responseFallback");
+    const loadingBox = document.getElementById("responseLoading");
 
-    responseBox.innerText = "Se procesează...";
+    resetClinicalArea();
     differentialList.innerHTML = "";
     sourcesList.innerHTML = "";
     differentialSection.classList.add("hidden");
     sourcesSection.classList.add("hidden");
     warningSection.classList.add("hidden");
     warningSection.innerText = "";
+    fallbackBox.innerText = "";
+    loadingBox.innerText = "Se procesează...";
 
     fetch("/ask", {
         method: "POST",
@@ -381,8 +607,7 @@ function trimite() {
         return data;
     })
     .then(data => {
-        const clinicalOutput = data.clinical_output;
-        responseBox.innerText = formatClinicalOutput(clinicalOutput);
+        renderClinicalStructured(data.clinical_output);
 
         if (Array.isArray(data.differential) && data.differential.length > 0) {
             differentialSection.classList.remove("hidden");
@@ -408,7 +633,10 @@ function trimite() {
         }
     })
     .catch(err => {
-        responseBox.innerText = "Eroare: " + err.message;
+        document.getElementById("clinicalStructured").classList.add("hidden");
+        document.getElementById("responseFallback").classList.remove("hidden");
+        document.getElementById("responseLoading").classList.add("hidden");
+        document.getElementById("responseFallback").innerText = "Eroare: " + err.message;
     });
 }
 </script>
