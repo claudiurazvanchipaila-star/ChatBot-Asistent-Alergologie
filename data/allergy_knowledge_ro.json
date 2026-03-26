@@ -10,20 +10,57 @@
       "Poate fi asociată cu simptome oculare"
     ],
     "treatment": [
-      "Antihistaminic oral de generația a II-a",
-      "Corticosteroid intranazal dacă simptomatologia este moderată-severă sau persistentă",
-      "Spălături nazale cu ser fiziologic",
-      "Imunoterapie alergen-specifică în cazuri selectate"
+      "Antihistaminic oral de generația a II-a, în funcție de contextul clinic și vârstă",
+      "Corticosteroid intranazal dacă simptomatologia este moderată, persistentă sau insuficient controlată",
+      "Spălături nazale cu ser fiziologic / soluții saline",
+      "Imunoterapie alergen-specifică în cazuri selectate, după evaluare alergologică"
     ],
     "prevention": [
       "Reducerea expunerii la polen, acarieni sau alți alergeni incriminați",
       "Controlul mediului interior",
-      "Monitorizarea relației dintre sezon / expunere și simptome"
+      "Monitorizarea relației dintre sezon / expunere și simptome",
+      "Educația pacientului privind recunoașterea triggerilor"
     ],
     "allergen_avoidance": [
       "Limitarea expunerii la polen în perioadele de vârf",
       "Schimbarea hainelor după expunere externă",
-      "Igienă nazală după contactul cu alergenii"
+      "Igienă nazală după contactul cu alergenii",
+      "Reducerea expunerii la acarieni prin măsuri de control ambiental"
+    ],
+    "medication_options": [
+      {
+        "class": "Antihistaminic oral",
+        "name": "Desloratadină",
+        "substance": "desloratadină",
+        "dose": "conform vârstei și produsului disponibil",
+        "route": "oral",
+        "frequency": "de regulă 1 dată pe zi",
+        "duration": "în funcție de durata simptomelor și recomandarea medicală",
+        "notes": "Util în controlul strănutului, rinoreei și pruritului",
+        "adverse_reactions": "somnolență rară, xerostomie, cefalee"
+      },
+      {
+        "class": "Antihistaminic oral",
+        "name": "Loratadină",
+        "substance": "loratadină",
+        "dose": "conform vârstei și produsului disponibil",
+        "route": "oral",
+        "frequency": "de regulă 1 dată pe zi",
+        "duration": "în funcție de tabloul clinic",
+        "notes": "Opțiune uzuală în rinita alergică ușoară-moderată",
+        "adverse_reactions": "cefalee, oboseală, xerostomie"
+      },
+      {
+        "class": "Corticosteroid intranazal",
+        "name": "Mometazonă spray nazal",
+        "substance": "furoat de mometazonă",
+        "dose": "conform rezumatului produsului și grupei de vârstă",
+        "route": "intranazal",
+        "frequency": "de regulă zilnic",
+        "duration": "în funcție de severitate și răspuns",
+        "notes": "Util în congestie nazală și simptome persistente",
+        "adverse_reactions": "epistaxis, iritație nazală, uscăciune nazală"
+      }
     ]
   },
   {
@@ -45,12 +82,37 @@
     "prevention": [
       "Reducerea expunerii la aeroalergeni",
       "Evitarea frecării ochilor",
-      "Monitorizarea sezonalității simptomelor"
+      "Monitorizarea sezonalității simptomelor",
+      "Igienă atentă după expunere la alergeni"
     ],
     "allergen_avoidance": [
       "Limitarea expunerii la polen și praf",
       "Igienă oculară după expunere",
       "Protecție oculară în medii cu expunere crescută"
+    ],
+    "medication_options": [
+      {
+        "class": "Antihistaminic ocular",
+        "name": "Olopatadină picături oftalmice",
+        "substance": "olopatadină",
+        "dose": "conform produsului disponibil",
+        "route": "ocular",
+        "frequency": "conform recomandării medicale",
+        "duration": "în funcție de persistența simptomelor",
+        "notes": "Utilă pentru prurit ocular și hiperemie conjunctivală",
+        "adverse_reactions": "usturime locală, iritație oculară, vedere încețoșată tranzitorie"
+      },
+      {
+        "class": "Terapie adjuvantă",
+        "name": "Lacrimi artificiale",
+        "substance": "substituenți de film lacrimal",
+        "dose": "conform necesității și produsului",
+        "route": "ocular",
+        "frequency": "la nevoie",
+        "duration": "simptomatic",
+        "notes": "Ajută la diluarea alergenilor de pe suprafața oculară",
+        "adverse_reactions": "disconfort local rar"
+      }
     ]
   },
   {
@@ -67,17 +129,43 @@
       "Bronhodilatator de salvare, conform recomandării medicale",
       "Corticoterapie inhalatorie dacă este indicată",
       "Evaluarea controlului simptomelor și a frecvenței episoadelor",
-      "Biologice în forme selectate, severe, conform specialistului"
+      "Biologice în forme selectate, severe, conform specialistului",
+      "Educație privind utilizarea corectă a dispozitivului inhalator"
     ],
     "prevention": [
       "Reducerea expunerii la triggerii alergici și iritativi",
       "Educație privind tehnica inhalatorie",
-      "Plan de monitorizare a controlului astmului"
+      "Plan de monitorizare a controlului astmului",
+      "Reevaluare periodică a factorilor de risc și a controlului bolii"
     ],
     "allergen_avoidance": [
       "Evitarea aeroalergenilor relevanți",
       "Reducerea expunerii la fum, poluanți și iritanți respiratori",
       "Controlul mediului interior"
+    ],
+    "medication_options": [
+      {
+        "class": "Bronhodilatator de salvare",
+        "name": "Salbutamol inhalator",
+        "substance": "salbutamol",
+        "dose": "conform vârstei, dispozitivului și recomandării medicale",
+        "route": "inhalator",
+        "frequency": "la nevoie",
+        "duration": "utilizare simptomatică / conform planului terapeutic",
+        "notes": "Pentru ameliorarea rapidă a bronhospasmului",
+        "adverse_reactions": "tremor, tahicardie, palpitații, agitație"
+      },
+      {
+        "class": "Corticosteroid inhalator",
+        "name": "Budesonid inhalator",
+        "substance": "budesonid",
+        "dose": "conform vârstei și schemei recomandate",
+        "route": "inhalator",
+        "frequency": "conform planului terapeutic",
+        "duration": "tratament de control",
+        "notes": "Util în controlul inflamației bronșice",
+        "adverse_reactions": "candidoză orală, disfonie, iritație faringiană"
+      }
     ]
   },
   {
@@ -94,17 +182,33 @@
       "Tratament de urgență conform protocolului medical",
       "Adrenalină / epinefrină conform indicației medicale",
       "Monitorizare medicală imediată",
-      "Evaluare ulterioară alergologică pentru identificarea cauzei"
+      "Evaluare ulterioară alergologică pentru identificarea cauzei",
+      "Observație clinică după stabilizare, conform contextului"
     ],
     "prevention": [
       "Plan de acțiune pentru reacții severe",
       "Educație privind recunoașterea precoce a simptomelor",
-      "Prescripție și instruire pentru autoinjector, dacă este indicat"
+      "Prescripție și instruire pentru autoinjector, dacă este indicat",
+      "Evitarea strictă a alergenului confirmat"
     ],
     "allergen_avoidance": [
       "Evitarea strictă a alergenului implicat după confirmare",
       "Citirea etichetelor / evitarea expunerii accidentale",
-      "Informarea familiei sau a personalului relevant privind riscul"
+      "Informarea familiei sau a personalului relevant privind riscul",
+      "Purtarea informațiilor medicale relevante, când este cazul"
+    ],
+    "medication_options": [
+      {
+        "class": "Tratament de urgență",
+        "name": "Adrenalină / epinefrină IM",
+        "substance": "epinefrină",
+        "dose": "conform protocolului de urgență, greutății și produsului disponibil",
+        "route": "intramuscular",
+        "frequency": "administrare imediată; repetare conform protocolului dacă este necesar",
+        "duration": "urgență",
+        "notes": "Prima linie în anafilaxie; necesită conduită medicală urgentă",
+        "adverse_reactions": "tahicardie, tremor, anxietate, cefalee"
+      }
     ]
   },
   {
@@ -124,10 +228,35 @@
     ],
     "prevention": [
       "Identificarea și evitarea triggerului suspectat",
-      "Documentarea contextului de apariție a episoadelor"
+      "Documentarea contextului de apariție a episoadelor",
+      "Reevaluare dacă episoadele sunt recurente"
     ],
     "allergen_avoidance": [
       "Evitarea alimentului, medicamentului sau altui trigger suspectat până la clarificare"
+    ],
+    "medication_options": [
+      {
+        "class": "Antihistaminic oral",
+        "name": "Cetirizină",
+        "substance": "cetirizină",
+        "dose": "conform vârstei și produsului disponibil",
+        "route": "oral",
+        "frequency": "de regulă 1 dată pe zi",
+        "duration": "în funcție de evoluție",
+        "notes": "Utilă pentru controlul pruritului și al leziunilor urticariene",
+        "adverse_reactions": "somnolență, xerostomie, cefalee"
+      },
+      {
+        "class": "Antihistaminic oral",
+        "name": "Levocetirizină",
+        "substance": "levocetirizină",
+        "dose": "conform vârstei și produsului disponibil",
+        "route": "oral",
+        "frequency": "de regulă 1 dată pe zi",
+        "duration": "în funcție de contextul clinic",
+        "notes": "Opțiune frecvent utilizată în urticarie",
+        "adverse_reactions": "somnolență, fatigabilitate, cefalee"
+      }
     ]
   },
   {
@@ -144,15 +273,41 @@
       "Emoliente regulate",
       "Antiinflamator topic, în funcție de severitate și localizare",
       "Îngrijirea barierei cutanate",
-      "Controlul suprainfecției, dacă este cazul"
+      "Controlul suprainfecției, dacă este cazul",
+      "Educație privind rutina corectă de îngrijire cutanată"
     ],
     "prevention": [
       "Hidratarea constantă a tegumentului",
       "Evitarea iritanților cutanați",
-      "Rutine blânde de îngrijire a pielii"
+      "Rutine blânde de îngrijire a pielii",
+      "Evitarea produselor agresive sau parfumate atunci când agravează simptomele"
     ],
     "allergen_avoidance": [
       "Reducerea contactului cu iritanți și factori declanșatori individuali"
+    ],
+    "medication_options": [
+      {
+        "class": "Emolient",
+        "name": "Emolient dermatologic",
+        "substance": "combinații emoliente",
+        "dose": "aplicare repetată, conform necesității",
+        "route": "topic",
+        "frequency": "zilnic, uneori de mai multe ori pe zi",
+        "duration": "pe termen lung, ca îngrijire de bază",
+        "notes": "Element esențial al tratamentului de fond",
+        "adverse_reactions": "rar iritație locală sau intoleranță la un ingredient"
+      },
+      {
+        "class": "Antiinflamator topic",
+        "name": "Corticosteroid topic",
+        "substance": "în funcție de produsul ales",
+        "dose": "conform localizării, vârstei și recomandării medicale",
+        "route": "topic",
+        "frequency": "conform schemei recomandate",
+        "duration": "cure limitate, conform contextului clinic",
+        "notes": "Necesită alegere atentă în funcție de potență și zonă",
+        "adverse_reactions": "atrofie cutanată, iritație, telangiectazii în utilizare neadecvată"
+      }
     ]
   },
   {
@@ -168,16 +323,150 @@
       "Evitarea alimentului suspectat până la clarificare",
       "Tratament simptomatic în funcție de severitate și recomandarea medicală",
       "Adrenalină / epinefrină în reacțiile severe, conform indicației medicale",
-      "Evaluare alergologică pentru confirmare și conduită"
+      "Evaluare alergologică pentru confirmare și conduită",
+      "Educație privind prevenirea reexpunerii"
     ],
     "prevention": [
       "Citirea atentă a etichetelor",
       "Educație privind expunerea accidentală",
-      "Introducerea alimentelor conform recomandărilor actuale și contextului clinic"
+      "Introducerea alimentelor conform recomandărilor actuale și contextului clinic",
+      "Informarea aparținătorilor / școlii / mediului relevant dacă riscul este semnificativ"
     ],
     "allergen_avoidance": [
       "Excluderea alimentului suspectat până la clarificarea diagnosticului",
       "Atenție la contaminarea încrucișată"
+    ],
+    "medication_options": [
+      {
+        "class": "Antihistaminic oral",
+        "name": "Antihistaminic de generația a II-a",
+        "substance": "în funcție de produsul ales",
+        "dose": "conform vârstei și produsului disponibil",
+        "route": "oral",
+        "frequency": "conform recomandării medicale",
+        "duration": "simptomatic",
+        "notes": "Util în simptome cutanate ușoare, fără a înlocui conduita de urgență în reacțiile severe",
+        "adverse_reactions": "somnolență, cefalee, xerostomie"
+      },
+      {
+        "class": "Tratament de urgență",
+        "name": "Adrenalină / epinefrină IM",
+        "substance": "epinefrină",
+        "dose": "conform protocolului și greutății, când este indicată",
+        "route": "intramuscular",
+        "frequency": "administrare imediată în reacții severe, conform indicației medicale",
+        "duration": "urgență",
+        "notes": "Utilă în anafilaxie sau reacții severe",
+        "adverse_reactions": "tahicardie, tremor, anxietate"
+      }
+    ]
+  },
+  {
+    "name": "Rinită virală / infecțioasă",
+    "clinical_picture": [
+      "Rinoree",
+      "Congestie nazală",
+      "Durere în gât / odinofagie",
+      "Febră sau subfebrilitate",
+      "Tuse",
+      "Stare generală alterată în grade variabile"
+    ],
+    "treatment": [
+      "Tratament simptomatic, în funcție de contextul clinic",
+      "Hidratare și măsuri generale",
+      "Monitorizarea evoluției",
+      "Reevaluare dacă apar semne de agravare sau persistență prelungită"
+    ],
+    "prevention": [
+      "Măsuri generale de igienă",
+      "Reducerea transmiterii în colectivitate",
+      "Evitarea contactului apropiat în perioadele simptomatice"
+    ],
+    "allergen_avoidance": [
+      "Nu se aplică evitarea alergenului; orientarea este mai degrabă spre controlul transmiterii și monitorizare"
+    ],
+    "medication_options": [
+      {
+        "class": "Tratament simptomatic",
+        "name": "Ser fiziologic / soluții saline nazale",
+        "substance": "clorură de sodiu",
+        "dose": "conform produsului",
+        "route": "nazal",
+        "frequency": "de mai multe ori pe zi, la nevoie",
+        "duration": "pe durata simptomelor",
+        "notes": "Ajută la fluidificarea secrețiilor și reducerea congestiei",
+        "adverse_reactions": "disconfort nazal minor, rar"
+      }
+    ]
+  },
+  {
+    "name": "Rinită non-alergică",
+    "clinical_picture": [
+      "Rinoree",
+      "Congestie nazală",
+      "Simptome declanșate de iritanți, fum, mirosuri puternice sau schimbări de temperatură",
+      "Absența tiparului alergic clasic în unele cazuri"
+    ],
+    "treatment": [
+      "Reducerea expunerii la iritanți",
+      "Tratament simptomatic individualizat",
+      "Reevaluare dacă simptomatologia persistă sau există suspiciune de altă cauză"
+    ],
+    "prevention": [
+      "Controlul expunerii la factori iritativi",
+      "Monitorizarea relației dintre triggeri și simptome"
+    ],
+    "allergen_avoidance": [
+      "Accent pe evitarea iritanților mai degrabă decât a alergenilor clasici"
+    ],
+    "medication_options": [
+      {
+        "class": "Terapie simptomatică",
+        "name": "Lavaj nazal cu soluții saline",
+        "substance": "clorură de sodiu",
+        "dose": "conform produsului și toleranței",
+        "route": "nazal",
+        "frequency": "la nevoie",
+        "duration": "simptomatic",
+        "notes": "Poate ameliora rinoreea și congestia",
+        "adverse_reactions": "disconfort local minor"
+      }
+    ]
+  },
+  {
+    "name": "Sinuzită acută",
+    "clinical_picture": [
+      "Congestie nazală",
+      "Durere facială / presiune facială",
+      "Secreții nazale purulente",
+      "Cefalee",
+      "Febră posibilă",
+      "Disconfort accentuat la aplecare în unele cazuri"
+    ],
+    "treatment": [
+      "Tratament simptomatic și reevaluare clinică",
+      "Conduită specifică în funcție de severitate, durată și examen clinic",
+      "Evaluare ORL când tabloul este sever, persistent sau complicat"
+    ],
+    "prevention": [
+      "Monitorizarea evoluției după episoade de rinită",
+      "Prezentare la medic dacă simptomele persistă sau se agravează"
+    ],
+    "allergen_avoidance": [
+      "Nu reprezintă o boală alergică propriu-zisă; accentul cade pe monitorizare și evaluare"
+    ],
+    "medication_options": [
+      {
+        "class": "Tratament simptomatic",
+        "name": "Lavaj nazal / soluții saline",
+        "substance": "clorură de sodiu",
+        "dose": "conform produsului",
+        "route": "nazal",
+        "frequency": "la nevoie",
+        "duration": "simptomatic",
+        "notes": "Poate susține drenajul și igiena nazală",
+        "adverse_reactions": "disconfort local minor"
+      }
     ]
   }
 ]
