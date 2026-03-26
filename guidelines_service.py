@@ -6,7 +6,6 @@ from bs4 import BeautifulSoup
 
 
 EAACI_GUIDELINES_URL = "https://eaaci.org/science/guidelines-position-papers/"
-GINA_SUMMARY_GUIDE_URL = "https://ginasthma.org/2025-gina-summary-guide/"
 GINA_HOME_URL = "https://ginasthma.org/"
 
 
@@ -16,12 +15,14 @@ HEADERS = {
 
 
 def normalize_text(text: str) -> str:
-    return (text or "").strip().lower()
+    text = (text or "").strip().lower()
+    text = re.sub(r"\s+", " ", text)
+    return text
 
 
 def contains_any(text: str, terms: List[str]) -> bool:
-    text = normalize_text(text)
-    return any(term in text for term in terms)
+    normalized = normalize_text(text)
+    return any(normalize_text(term) in normalized for term in terms if term)
 
 
 def fetch_page(url: str, timeout: int = 15) -> str:
@@ -50,152 +51,323 @@ def extract_text_from_html(html: str) -> str:
         return ""
 
 
-def infer_topic_terms(diagnosis_name: str, symptoms: str, context: str, extra: str) -> List[str]:
+def split_sentences(text: str) -> List[str]:
+    if not text:
+        return []
+
+    text = re.sub(r"\s+", " ", text).strip()
+    parts = re.split(r"(?<=[\.\!\?])\s+", text)
+    cleaned = []
+
+    for part in parts:
+        sentence = part.strip()
+        if len(sentence) >= 40:
+            cleaned.append(sentence)
+
+    return cleaned
+
+
+def infer_topic_profile(diagnosis_name: str, symptoms: str, context: str, extra: str) -> Dict:
     joined = normalize_text(f"{diagnosis_name} {symptoms} {context} {extra}")
 
-    topic_terms = []
+    profile = {
+        "rhinitis": False,
+        "conjunctivitis": False,
+        "asthma": False,
+        "food_allergy": False,
+        "urticaria_angioedema": False,
+        "anaphylaxis": False,
+        "atopic_dermatitis": False
+    }
 
-    if contains_any(joined, ["rinit", "rinoree", "strănut", "prurit nazal", "nas înfundat", "conjunctivit", "ochi roșii", "lăcrimare"]):
-        topic_terms.extend(["rhinitis", "rhinoconjunctivitis", "allergic rhinitis", "conjunctivitis"])
+    if contains_any(joined, [
+        "rinit", "rinoree", "strănut", "prurit nazal", "nas înfundat",
+        "congestie nazală", "rhin", "rhinoconj"
+    ]):
+        profile["rhinitis"] = True
 
-    if contains_any(joined, ["astm", "wheezing", "șuierături", "dispnee", "tuse nocturnă", "constricție toracică"]):
-        topic_terms.extend(["asthma", "inhaled corticosteroid", "formoterol", "reliever", "controller"])
+    if contains_any(joined, [
+        "conjunctivit", "ochi roșii", "lăcrimare", "prurit ocular",
+        "mâncărime la ochi", "edem palpebral"
+    ]):
+        profile["conjunctivitis"] = True
 
-    if contains_any(joined, ["aliment", "după masă", "prurit oral", "prurit faringian", "vărsături", "diaree"]):
-        topic_terms.extend(["food allergy", "ige-mediated food allergy", "adrenaline", "auto-injector"])
+    if contains_any(joined, [
+        "astm", "wheezing", "șuierături", "dispnee", "tuse nocturnă",
+        "constricție toracică", "respirație grea", "asthma"
+    ]):
+        profile["asthma"] = True
 
-    if contains_any(joined, ["urticarie", "angioedem", "edem buze", "edem pleoape"]):
-        topic_terms.extend(["urticaria", "angioedema", "antihistamine"])
+    if contains_any(joined, [
+        "aliment", "după masă", "prurit oral", "furnicături orale",
+        "vărsături", "diaree", "food allergy"
+    ]):
+        profile["food_allergy"] = True
 
-    if contains_any(joined, ["anafilaxie", "șoc", "hipotensiune", "edem lingual", "stridor"]):
-        topic_terms.extend(["anaphylaxis", "adrenaline", "emergency"])
+    if contains_any(joined, [
+        "urticarie", "angioedem", "edem buze", "edem pleoape"
+    ]):
+        profile["urticaria_angioedema"] = True
 
-    if contains_any(joined, ["dermatită", "eczeme", "prurit cutanat", "piele uscată"]):
-        topic_terms.extend(["atopic dermatitis", "eczema", "emollient", "topical corticosteroid"])
+    if contains_any(joined, [
+        "anafilaxie", "șoc", "hipotensiune", "edem lingual",
+        "stridor", "colaps", "anaphylaxis"
+    ]):
+        profile["anaphylaxis"] = True
 
-    return list(dict.fromkeys(topic_terms))
+    if contains_any(joined, [
+        "dermatită", "eczeme", "prurit cutanat", "piele uscată",
+        "atopic dermatitis", "eczema"
+    ]):
+        profile["atopic_dermatitis"] = True
+
+    return profile
 
 
-def summarize_eaaci_guidelines(diagnosis_name: str, symptoms: str, context: str, extra: str) -> List[Dict]:
+def extract_relevant_sentences(text: str, keywords: List[str], limit: int = 2) -> List[str]:
+    if not text:
+        return []
+
+    sentences = split_sentences(text)
+    results = []
+
+    for sentence in sentences:
+        normalized_sentence = normalize_text(sentence)
+        if any(normalize_text(keyword) in normalized_sentence for keyword in keywords):
+            results.append(sentence)
+
+    deduped = []
+    seen = set()
+
+    for sentence in results:
+        key = normalize_text(sentence)
+        if key not in seen:
+            seen.add(key)
+            deduped.append(sentence)
+
+    return deduped[:limit]
+
+
+def make_card(source: str, title: str, excerpt: str, recommendation: str, url: str) -> Dict:
+    return {
+        "source": source,
+        "title": title,
+        "excerpt": excerpt,
+        "recommendation": recommendation,
+        "url": url
+    }
+
+
+def summarize_eaaci_guidelines(
+    diagnosis_name: str,
+    symptoms: str,
+    context: str,
+    extra: str
+) -> List[Dict]:
     html = fetch_page(EAACI_GUIDELINES_URL)
     text = extract_text_from_html(html)
 
     if not text:
         return []
 
-    topic_terms = infer_topic_terms(diagnosis_name, symptoms, context, extra)
-    text_lower = text.lower()
+    profile = infer_topic_profile(diagnosis_name, symptoms, context, extra)
     results = []
 
-    if any(term in text_lower for term in topic_terms):
-        if any(term in text_lower for term in ["food allergy", "ige-mediated food allergy"]):
-            results.append({
-                "source": "EAACI",
-                "title": "Guidelines & Position Papers / Food Allergy",
-                "year": "actualizat pe site-ul oficial",
-                "summary": (
-                    "EAACI publică ghiduri și position papers oficiale; pentru alergia alimentară IgE-mediată, accentul este pe "
-                    "confirmarea diagnosticului, evitare alergenică, plan scris de tratament, educație privind recunoașterea simptomelor "
-                    "și utilizarea adrenalinei când este indicată."
-                )
-            })
+    if profile["rhinitis"] or profile["conjunctivitis"]:
+        excerpt_candidates = extract_relevant_sentences(
+            text,
+            ["rhinitis", "rhinoconjunctivitis", "allergic rhinitis", "conjunctivitis"],
+            limit=2
+        )
+        excerpt = " ".join(excerpt_candidates) if excerpt_candidates else (
+            "Secțiunea EAACI de ghiduri și position papers include resurse relevante pentru rinoconjunctivita alergică și evaluarea clinică orientată pe triggeri, controlul expunerii și management individualizat."
+        )
 
-        if any(term in text_lower for term in ["rhinitis", "rhinoconjunctivitis", "allergic rhinitis"]):
-            results.append({
-                "source": "EAACI",
-                "title": "Guidelines & Position Papers / Allergic Rhinoconjunctivitis",
-                "year": "actualizat pe site-ul oficial",
-                "summary": (
-                    "EAACI are resurse oficiale pentru rinoconjunctivita alergică; răspunsul clinic trebuie corelat cu triggerii, "
-                    "controlul expunerii, terapia simptomatică și selecția atentă a cazurilor pentru imunoterapie alergen-specifică."
-                )
-            })
+        results.append(make_card(
+            source="EAACI",
+            title="Guidelines & Position Papers / Allergic Rhinitis and Rhinoconjunctivitis",
+            excerpt=excerpt,
+            recommendation=(
+                "Corelează simptomele nazale și oculare cu sezonalitatea, expunerea la alergeni și contextul clinic; evaluarea alergologică și conduita terapeutică trebuie individualizate."
+            ),
+            url=EAACI_GUIDELINES_URL
+        ))
 
-        if any(term in text_lower for term in ["anaphylaxis", "adrenaline", "emergency"]):
-            results.append({
-                "source": "EAACI",
-                "title": "Guidelines & Position Papers / Anaphylaxis-related guidance",
-                "year": "actualizat pe site-ul oficial",
-                "summary": (
-                    "Pentru reacțiile sistemice severe, abordarea trebuie să rămână una de urgență, cu recunoașterea rapidă a anafilaxiei, "
-                    "plan terapeutic scris și instruirea pacientului privind managementul episoadelor viitoare."
-                )
-            })
+    if profile["food_allergy"]:
+        excerpt_candidates = extract_relevant_sentences(
+            text,
+            ["food allergy", "ige-mediated", "allergy", "anaphylaxis"],
+            limit=2
+        )
+        excerpt = " ".join(excerpt_candidates) if excerpt_candidates else (
+            "EAACI publică resurse oficiale relevante pentru alergia alimentară, cu accent pe confirmarea diagnosticului, evitarea expunerii, educația pacientului și planul de acțiune pentru reacții severe."
+        )
+
+        results.append(make_card(
+            source="EAACI",
+            title="Guidelines & Position Papers / Food Allergy",
+            excerpt=excerpt,
+            recommendation=(
+                "Pentru suspiciunea de alergie alimentară, sunt importante corelarea temporală cu ingestia, evitarea alimentului suspect până la clarificare și planul de siguranță în caz de reacții severe."
+            ),
+            url=EAACI_GUIDELINES_URL
+        ))
+
+    if profile["urticaria_angioedema"]:
+        excerpt_candidates = extract_relevant_sentences(
+            text,
+            ["urticaria", "angioedema", "allergy"],
+            limit=2
+        )
+        excerpt = " ".join(excerpt_candidates) if excerpt_candidates else (
+            "Resursele EAACI pot fi utile pentru diferențierea urticariei și angioedemului, evaluarea triggerilor și orientarea managementului în funcție de severitate."
+        )
+
+        results.append(make_card(
+            source="EAACI",
+            title="Guidelines & Position Papers / Urticaria and Angioedema",
+            excerpt=excerpt,
+            recommendation=(
+                "Diferențiază leziunile cutanate fugace de alte erupții și evaluează rapid eventualele semne de afectare respiratorie sau sistemică."
+            ),
+            url=EAACI_GUIDELINES_URL
+        ))
+
+    if profile["anaphylaxis"]:
+        excerpt_candidates = extract_relevant_sentences(
+            text,
+            ["anaphylaxis", "emergency", "adrenaline"],
+            limit=2
+        )
+        excerpt = " ".join(excerpt_candidates) if excerpt_candidates else (
+            "EAACI include resurse relevante pentru recunoașterea și managementul anafilaxiei, subliniind importanța identificării rapide a reacțiilor severe și a planului de acțiune."
+        )
+
+        results.append(make_card(
+            source="EAACI",
+            title="Guidelines & Position Papers / Anaphylaxis",
+            excerpt=excerpt,
+            recommendation=(
+                "Orice suspiciune de anafilaxie trebuie tratată ca urgență; după stabilizare, este importantă clarificarea cauzei și educația privind prevenirea recurenței."
+            ),
+            url=EAACI_GUIDELINES_URL
+        ))
+
+    if profile["atopic_dermatitis"]:
+        excerpt_candidates = extract_relevant_sentences(
+            text,
+            ["atopic dermatitis", "eczema", "skin", "allergy"],
+            limit=2
+        )
+        excerpt = " ".join(excerpt_candidates) if excerpt_candidates else (
+            "Resursele EAACI pot susține orientarea clinică în dermatita atopică, în special prin integrarea contextului atopic, a barierei cutanate și a factorilor agravanți."
+        )
+
+        results.append(make_card(
+            source="EAACI",
+            title="Guidelines & Position Papers / Atopic Dermatitis",
+            excerpt=excerpt,
+            recommendation=(
+                "În dermatita atopică, evaluarea trebuie să includă severitatea, impactul funcțional, rutina de îngrijire cutanată și eventualii factori agravanți."
+            ),
+            url=EAACI_GUIDELINES_URL
+        ))
 
     if not results:
-        results.append({
-            "source": "EAACI",
-            "title": "Guidelines & Position Papers",
-            "year": "actualizat pe site-ul oficial",
-            "summary": (
-                "EAACI pune la dispoziție o secțiune oficială de ghiduri și position papers care poate fi folosită ca referință "
-                "pentru alergologie, astm și imunologie clinică."
-            )
-        })
+        results.append(make_card(
+            source="EAACI",
+            title="Guidelines & Position Papers",
+            excerpt=(
+                "EAACI pune la dispoziție o secțiune oficială de ghiduri și position papers relevante pentru alergologie și imunologie clinică."
+            ),
+            recommendation=(
+                "Folosește secțiunea EAACI ca punct de orientare pentru corelarea tabloului clinic cu ghidurile de specialitate."
+            ),
+            url=EAACI_GUIDELINES_URL
+        ))
 
     return results[:3]
 
 
-def summarize_gina_guidelines(diagnosis_name: str, symptoms: str, context: str, extra: str) -> List[Dict]:
-    joined = normalize_text(f"{diagnosis_name} {symptoms} {context} {extra}")
+def summarize_gina_guidelines(
+    diagnosis_name: str,
+    symptoms: str,
+    context: str,
+    extra: str
+) -> List[Dict]:
+    profile = infer_topic_profile(diagnosis_name, symptoms, context, extra)
 
-    if not contains_any(joined, ["astm", "wheezing", "șuierături", "dispnee", "tuse nocturnă", "constricție toracică"]):
+    if not profile["asthma"]:
         return []
 
-    html = fetch_page(GINA_SUMMARY_GUIDE_URL)
+    html = fetch_page(GINA_HOME_URL)
     text = extract_text_from_html(html)
 
     if not text:
-        home_html = fetch_page(GINA_HOME_URL)
-        home_text = extract_text_from_html(home_html)
-
-        if not home_text:
-            return []
-
-        return [{
-            "source": "GINA",
-            "title": "GINA official website",
-            "year": "2025",
-            "summary": (
-                "GINA menține resurse oficiale actualizate pentru managementul astmului. Pentru interpretarea clinică, "
-                "schema terapeutică trebuie aleasă în funcție de treapta de tratament, vârstă și controlul simptomelor."
-            )
-        }]
+        return []
 
     results = []
 
-    if contains_any(text, ["ics-formoterol", "summary guide", "step", "maintenance", "reliever"]):
-        results.append({
-            "source": "GINA",
-            "title": "2025 GINA Summary Guide",
-            "year": "2025",
-            "summary": (
-                "GINA 2025 rezumă managementul astmului pe trepte terapeutice și subliniază alegerea tratamentului în funcție de "
-                "vârstă, controlul simptomelor, reliever și controller, cu evaluare periodică a răspunsului clinic."
-            )
-        })
+    excerpt_general = " ".join(
+        extract_relevant_sentences(
+            text,
+            ["asthma", "guide", "management", "treatment"],
+            limit=2
+        )
+    )
 
-    if contains_any(text, ["6–11 years", "6-11", "children"]):
-        results.append({
-            "source": "GINA",
-            "title": "2025 GINA Summary Guide / children 6–11 years",
-            "year": "2025",
-            "summary": (
-                "Pentru copilul școlar, recomandările GINA trebuie interpretate pe grupe de vârstă și dispozitive disponibile local; "
-                "alegerea reliever/controller nu trebuie automatizată exclusiv după simptom."
-            )
-        })
+    if not excerpt_general:
+        excerpt_general = (
+            "GINA oferă resurse oficiale pentru managementul astmului, cu accent pe alegerea tratamentului în funcție de controlul simptomelor, severitate și reevaluare periodică."
+        )
 
-    if contains_any(text, ["step 5", "severe asthma", "expert assessment"]):
-        results.append({
-            "source": "GINA",
-            "title": "2025 GINA Summary Guide / severe asthma",
-            "year": "2025",
-            "summary": (
-                "În suspiciunea de astm sever sau control insuficient, GINA recomandă evaluare de specialitate, fenotipare și "
-                "reconsiderarea treptei terapeutice, nu doar creșterea empirică a dozelor."
-            )
-        })
+    results.append(make_card(
+        source="GINA",
+        title="Global Initiative for Asthma / General asthma guidance",
+        excerpt=excerpt_general,
+        recommendation=(
+            "Interpretarea terapeutică trebuie făcută în funcție de controlul simptomelor, istoricul exacerbărilor, vârstă și tehnica inhalatorie."
+        ),
+        url=GINA_HOME_URL
+    ))
+
+    excerpt_step = " ".join(
+        extract_relevant_sentences(
+            text,
+            ["step", "controller", "reliever", "inhaled corticosteroid", "ics"],
+            limit=2
+        )
+    )
+
+    if excerpt_step:
+        results.append(make_card(
+            source="GINA",
+            title="Global Initiative for Asthma / Stepwise treatment approach",
+            excerpt=excerpt_step,
+            recommendation=(
+                "Schema de tratament pentru astm nu trebuie automatizată doar după simptom; este necesară integrarea treptei terapeutice și a răspunsului clinic."
+            ),
+            url=GINA_HOME_URL
+        ))
+
+    excerpt_severe = " ".join(
+        extract_relevant_sentences(
+            text,
+            ["severe asthma", "specialist", "expert", "phenotype"],
+            limit=2
+        )
+    )
+
+    if excerpt_severe:
+        results.append(make_card(
+            source="GINA",
+            title="Global Initiative for Asthma / Severe or difficult-to-control asthma",
+            excerpt=excerpt_severe,
+            recommendation=(
+                "Dacă există control insuficient sau suspiciune de astm sever, este necesară reevaluarea diagnosticului, aderenței, tehnicii inhalatorii și a indicației de evaluare de specialitate."
+            ),
+            url=GINA_HOME_URL
+        ))
 
     return results[:3]
 
@@ -214,11 +386,31 @@ def get_guideline_recommendations(
     results.extend(summarize_eaaci_guidelines(diagnosis_name, symptoms, context, extra))
     results.extend(summarize_gina_guidelines(diagnosis_name, symptoms, context, extra))
 
+    severity_norm = normalize_text(severity)
+
+    if contains_any(severity_norm, ["sever", "severă", "severe"]):
+        results.append(make_card(
+            source="Clinical safety note",
+            title="Atenționare clinică pentru forme severe",
+            excerpt=(
+                "Datele introduse sugerează posibilitatea unui tablou clinic mai sever, iar interpretarea trebuie făcută prudent, cu evaluare medicală rapidă atunci când există risc respirator sau hemodinamic."
+            ),
+            recommendation=(
+                "În prezența semnelor severe, conduita trebuie orientată spre evaluare urgentă și aplicarea protocoalelor corespunzătoare contextului clinic."
+            ),
+            url=""
+        ))
+
     seen = set()
     deduped = []
 
     for item in results:
-        key = (item.get("source", ""), item.get("title", ""), item.get("summary", ""))
+        key = (
+            item.get("source", "").strip(),
+            item.get("title", "").strip(),
+            item.get("excerpt", "").strip(),
+            item.get("recommendation", "").strip()
+        )
         if key not in seen:
             seen.add(key)
             deduped.append(item)
