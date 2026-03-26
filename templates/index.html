@@ -6,52 +6,28 @@
 
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: Arial;
             background: #eef3f8;
             padding: 30px;
         }
 
         .container {
-            max-width: 980px;
+            max-width: 700px;
             margin: auto;
             background: white;
             padding: 25px;
             border-radius: 10px;
-            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
         }
 
         h1 {
             color: #0f5f87;
-            margin-top: 0;
         }
 
-        h2, h3, h4 {
-            color: #183447;
-            margin-bottom: 8px;
-        }
-
-        label {
-            display: block;
-            font-weight: bold;
-            margin-top: 12px;
-            margin-bottom: 5px;
-            color: #183447;
-        }
-
-        textarea, input, select {
+        textarea, input {
             width: 100%;
             padding: 10px;
             margin-top: 5px;
-            margin-bottom: 12px;
-            border: 1px solid #c9d6e2;
-            border-radius: 6px;
-            box-sizing: border-box;
-            font-size: 14px;
-        }
-
-        textarea {
-            resize: vertical;
-            min-height: 90px;
+            margin-bottom: 15px;
         }
 
         button {
@@ -59,171 +35,20 @@
             color: white;
             padding: 12px;
             border: none;
-            border-radius: 6px;
             cursor: pointer;
             width: 100%;
-            font-size: 15px;
-            font-weight: bold;
-            margin-top: 10px;
-        }
-
-        button:hover {
-            background: #0b4c6d;
         }
 
         pre {
             background: #f4f6f8;
             padding: 15px;
             white-space: pre-wrap;
-            border-radius: 8px;
-            border: 1px solid #dde7ef;
-            overflow-x: auto;
         }
 
         .warning {
             color: #b4232f;
             font-size: 13px;
             margin-bottom: 15px;
-        }
-
-        .hint {
-            font-size: 12px;
-            color: #5f7383;
-            margin-top: -6px;
-            margin-bottom: 10px;
-        }
-
-        .section {
-            margin-top: 18px;
-            padding: 14px;
-            background: #f8fbfd;
-            border: 1px solid #dde7ef;
-            border-radius: 8px;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        ul {
-            margin-top: 8px;
-            padding-left: 20px;
-        }
-
-        li {
-            margin-bottom: 6px;
-        }
-
-        .source-box {
-            background: #ffffff;
-            border: 1px solid #dbe5ee;
-            border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 10px;
-        }
-
-        .source-title {
-            font-weight: bold;
-            color: #0f5f87;
-            margin-bottom: 6px;
-        }
-
-        .muted {
-            color: #5f7383;
-            font-size: 13px;
-        }
-
-        .small-warning {
-            background: #fff4d6;
-            border: 1px solid #f2d58a;
-            color: #7a5a00;
-            padding: 10px;
-            border-radius: 8px;
-            margin-top: 12px;
-            font-size: 13px;
-        }
-
-        .summary-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-top: 12px;
-        }
-
-        .summary-box {
-            background: #ffffff;
-            border: 1px solid #dbe5ee;
-            border-radius: 8px;
-            padding: 12px;
-        }
-
-        .summary-title {
-            font-size: 12px;
-            font-weight: bold;
-            color: #5f7383;
-            text-transform: uppercase;
-            margin-bottom: 6px;
-        }
-
-        .summary-value {
-            font-size: 15px;
-            color: #183447;
-            font-weight: bold;
-        }
-
-        .primary-card {
-            background: #eef8fd;
-            border: 1px solid #cfe4f2;
-            border-radius: 10px;
-            padding: 14px;
-            margin-top: 10px;
-        }
-
-        .primary-diagnosis {
-            font-size: 20px;
-            font-weight: bold;
-            color: #0f5f87;
-            margin-bottom: 6px;
-        }
-
-        .cards-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 14px;
-            margin-top: 14px;
-        }
-
-        .info-card {
-            background: #ffffff;
-            border: 1px solid #dde7ef;
-            border-radius: 8px;
-            padding: 14px;
-        }
-
-        .info-card h4 {
-            margin-top: 0;
-            margin-bottom: 10px;
-            color: #0f5f87;
-        }
-
-        .empty-text {
-            color: #5f7383;
-            font-style: italic;
-        }
-
-        .plain-block {
-            background: #f4f6f8;
-            border: 1px solid #dde7ef;
-            border-radius: 8px;
-            padding: 12px;
-            white-space: pre-wrap;
-        }
-
-        @media (max-width: 760px) {
-            .summary-grid,
-            .cards-grid {
-                grid-template-columns: 1fr;
-            }
         }
     </style>
 </head>
@@ -244,346 +69,20 @@
     <label>Vârstă</label>
     <input id="age" placeholder="Ex: 24">
 
-    <label>Greutate (kg)</label>
-    <input id="weight" placeholder="Ex: 18">
-
     <label>Sex</label>
     <input id="sex" placeholder="Ex: F / M">
 
-    <label>Antecedente personale patologice</label>
-    <textarea id="personal_history" placeholder="Opțional: ex. astm, dermatită atopică, rinită alergică, anafilaxie anterioară, polipoză nazală"></textarea>
-    <div class="hint">Câmp opțional.</div>
-
-    <label>Antecedente heredocolaterale</label>
-    <textarea id="family_history" placeholder="Opțional: ex. mamă cu astm, tată cu rinită alergică, istoric familial de atopie"></textarea>
-    <div class="hint">Câmp opțional.</div>
-
     <button onclick="trimite()">Analizează cazul</button>
 
-    <div class="section">
-        <h3>Răspuns clinic</h3>
-
-        <div id="clinicalStructured" class="hidden">
-            <div class="primary-card">
-                <div class="summary-title">Diagnostic principal</div>
-                <div id="primaryDiagnosis" class="primary-diagnosis">-</div>
-                <div class="summary-grid">
-                    <div class="summary-box">
-                        <div class="summary-title">Probabilitate</div>
-                        <div id="primaryProbability" class="summary-value">-</div>
-                    </div>
-                    <div class="summary-box">
-                        <div class="summary-title">Severitate</div>
-                        <div id="severityValue" class="summary-value">-</div>
-                    </div>
-                    <div class="summary-box">
-                        <div class="summary-title">Grad de încredere</div>
-                        <div id="confidenceValue" class="summary-value">-</div>
-                    </div>
-                    <div class="summary-box">
-                        <div class="summary-title">Diagnostice asociate</div>
-                        <div id="associatedDiagnoses" class="summary-value">-</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="cards-grid">
-                <div class="info-card">
-                    <h4>Elemente care susțin diagnosticul</h4>
-                    <div id="supportsBox"></div>
-                </div>
-
-                <div class="info-card">
-                    <h4>Elemente de interpretat cu prudență</h4>
-                    <div id="limitsBox"></div>
-                </div>
-
-                <div class="info-card">
-                    <h4>Investigații recomandate</h4>
-                    <div id="testsBox"></div>
-                </div>
-
-                <div class="info-card">
-                    <h4>Conduită orientativă</h4>
-                    <div id="treatmentPlanBox"></div>
-                </div>
-
-                <div class="info-card">
-                    <h4>Red flags</h4>
-                    <div id="redFlagsBox"></div>
-                </div>
-
-                <div class="info-card">
-                    <h4>Note clinice</h4>
-                    <div id="notesBox"></div>
-                </div>
-
-                <div class="info-card">
-                    <h4>Alternative</h4>
-                    <div id="alternativesBox"></div>
-                </div>
-            </div>
-        </div>
-
-        <pre id="responseFallback" class="hidden"></pre>
-        <div id="responseLoading" class="plain-block">Aici va apărea analiza clinică.</div>
-    </div>
-
-    <div id="differentialSection" class="section hidden">
-        <h3>Diagnostic diferențial</h3>
-        <ul id="differentialList"></ul>
-    </div>
-
-    <div id="sourcesSection" class="section hidden">
-        <h3>Fragmente relevante din surse</h3>
-        <div id="sourcesList"></div>
-    </div>
-
-    <div id="warningSection" class="small-warning hidden"></div>
+    <h3>Răspuns:</h3>
+    <pre id="response"></pre>
 
 </div>
 
 <script>
-function escapeHtml(text) {
-    if (text === null || text === undefined) return "";
-    return String(text)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;");
-}
-
-function safeValue(value, fallback = "-") {
-    if (value === null || value === undefined) return fallback;
-    const cleaned = String(value).trim();
-    return cleaned ? cleaned : fallback;
-}
-
-function toArray(value) {
-    if (Array.isArray(value)) return value;
-    if (value === null || value === undefined || value === "") return [];
-    return [value];
-}
-
-function renderList(targetId, items) {
-    const target = document.getElementById(targetId);
-    const arr = toArray(items);
-
-    if (arr.length === 0) {
-        target.innerHTML = `<div class="empty-text">Nu sunt disponibile informații.</div>`;
-        return;
-    }
-
-    target.innerHTML = `<ul>${arr.map(item => `<li>${escapeHtml(
-        typeof item === "object" && item !== null ? JSON.stringify(item) : String(item)
-    )}</li>`).join("")}</ul>`;
-}
-
-function formatDifferentialItem(item) {
-    if (typeof item === "string") {
-        return item;
-    }
-
-    if (typeof item === "object" && item !== null) {
-        const name =
-            item.name ||
-            item.diagnosis ||
-            item.label ||
-            item.title ||
-            "Diagnostic posibil";
-
-        const score =
-            item.score ??
-            item.probability ??
-            item.confidence ??
-            item.match_score;
-
-        if (score !== null && score !== undefined && String(score).trim() !== "") {
-            return `${name} (scor: ${score})`;
-        }
-
-        return name;
-    }
-
-    return String(item);
-}
-
-function formatSourceItem(item) {
-    if (typeof item === "string") {
-        return `
-            <div class="source-box">
-                <div>${escapeHtml(item)}</div>
-            </div>
-        `;
-    }
-
-    if (typeof item === "object" && item !== null) {
-        const title =
-            item.source ||
-            item.title ||
-            item.file ||
-            item.document ||
-            "Sursă clinică";
-
-        const snippet =
-            item.text ||
-            item.content ||
-            item.snippet ||
-            item.chunk ||
-            item.fragment ||
-            "Fragment indisponibil.";
-
-        const score =
-            item.score ??
-            item.similarity ??
-            item.relevance;
-
-        return `
-            <div class="source-box">
-                <div class="source-title">${escapeHtml(title)}</div>
-                ${score !== null && score !== undefined ? `<div class="muted">Scor relevanță: ${escapeHtml(score)}</div>` : ""}
-                <div style="margin-top: 8px;">${escapeHtml(snippet)}</div>
-            </div>
-        `;
-    }
-
-    return `
-        <div class="source-box">
-            <div>${escapeHtml(String(item))}</div>
-        </div>
-    `;
-}
-
-function formatKeyLabel(key) {
-    return String(key)
-        .replaceAll("_", " ")
-        .replace(/\b\w/g, char => char.toUpperCase());
-}
-
-function formatArrayValue(arr, indent = "") {
-    if (!Array.isArray(arr) || arr.length === 0) {
-        return indent + "-";
-    }
-
-    return arr.map(item => {
-        if (typeof item === "object" && item !== null) {
-            return indent + "- " + formatClinicalOutput(item, indent + "  ").trim();
-        }
-        return indent + "- " + safeValue(item);
-    }).join("\n");
-}
-
-function formatClinicalOutput(value, indent = "") {
-    if (value === null || value === undefined) {
-        return "Nu a fost generată analiza clinică.";
-    }
-
-    if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
-        return String(value);
-    }
-
-    if (Array.isArray(value)) {
-        return formatArrayValue(value, indent);
-    }
-
-    if (typeof value === "object") {
-        const entries = Object.entries(value);
-
-        if (entries.length === 0) {
-            return "Nu a fost generată analiza clinică.";
-        }
-
-        return entries.map(([key, val]) => {
-            const label = formatKeyLabel(key);
-
-            if (Array.isArray(val)) {
-                return `${indent}${label}:\n${formatArrayValue(val, indent + "  ")}`;
-            }
-
-            if (typeof val === "object" && val !== null) {
-                return `${indent}${label}:\n${formatClinicalOutput(val, indent + "  ")}`;
-            }
-
-            return `${indent}${label}: ${safeValue(val)}`;
-        }).join("\n\n");
-    }
-
-    return String(value);
-}
-
-function renderClinicalStructured(clinicalOutput) {
-    const structuredBox = document.getElementById("clinicalStructured");
-    const fallbackBox = document.getElementById("responseFallback");
-    const loadingBox = document.getElementById("responseLoading");
-
-    if (!clinicalOutput || typeof clinicalOutput !== "object" || Array.isArray(clinicalOutput)) {
-        structuredBox.classList.add("hidden");
-        fallbackBox.classList.remove("hidden");
-        loadingBox.classList.add("hidden");
-        fallbackBox.innerText = formatClinicalOutput(clinicalOutput);
-        return;
-    }
-
-    structuredBox.classList.remove("hidden");
-    fallbackBox.classList.add("hidden");
-    loadingBox.classList.add("hidden");
-
-    document.getElementById("primaryDiagnosis").innerText = safeValue(
-        clinicalOutput.primary_diagnosis || clinicalOutput.diagnostic_principal
-    );
-
-    document.getElementById("primaryProbability").innerText = safeValue(
-        clinicalOutput.primary_probability || clinicalOutput.probabilitate
-    );
-
-    document.getElementById("severityValue").innerText = safeValue(
-        clinicalOutput.severity || clinicalOutput.severitate
-    );
-
-    document.getElementById("confidenceValue").innerText = safeValue(
-        clinicalOutput.confidence || clinicalOutput.incredere
-    );
-
-    const associated = toArray(
-        clinicalOutput.associated_diagnosis ||
-        clinicalOutput.associated_diagnoses ||
-        clinicalOutput.diagnostice_asociate
-    );
-    document.getElementById("associatedDiagnoses").innerText = associated.length ? associated.join(", ") : "-";
-
-    renderList("supportsBox", clinicalOutput.supports || clinicalOutput.argumente_pro);
-    renderList("limitsBox", clinicalOutput.limits || clinicalOutput.limite);
-    renderList("testsBox", clinicalOutput.recommended_tests || clinicalOutput.investigatii);
-    renderList("treatmentPlanBox", clinicalOutput.treatment_plan || clinicalOutput.conduita);
-    renderList("redFlagsBox", clinicalOutput.red_flags || clinicalOutput.redflags);
-    renderList("notesBox", clinicalOutput.notes || clinicalOutput.note);
-    renderList("alternativesBox", clinicalOutput.alternatives || clinicalOutput.alternative);
-}
-
-function resetClinicalArea() {
-    document.getElementById("clinicalStructured").classList.add("hidden");
-    document.getElementById("responseFallback").classList.add("hidden");
-    document.getElementById("responseLoading").classList.remove("hidden");
-    document.getElementById("responseLoading").innerText = "Se procesează...";
-}
-
 function trimite() {
-    const differentialSection = document.getElementById("differentialSection");
-    const differentialList = document.getElementById("differentialList");
-    const sourcesSection = document.getElementById("sourcesSection");
-    const sourcesList = document.getElementById("sourcesList");
-    const warningSection = document.getElementById("warningSection");
-    const fallbackBox = document.getElementById("responseFallback");
-    const loadingBox = document.getElementById("responseLoading");
 
-    resetClinicalArea();
-    differentialList.innerHTML = "";
-    sourcesList.innerHTML = "";
-    differentialSection.classList.add("hidden");
-    sourcesSection.classList.add("hidden");
-    warningSection.classList.add("hidden");
-    warningSection.innerText = "";
-    fallbackBox.innerText = "";
-    loadingBox.innerText = "Se procesează...";
+    document.getElementById("response").innerText = "Se procesează...";
 
     fetch("/ask", {
         method: "POST",
@@ -593,50 +92,15 @@ function trimite() {
         body: JSON.stringify({
             symptoms: document.getElementById("symptoms").value,
             age: document.getElementById("age").value,
-            weight: document.getElementById("weight").value,
-            sex: document.getElementById("sex").value,
-            personal_history: document.getElementById("personal_history").value,
-            family_history: document.getElementById("family_history").value
+            sex: document.getElementById("sex").value
         })
     })
-    .then(async (res) => {
-        const data = await res.json();
-        if (!res.ok) {
-            throw new Error(data.error || "A apărut o eroare la analiză.");
-        }
-        return data;
-    })
+    .then(res => res.json())
     .then(data => {
-        renderClinicalStructured(data.clinical_output);
-
-        if (Array.isArray(data.differential) && data.differential.length > 0) {
-            differentialSection.classList.remove("hidden");
-
-            data.differential.forEach(item => {
-                const li = document.createElement("li");
-                li.textContent = formatDifferentialItem(item);
-                differentialList.appendChild(li);
-            });
-        }
-
-        if (Array.isArray(data.results) && data.results.length > 0) {
-            sourcesSection.classList.remove("hidden");
-
-            data.results.forEach(item => {
-                sourcesList.innerHTML += formatSourceItem(item);
-            });
-        }
-
-        if (data.warning) {
-            warningSection.classList.remove("hidden");
-            warningSection.innerText = data.warning;
-        }
+        document.getElementById("response").innerText = data.response;
     })
     .catch(err => {
-        document.getElementById("clinicalStructured").classList.add("hidden");
-        document.getElementById("responseFallback").classList.remove("hidden");
-        document.getElementById("responseLoading").classList.add("hidden");
-        document.getElementById("responseFallback").innerText = "Eroare: " + err.message;
+        document.getElementById("response").innerText = "Eroare: " + err;
     });
 }
 </script>
