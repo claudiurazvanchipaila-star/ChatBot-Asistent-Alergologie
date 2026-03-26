@@ -114,27 +114,39 @@ def analyze():
     return jsonify({
         "differential": differential[:5],
         "clinical_output": clinical_output,
+        "patient_context": {
+            "age": age,
+            "sex": sex
+        },
         "results": results,
-        "warning": "Instrument de suport pentru medic, bazat pe surse PDF. Nu stabilește autonom diagnosticul final."
+        "warning": "Instrument de suport pentru medic, bazat pe surse PDF și logică clinică orientativă. Nu stabilește autonom diagnosticul final și nu înlocuiește decizia medicală."
     })
 
 
 @app.route("/treatment", methods=["POST"])
 def treatment():
     data = request.get_json(force=True)
-    diagnosis_name = data.get("diagnosis", "")
 
-    semantic_query = f"{diagnosis_name} tablou clinic tratament prevenție evitare alergen alergologie"
+    diagnosis_name = data.get("diagnosis", "")
+    age = data.get("age", "")
+    symptoms = data.get("symptoms", "")
+    extra = data.get("extra", "")
+
+    semantic_query = f"{diagnosis_name} tablou clinic tratament prevenție evitare alergen alergologie {symptoms} {extra}".strip()
     source_results = search_chunks(semantic_query, semantic_index, top_k=5) if semantic_index is not None else []
-    treatment_data = get_treatment_details(diagnosis_name, knowledge_ro)
+
+    treatment_data = get_treatment_details(diagnosis_name, knowledge_ro, age=age)
 
     return jsonify({
-        "diagnosis": treatment_data["diagnosis"],
-        "clinical_picture": treatment_data["clinical_picture"],
-        "treatment": treatment_data["treatment"],
-        "prevention": treatment_data["prevention"],
-        "allergen_avoidance": treatment_data["allergen_avoidance"],
-        "source_results": source_results
+        "diagnosis": treatment_data.get("diagnosis", diagnosis_name),
+        "clinical_picture": treatment_data.get("clinical_picture", []),
+        "treatment": treatment_data.get("treatment", []),
+        "prevention": treatment_data.get("prevention", []),
+        "allergen_avoidance": treatment_data.get("allergen_avoidance", []),
+        "medication_options": treatment_data.get("medication_options", []),
+        "age_group_used": treatment_data.get("age_group_used", "vârstă neprecizată"),
+        "source_results": source_results,
+        "warning": "Dozele și exemplele de substanțe active sunt orientative și trebuie confirmate în funcție de produsul disponibil, indicația exactă, comorbidități, contraindicații și contextul clinic individual."
     })
 
 
