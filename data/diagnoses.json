@@ -2,69 +2,652 @@
   {
     "name": "Rinită alergică",
     "keywords": [
-      "strănut", "rinoree", "nas înfundat", "congestie nazală",
-      "prurit nazal", "mâncărime nazală", "ochi care lăcrimează",
-      "prurit ocular", "sezonier", "polen", "acarieni"
+      "strănut",
+      "rinoree",
+      "nas înfundat",
+      "congestie nazală",
+      "prurit nazal",
+      "mâncărime nazală",
+      "ochi care lăcrimează",
+      "prurit ocular",
+      "lăcrimare",
+      "sezonier",
+      "polen",
+      "acarieni"
     ],
-    "treatment_terms": ["rinită alergică", "tratament", "antihistaminic", "corticosteroid intranazal"],
-    "prevention_terms": ["evitare alergen", "polen", "acarieni", "prevenție", "control mediu"]
+    "strong_keywords": [
+      "strănut în salve",
+      "prurit nazal",
+      "prurit ocular",
+      "simptome sezoniere",
+      "expunere la polen",
+      "expunere la acarieni"
+    ],
+    "exclude_keywords": [
+      "febră mare",
+      "secreții purulente",
+      "durere facială intensă",
+      "odinofagie severă"
+    ],
+    "severity": "ușoară",
+    "associated_diagnoses": [
+      "Conjunctivită alergică",
+      "Astm alergic"
+    ],
+    "supports": [
+      "Simptomatologia nazală este compatibilă cu afectare alergică de căi aeriene superioare.",
+      "Asocierea rinoreei cu strănut, prurit nazal sau ocular crește suspiciunea de mecanism alergic.",
+      "Caracterul sezonier sau legătura cu expunerea la polen/acarieni susține diagnosticul."
+    ],
+    "limits": [
+      "Absența semnelor infecțioase majore susține o cauză non-infecțioasă, dar nu stabilește singură diagnosticul.",
+      "Lipsa unui factor declanșator clar reduce specificitatea orientării etiologice și necesită anamneză suplimentară."
+    ],
+    "recommended_tests": [
+      "Anamneză orientată pe sezonalitate, expuneri și context ocupațional/domestic.",
+      "Teste cutanate prick sau IgE specifice pentru alergeni inhalatori, în funcție de contextul clinic.",
+      "Evaluare ORL / oftalmologică dacă simptomatologia este persistentă sau atipică."
+    ],
+    "treatment_plan": [
+      "Măsuri de evitare a alergenului relevant clinic, dacă acesta poate fi identificat.",
+      "Lavaj nazal cu ser salin, în funcție de toleranță și context.",
+      "Antihistaminic oral și/sau corticosteroid intranazal, conform contextului clinic și recomandărilor medicale."
+    ],
+    "red_flags": [],
+    "notes": [
+      "Rezultatul este orientativ și trebuie corelat cu anamneza completă, examenul clinic și investigațiile paraclinice."
+    ],
+    "treatment_terms": [
+      "rinită alergică",
+      "tratament",
+      "antihistaminic",
+      "corticosteroid intranazal"
+    ],
+    "prevention_terms": [
+      "evitare alergen",
+      "polen",
+      "acarieni",
+      "prevenție",
+      "control mediu"
+    ]
   },
   {
     "name": "Conjunctivită alergică",
     "keywords": [
-      "prurit ocular", "mâncărime la ochi", "ochi roșii",
-      "lăcrimare", "edem palpebral", "secreții apoase"
+      "prurit ocular",
+      "mâncărime la ochi",
+      "ochi roșii",
+      "lăcrimare",
+      "edem palpebral",
+      "secreții apoase"
     ],
-    "treatment_terms": ["conjunctivită alergică", "tratament", "antihistaminic ocular"],
-    "prevention_terms": ["evitare alergen", "prevenție", "polen", "acarieni"]
+    "strong_keywords": [
+      "prurit ocular intens",
+      "lăcrimare",
+      "secreții apoase",
+      "edem palpebral"
+    ],
+    "exclude_keywords": [
+      "secreții purulente",
+      "durere oculară severă",
+      "scădere de vedere",
+      "fotofobie severă"
+    ],
+    "severity": "ușoară",
+    "associated_diagnoses": [
+      "Rinită alergică"
+    ],
+    "supports": [
+      "Pruritul ocular și lăcrimarea sunt sugestive pentru afectare conjunctivală alergică.",
+      "Secrețiile apoase și asocierea cu simptome nazale susțin o cauză alergică."
+    ],
+    "limits": [
+      "Ochiul roșu are etiologii multiple și necesită diferențiere față de cauze infecțioase sau iritative.",
+      "Durerea oculară importantă sau afectarea vederii impun reevaluare rapidă."
+    ],
+    "recommended_tests": [
+      "Anamneză orientată pe sezonalitate și expuneri relevante.",
+      "Evaluare oftalmologică dacă simptomatologia este persistentă, unilaterală sau atipică.",
+      "Corelare cu istoric de atopie și alte manifestări alergice."
+    ],
+    "treatment_plan": [
+      "Evitarea expunerii la alergenii suspectați, când este posibil.",
+      "Igienă oculară și evitarea frecării ochilor.",
+      "Antihistaminice oculare și/sau alte măsuri orientative recomandate de medic."
+    ],
+    "red_flags": [
+      "Durere oculară severă",
+      "Scădere de acuitate vizuală",
+      "Fotofobie importantă"
+    ],
+    "notes": [
+      "Conjunctivita alergică se asociază frecvent cu rinită alergică."
+    ],
+    "treatment_terms": [
+      "conjunctivită alergică",
+      "tratament",
+      "antihistaminic ocular"
+    ],
+    "prevention_terms": [
+      "evitare alergen",
+      "prevenție",
+      "polen",
+      "acarieni"
+    ]
   },
   {
     "name": "Astm alergic",
     "keywords": [
-      "wheezing", "șuierături", "tuse", "dispnee",
-      "senzație de constricție toracică", "respirație grea",
-      "agravare nocturnă", "agravare la alergeni"
+      "wheezing",
+      "șuierături",
+      "tuse",
+      "dispnee",
+      "senzație de constricție toracică",
+      "respirație grea",
+      "agravare nocturnă",
+      "agravare la alergeni"
     ],
-    "treatment_terms": ["astm alergic", "tratament", "bronhodilatator", "corticosteroid inhalator"],
-    "prevention_terms": ["evitare alergen", "control expunere", "acarieni", "mucegai", "polen"]
+    "strong_keywords": [
+      "wheezing",
+      "șuierături",
+      "dispnee",
+      "agravare nocturnă",
+      "constricție toracică"
+    ],
+    "exclude_keywords": [
+      "durere toracică tipică ischemică",
+      "hemoptizie",
+      "edeme gambiere",
+      "febră mare persistentă"
+    ],
+    "severity": "moderată",
+    "associated_diagnoses": [
+      "Rinită alergică",
+      "Conjunctivită alergică"
+    ],
+    "supports": [
+      "Simptomatologia respiratorie inferioară este compatibilă cu hiperreactivitate bronșică.",
+      "Agravarea la alergeni sau nocturn susține o componentă astmatică.",
+      "Asocierea cu alte manifestări atopice crește probabilitatea."
+    ],
+    "limits": [
+      "Tusea și dispneea au multiple cauze și necesită diferențiere față de alte patologii respiratorii sau cardiace.",
+      "În lipsa confirmării funcționale, încadrarea rămâne orientativă."
+    ],
+    "recommended_tests": [
+      "Spirometrie cu test de reversibilitate, când este disponibilă și indicată.",
+      "Evaluare a controlului simptomelor și a factorilor declanșatori.",
+      "Corelare cu istoricul de atopie și cu expunerea la alergeni."
+    ],
+    "treatment_plan": [
+      "Reducerea expunerii la alergeni și triggeri relevanți.",
+      "Plan terapeutic individualizat conform severității și frecvenței simptomelor.",
+      "Educație privind recunoașterea semnelor de agravare și necesitatea reevaluării."
+    ],
+    "red_flags": [
+      "Dispnee severă",
+      "Cianoză",
+      "Dificultăți de vorbire din cauza dispneei",
+      "Saturație scăzută"
+    ],
+    "notes": [
+      "Simptomele respiratorii severe sau progresive impun evaluare urgentă."
+    ],
+    "treatment_terms": [
+      "astm alergic",
+      "tratament",
+      "bronhodilatator",
+      "corticosteroid inhalator"
+    ],
+    "prevention_terms": [
+      "evitare alergen",
+      "control expunere",
+      "acarieni",
+      "mucegai",
+      "polen"
+    ]
   },
   {
     "name": "Dermatită atopică",
     "keywords": [
-      "prurit", "eczeme", "erupție", "piele uscată",
-      "lichenificare", "leziuni flexurale", "mâncărime", "dermatită"
+      "prurit",
+      "eczeme",
+      "erupție",
+      "piele uscată",
+      "lichenificare",
+      "leziuni flexurale",
+      "mâncărime",
+      "dermatită"
     ],
-    "treatment_terms": ["dermatită atopică", "tratament", "emolient", "corticosteroid topic"],
-    "prevention_terms": ["îngrijirea pielii", "evitare iritanți", "prevenție"]
+    "strong_keywords": [
+      "piele uscată",
+      "leziuni flexurale",
+      "prurit cronic",
+      "eczeme"
+    ],
+    "exclude_keywords": [
+      "vezicule dureroase",
+      "pustule extinse",
+      "necroză",
+      "febră mare"
+    ],
+    "severity": "ușoară",
+    "associated_diagnoses": [
+      "Rinită alergică",
+      "Astm alergic"
+    ],
+    "supports": [
+      "Pruritul asociat cu piele uscată și leziuni eczematoase sugerează dermatită atopică.",
+      "Istoricul personal sau familial de atopie susține diagnosticul."
+    ],
+    "limits": [
+      "Dermatozele pruriginoase au diagnostic diferențial larg și necesită evaluare clinică atentă.",
+      "Leziunile suprainfectate sau atipice pot modifica tabloul clinic."
+    ],
+    "recommended_tests": [
+      "Evaluare dermatologică atunci când tabloul este persistent, extins sau atipic.",
+      "Anamneză privind factorii iritativi, produsele topice și istoricul de atopie."
+    ],
+    "treatment_plan": [
+      "Îngrijirea regulată a barierei cutanate cu emoliente.",
+      "Reducerea expunerii la iritanți și factori agravanți.",
+      "Tratament topic orientativ conform severității și recomandării medicale."
+    ],
+    "red_flags": [
+      "Semne de suprainfecție extinsă",
+      "Leziuni severe, dureroase sau rapid progresive"
+    ],
+    "notes": [
+      "Managementul necesită individualizare în funcție de vârstă, extindere și severitate."
+    ],
+    "treatment_terms": [
+      "dermatită atopică",
+      "tratament",
+      "emolient",
+      "corticosteroid topic"
+    ],
+    "prevention_terms": [
+      "îngrijirea pielii",
+      "evitare iritanți",
+      "prevenție"
+    ]
   },
   {
     "name": "Urticarie alergică / Angioedem",
     "keywords": [
-      "urticarie", "papule", "plăci pruriginoase",
-      "edem buze", "edem pleoape", "angioedem",
-      "mâncărime", "erupție fugace"
+      "urticarie",
+      "papule",
+      "plăci pruriginoase",
+      "edem buze",
+      "edem pleoape",
+      "angioedem",
+      "mâncărime",
+      "erupție fugace"
     ],
-    "treatment_terms": ["urticarie", "angioedem", "tratament", "antihistaminic"],
-    "prevention_terms": ["evitare declanșator", "prevenție", "alergen", "medicament"]
+    "strong_keywords": [
+      "urticarie",
+      "angioedem",
+      "edem buze",
+      "edem pleoape",
+      "erupție fugace"
+    ],
+    "exclude_keywords": [
+      "purpură",
+      "leziuni fixe dureroase",
+      "febră mare persistentă"
+    ],
+    "severity": "moderată",
+    "associated_diagnoses": [
+      "Alergie alimentară",
+      "Anafilaxie"
+    ],
+    "supports": [
+      "Prezența leziunilor pruriginoase fugace și/sau a angioedemului sugerează urticarie/angioedem.",
+      "Legătura temporală cu expunerea la aliment, medicament sau alt trigger crește suspiciunea."
+    ],
+    "limits": [
+      "Angioedemul necesită evaluare atentă pentru excluderea afectării căilor aeriene.",
+      "Nu orice urticarie este de cauză alergică; anamneza rămâne esențială."
+    ],
+    "recommended_tests": [
+      "Anamneză orientată pe debut, durată, triggeri și medicamente asociate.",
+      "Evaluare clinică a severității și a eventualei afectări respiratorii."
+    ],
+    "treatment_plan": [
+      "Îndepărtarea / evitarea triggerului suspect când poate fi identificat.",
+      "Antihistaminic conform recomandării medicale și contextului clinic.",
+      "Evaluare urgentă dacă apar semne respiratorii sau hemodinamice."
+    ],
+    "red_flags": [
+      "Edem lingual",
+      "Dispnee",
+      "Stridor",
+      "Hipotensiune"
+    ],
+    "notes": [
+      "Angioedemul cu afectare respiratorie poate reprezenta urgență medicală."
+    ],
+    "treatment_terms": [
+      "urticarie",
+      "angioedem",
+      "tratament",
+      "antihistaminic"
+    ],
+    "prevention_terms": [
+      "evitare declanșator",
+      "prevenție",
+      "alergen",
+      "medicament"
+    ]
   },
   {
     "name": "Alergie alimentară",
     "keywords": [
-      "urticarie după masă", "prurit oral", "furnicături orale",
-      "edem buze", "vărsături", "dureri abdominale",
-      "diaree", "wheezing după aliment", "reacție după aliment"
+      "urticarie după masă",
+      "prurit oral",
+      "furnicături orale",
+      "edem buze",
+      "vărsături",
+      "dureri abdominale",
+      "diaree",
+      "wheezing după aliment",
+      "reacție după aliment"
     ],
-    "treatment_terms": ["alergie alimentară", "tratament", "evitare aliment", "anafilaxie"],
-    "prevention_terms": ["evitare aliment", "etichetare", "prevenție", "educație"]
+    "strong_keywords": [
+      "reacție după aliment",
+      "urticarie după masă",
+      "prurit oral",
+      "wheezing după aliment"
+    ],
+    "exclude_keywords": [
+      "gastroenterită în colectivitate",
+      "febră mare",
+      "debut la distanță mare de ingestie"
+    ],
+    "severity": "moderată",
+    "associated_diagnoses": [
+      "Urticarie alergică / Angioedem",
+      "Anafilaxie"
+    ],
+    "supports": [
+      "Legătura temporală dintre ingestie și simptomatologie susține o reacție alimentară.",
+      "Asocierea simptomelor cutanate, digestive și respiratorii crește suspiciunea clinică."
+    ],
+    "limits": [
+      "Simptomele digestive izolate au specificitate redusă pentru alergie alimentară.",
+      "Identificarea alimentului implicat necesită anamneză atentă și, la nevoie, evaluare alergologică."
+    ],
+    "recommended_tests": [
+      "Anamneză detaliată privind alimentele implicate și cronologia simptomelor.",
+      "Evaluare alergologică țintită, inclusiv teste specifice când sunt indicate."
+    ],
+    "treatment_plan": [
+      "Evitarea alimentului suspect până la clarificarea diagnosticului.",
+      "Educație privind citirea etichetelor și prevenirea reexpunerii.",
+      "Plan de acțiune dacă există risc de reacții severe."
+    ],
+    "red_flags": [
+      "Dispnee",
+      "Voce răgușită",
+      "Amețeală",
+      "Colaps"
+    ],
+    "notes": [
+      "Suspiciunea de alergie alimentară severă necesită plan clar de siguranță."
+    ],
+    "treatment_terms": [
+      "alergie alimentară",
+      "tratament",
+      "evitare aliment",
+      "anafilaxie"
+    ],
+    "prevention_terms": [
+      "evitare aliment",
+      "etichetare",
+      "prevenție",
+      "educație"
+    ]
   },
   {
     "name": "Anafilaxie",
     "keywords": [
-      "dispnee severă", "wheezing", "stridor", "voce răgușită",
-      "hipotensiune", "amețeală", "colaps", "edem lingual",
-      "dificultăți la înghițire", "reacție severă", "șoc anafilactic"
+      "dispnee severă",
+      "wheezing",
+      "stridor",
+      "voce răgușită",
+      "hipotensiune",
+      "amețeală",
+      "colaps",
+      "edem lingual",
+      "dificultăți la înghițire",
+      "reacție severă",
+      "șoc anafilactic"
     ],
-    "treatment_terms": ["anafilaxie", "tratament de urgență", "adrenalină", "epinefrină"],
-    "prevention_terms": ["autoinjector", "evitare alergen", "plan de acțiune", "prevenție"]
+    "strong_keywords": [
+      "șoc anafilactic",
+      "hipotensiune",
+      "colaps",
+      "edem lingual",
+      "stridor",
+      "dispnee severă"
+    ],
+    "exclude_keywords": [],
+    "severity": "severă",
+    "associated_diagnoses": [
+      "Alergie alimentară",
+      "Urticarie alergică / Angioedem"
+    ],
+    "supports": [
+      "Afectarea respiratorie, hemodinamică sau multisistemică după expunere sugerează anafilaxie.",
+      "Prezența hipotensiunii, colapsului, stridorului sau edemului lingual crește major probabilitatea."
+    ],
+    "limits": [
+      "Diagnosticul este clinic și necesită recunoaștere rapidă; întârzierea poate fi periculoasă."
+    ],
+    "recommended_tests": [
+      "Evaluare clinică de urgență.",
+      "Monitorizarea funcțiilor vitale și a statusului respirator/hemodinamic."
+    ],
+    "treatment_plan": [
+      "Situație cu potențial vital; este necesară intervenție medicală urgentă.",
+      "Aplicarea imediată a conduitei de urgență conform protocoalelor și contextului clinic."
+    ],
+    "red_flags": [
+      "Hipotensiune",
+      "Colaps",
+      "Stridor",
+      "Edem lingual",
+      "Dificultăți severe la respirație"
+    ],
+    "notes": [
+      "Anafilaxia reprezintă urgență medicală."
+    ],
+    "treatment_terms": [
+      "anafilaxie",
+      "tratament de urgență",
+      "adrenalină",
+      "epinefrină"
+    ],
+    "prevention_terms": [
+      "autoinjector",
+      "evitare alergen",
+      "plan de acțiune",
+      "prevenție"
+    ]
+  },
+  {
+    "name": "Rinită virală / infecțioasă",
+    "keywords": [
+      "rinoree",
+      "nas înfundat",
+      "congestie nazală",
+      "durere în gât",
+      "odinofagie",
+      "febră",
+      "subfebrilitate",
+      "tuse",
+      "stare generală alterată"
+    ],
+    "strong_keywords": [
+      "febră",
+      "durere în gât",
+      "stare generală alterată",
+      "subfebrilitate"
+    ],
+    "exclude_keywords": [
+      "prurit nazal intens",
+      "prurit ocular intens",
+      "expunere la polen"
+    ],
+    "severity": "ușoară",
+    "associated_diagnoses": [
+      "Rinită alergică",
+      "Sinuzită acută"
+    ],
+    "supports": [
+      "Asocierea simptomelor nazale cu febră, odinofagie sau alterarea stării generale orientează către o cauză infecțioasă.",
+      "Tabloul clinic este compatibil cu infecție de căi respiratorii superioare."
+    ],
+    "limits": [
+      "Simptomele pot suprapune parțial rinita alergică, mai ales în formele ușoare.",
+      "Persistența simptomelor sau agravarea lor impune reevaluare."
+    ],
+    "recommended_tests": [
+      "Evaluare clinică orientată pe caracterul infecțios și durata simptomelor.",
+      "Reevaluare dacă apar secreții purulente persistente, febră mare sau durere facială."
+    ],
+    "treatment_plan": [
+      "Măsuri simptomatice și hidratare, în funcție de contextul clinic.",
+      "Monitorizarea evoluției și reevaluare dacă simptomele persistă sau se agravează."
+    ],
+    "red_flags": [
+      "Febră mare persistentă",
+      "Dispnee",
+      "Stare generală sever alterată"
+    ],
+    "notes": [
+      "Acest diagnostic este util mai ales ca alternativă la rinita alergică."
+    ],
+    "treatment_terms": [
+      "rinită virală",
+      "tratament simptomatic"
+    ],
+    "prevention_terms": [
+      "igienă",
+      "prevenție infecții respiratorii"
+    ]
+  },
+  {
+    "name": "Rinită non-alergică",
+    "keywords": [
+      "rinoree",
+      "congestie nazală",
+      "nas înfundat",
+      "iritanți",
+      "mirosuri puternice",
+      "fum",
+      "schimbări de temperatură"
+    ],
+    "strong_keywords": [
+      "iritanți",
+      "mirosuri puternice",
+      "fum",
+      "schimbări de temperatură"
+    ],
+    "exclude_keywords": [
+      "prurit ocular",
+      "expunere la polen",
+      "teste alergologice pozitive"
+    ],
+    "severity": "ușoară",
+    "associated_diagnoses": [
+      "Rinită alergică"
+    ],
+    "supports": [
+      "Declanșarea simptomelor la iritanți non-alergenici susține rinita non-alergică.",
+      "Absența unui pattern alergic tipic poate orienta către această posibilitate."
+    ],
+    "limits": [
+      "Diferențierea de rinita alergică necesită corelare clinică și, uneori, investigații suplimentare."
+    ],
+    "recommended_tests": [
+      "Anamneză orientată pe triggeri non-specifici și expuneri iritative.",
+      "Evaluare alergologică dacă persistă suspiciunea de mecanism alergic."
+    ],
+    "treatment_plan": [
+      "Reducerea expunerii la iritanți și măsuri simptomatice adaptate clinic.",
+      "Reevaluare dacă simptomatologia persistă."
+    ],
+    "red_flags": [],
+    "notes": [
+      "Rinita non-alergică este un diagnostic diferențial frecvent pentru rinoree și congestie."
+    ],
+    "treatment_terms": [
+      "rinită non-alergică",
+      "tratament"
+    ],
+    "prevention_terms": [
+      "evitare iritanți",
+      "control mediu"
+    ]
+  },
+  {
+    "name": "Sinuzită acută",
+    "keywords": [
+      "congestie nazală",
+      "durere facială",
+      "presiune facială",
+      "secreții purulente",
+      "cefalee",
+      "febră",
+      "obstrucție nazală"
+    ],
+    "strong_keywords": [
+      "durere facială",
+      "presiune facială",
+      "secreții purulente"
+    ],
+    "exclude_keywords": [
+      "prurit ocular",
+      "strănut în salve",
+      "expunere la polen"
+    ],
+    "severity": "moderată",
+    "associated_diagnoses": [
+      "Rinită alergică",
+      "Rinită virală / infecțioasă"
+    ],
+    "supports": [
+      "Durerea facială, presiunea facială și secrețiile purulente susțin suspiciunea de sinuzită acută.",
+      "Tabloul poate apărea ca diagnostic diferențial sau complicație a unei rinite."
+    ],
+    "limits": [
+      "Congestia nazală izolată are specificitate redusă pentru sinuzită.",
+      "Diagnosticul necesită corelare cu durata simptomelor și examenul clinic."
+    ],
+    "recommended_tests": [
+      "Evaluare clinică ORL în funcție de severitate și persistență.",
+      "Reevaluare dacă simptomatologia persistă sau se agravează."
+    ],
+    "treatment_plan": [
+      "Conduită orientativă simptomatică și reevaluare clinică.",
+      "Tratamentul specific se stabilește în funcție de context, severitate și examen clinic."
+    ],
+    "red_flags": [
+      "Edem periorbitar important",
+      "Cefalee severă progresivă",
+      "Semne neurologice"
+    ],
+    "notes": [
+      "Durata și caracterul secrețiilor nazale sunt importante pentru orientarea diagnosticului."
+    ],
+    "treatment_terms": [
+      "sinuzită",
+      "tratament"
+    ],
+    "prevention_terms": [
+      "monitorizare",
+      "reevaluare"
+    ]
   }
 ]
