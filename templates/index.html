@@ -185,6 +185,62 @@
             `;
         }
 
+        function renderMedicationOptions(medicationOptions) {
+            if (!medicationOptions || medicationOptions.length === 0) {
+                return `
+                    <div class="nested-panel">
+                        <h4>Opțiuni medicamentoase orientative</h4>
+                        <p class="muted-text">Nu există opțiuni medicamentoase structurate disponibile pentru acest diagnostic.</p>
+                    </div>
+                `;
+            }
+
+            return `
+                <div class="nested-panel">
+                    <h4>Opțiuni medicamentoase orientative</h4>
+                    <div class="medication-grid">
+                        ${medicationOptions.map(option => `
+                            <div class="medication-card">
+                                <div class="medication-header">
+                                    <div class="card-label primary-label">${escapeHtml(option.class || "Clasă medicamentoasă")}</div>
+                                    <h5>${escapeHtml(option.active_substance || "-")}</h5>
+                                    <p class="medication-subtitle">${escapeHtml(option.pharmacologic_name || "-")}</p>
+                                </div>
+
+                                <div class="medication-body">
+                                    <div class="medication-row">
+                                        <span class="medication-label">Mod de administrare</span>
+                                        <span class="medication-value">${escapeHtml(option.administration_route || "-")}</span>
+                                    </div>
+
+                                    <div class="medication-row">
+                                        <span class="medication-label">Frecvență</span>
+                                        <span class="medication-value">${escapeHtml(option.frequency || "-")}</span>
+                                    </div>
+
+                                    <div class="medication-row">
+                                        <span class="medication-label">Doză adult</span>
+                                        <span class="medication-value">${escapeHtml(option.adult_dose || "-")}</span>
+                                    </div>
+
+                                    <div class="medication-row">
+                                        <span class="medication-label">Doză copil</span>
+                                        <span class="medication-value">${escapeHtml(option.pediatric_dose || "-")}</span>
+                                    </div>
+
+                                    ${option.observations ? `
+                                        <div class="medication-note">
+                                            <strong>Observații:</strong> ${escapeHtml(option.observations)}
+                                        </div>
+                                    ` : ""}
+                                </div>
+                            </div>
+                        `).join("")}
+                    </div>
+                </div>
+            `;
+        }
+
         async function trimiteDate() {
             const symptoms = document.getElementById("symptoms").value.trim();
             const age = document.getElementById("age").value.trim();
@@ -363,6 +419,9 @@
         async function cereTratament() {
             const select = document.getElementById("finalDiagnosis");
             const treatmentResult = document.getElementById("treatmentResult");
+            const age = document.getElementById("age").value.trim();
+            const symptoms = document.getElementById("symptoms").value.trim();
+            const extra = document.getElementById("extra").value.trim();
 
             if (!select || !treatmentResult) return;
 
@@ -376,7 +435,12 @@
                     headers: {
                         "Content-Type": "application/json"
                     },
-                    body: JSON.stringify({ diagnosis: diagnosis })
+                    body: JSON.stringify({
+                        diagnosis: diagnosis,
+                        age: age,
+                        symptoms: symptoms,
+                        extra: extra
+                    })
                 });
 
                 if (!response.ok) {
@@ -389,6 +453,7 @@
                     <div class="nested-panel">
                         <div class="card-label primary-label">Recomandări orientative</div>
                         <h3>${escapeHtml(data.diagnosis || diagnosis)}</h3>
+                        <p class="muted-text"><strong>Grupă de vârstă folosită:</strong> ${escapeHtml(data.age_group_used || "vârstă neprecizată")}</p>
                     </div>
                 `;
 
@@ -413,6 +478,8 @@
                         </div>
                     `;
                 }
+
+                html += renderMedicationOptions(data.medication_options || []);
 
                 if (data.prevention && data.prevention.length > 0) {
                     html += `
@@ -452,6 +519,15 @@
                                     </div>
                                 `).join("")}
                             </div>
+                        </div>
+                    `;
+                }
+
+                if (data.warning) {
+                    html += `
+                        <div class="nested-panel">
+                            <h4>Notă importantă</h4>
+                            <p class="muted-text">${escapeHtml(data.warning)}</p>
                         </div>
                     `;
                 }
