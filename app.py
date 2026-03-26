@@ -25,13 +25,15 @@ CASES_FILE = os.path.join(CASES_DIR, "saved_cases.json")
 
 os.makedirs(CASES_DIR, exist_ok=True)
 
-pdf_paths = [
-    os.path.join(BOOKS_DIR, f)
-    for f in os.listdir(BOOKS_DIR)
-    if f.lower().endswith(".pdf")
-]
+pdf_paths = []
+if os.path.exists(BOOKS_DIR):
+    pdf_paths = [
+        os.path.join(BOOKS_DIR, f)
+        for f in os.listdir(BOOKS_DIR)
+        if f.lower().endswith(".pdf")
+    ]
 
-book_documents = load_books(pdf_paths)
+book_documents = load_books(pdf_paths) if pdf_paths else []
 semantic_index = initialize_semantic_index(book_documents, pdf_paths, force_rebuild=False)
 diagnoses = load_diagnoses("data/diagnoses.json")
 knowledge_ro = load_romanian_knowledge("data/allergy_knowledge_ro.json")
@@ -247,4 +249,5 @@ def export_pdf():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=False)
