@@ -241,6 +241,76 @@ def get_default_diagnosis_knowledge(diagnosis_name):
     }
 
 
+def build_ranked_entry(diag, text):
+    name = str(diag.get("name", "")).strip()
+    if not name:
+        return None
+
+    keywords = diag.get("keywords", []) or []
+    strong_keywords = diag.get("strong_keywords", []) or []
+    exclude_keywords = diag.get("exclude_keywords", []) or []
+    associated_diagnoses = diag.get("associated_diagnoses", []) or []
+    recommended_tests = diag.get("recommended_tests", []) or []
+    treatment_plan = diag.get("treatment_plan", []) or []
+    supports = diag.get("supports", []) or []
+    limits = diag.get("limits", []) or []
+    red_flags = diag.get("red_flags", []) or []
+    notes = diag.get("notes", []) or []
+
+    score = 0
+    score += count_keyword_hits(text, keywords)
+    score += count_keyword_hits(text, strong_keywords) * 2
+
+    if contains_any(text, exclude_keywords):
+        score -= 2
+
+    has_any_match = score > 0
+
+    return {
+        "name": name,
+        "score": score,
+        "probability": infer_probability(score),
+        "severity": diag.get("severity") or infer_severity(text),
+        "confidence": infer_confidence(score),
+        "associated_diagnoses": safe_list(associated_diagnoses),
+        "supports": safe_list(supports),
+        "limits": safe_list(limits),
+        "recommended_tests": safe_list(recommended_tests),
+        "treatment_plan": safe_list(treatment_plan),
+        "red_flags": safe_list(red_flags),
+        "notes": safe_list(notes),
+        "has_any_match": has_any_match
+    }
+
+
+def build_fallback_analysis(text):
+    return {
+        "primary_diagnosis": "Nespecificat",
+        "primary_probability": "scăzută",
+        "severity": infer_severity(text),
+        "confidence": "redusă",
+        "associated_diagnoses": [],
+        "supports": [
+            "Nu au fost identificate suficiente criterii pentru un diagnostic diferențial robust."
+        ],
+        "limits": [
+            "Datele clinice introduse sunt insuficiente sau prea nespecifice."
+        ],
+        "recommended_tests": [
+            "Anamneză clinică mai detaliată.",
+            "Corelare cu examenul clinic și investigațiile relevante."
+        ],
+        "treatment_plan": [
+            "Reevaluare după completarea datelor clinice."
+        ],
+        "red_flags": [],
+        "notes": [
+            "Rezultatul este nespecific și orientativ."
+        ],
+        "alternatives": []
+    }
+
+
 def rank_differential_diagnoses(full_text, diagnoses):
     text = normalize_text(full_text)
 
@@ -264,82 +334,58 @@ def rank_differential_diagnoses(full_text, diagnoses):
             "alternatives": []
         }
 
-    ranked = []
+    ranked_all = []
 
     for diag in diagnoses:
         if not isinstance(diag, dict):
             continue
 
-        name = str(diag.get("name", "")).strip()
-        if not name:
-            continue
+        entry = build_ranked_entry(diag, text)
+        if entry:
+            ranked_all.append(entry)
 
-        keywords = diag.get("keywords", []) or []
-        strong_keywords = diag.get("strong_keywords", []) or []
-        exclude_keywords = diag.get("exclude_keywords", []) or []
-        associated_diagnoses = diag.get("associated_diagnoses", []) or []
-        recommended_tests = diag.get("recommended_tests", []) or []
-        treatment_plan = diag.get("treatment_plan", []) or []
-        supports = diag.get("supports", []) or []
-        limits = diag.get("limits", []) or []
-        red_flags = diag.get("red_flags", []) or []
-        notes = diag.get("notes", []) or []
+    if not ranked_all:
+        return [], build_fallback_analysis(text)
 
-        score = 0
-        score += count_keyword_hits(text, keywords)
-        score += count_keyword_hits(text, strong_keywords) * 2
+    ranked_all = sorted(
+        ranked_all,
+        key=lambda x: (
+            x["score"],
+            len(x.get("associated_diagnoses", [])),
+            len(x.get("supports", []))
+        ),
+        reverse=True
+    )
 
-        if contains_any(text, exclude_keywords):
-            score -= 2
+    positive_ranked = [item for item in ranked_all if item["score"] > 0]
 
-        if score > 0:
-            ranked.append({
-                "name": name,
-                "score": score,
-                "probability": infer_probability(score),
-                "severity": diag.get("severity") or infer_severity(text),
-                "confidence": infer_confidence(score),
-                "associated_diagnoses": safe_list(associated_diagnoses),
-                "supports": safe_list(supports),
-                "limits": safe_list(limits),
-                "recommended_tests": safe_list(recommended_tests),
-                "treatment_plan": safe_list(treatment_plan),
-                "red_flags": safe_list(red_flags),
-                "notes": safe_list(notes)
-            })
+    if positive_ranked:
+        primary = positive_ranked[0]
 
-    ranked = sorted(ranked, key=lambda x: x["score"], reverse=True)
+        alternatives_pool = positive_ranked[1:]
 
-    if not ranked:
-        fallback = {
-            "primary_diagnosis": "Nespecificat",
-            "primary_probability": "scăzută",
-            "severity": infer_severity(text),
-            "confidence": "redusă",
-            "associated_diagnoses": [],
-            "supports": [
-                "Nu au fost identificate suficiente criterii pentru un diagnostic diferențial robust."
-            ],
-            "limits": [
-                "Datele clinice introduse sunt insuficiente sau prea nespecifice."
-            ],
-            "recommended_tests": [
-                "Anamneză clinică mai detaliată.",
-                "Corelare cu examenul clinic și investigațiile relevante."
-            ],
-            "treatment_plan": [
-                "Reevaluare după completarea datelor clinice."
-            ],
-            "red_flags": [],
-            "notes": [
-                "Rezultatul este nespecific și orientativ."
-            ],
-            "alternatives": []
-        }
-        return [], fallback
+        if len(alternatives_pool) < 4:
+            zero_score_fill = [
+                item for item in ranked_all
+                if item["score"] == 0 and item["name"] != primary["name"]
+            ]
+            alternatives_pool.extend(zero_score_fill)
 
-    primary = ranked[0]
-    alternatives = [item["name"] for item in ranked[1:5]]
+        ranked_display = [primary]
+        for item in alternatives_pool:
+            if item["name"] == primary["name"]:
+                continue
+            if len(ranked_display) >= 5:
+                break
+            ranked_display.append(item)
+    else:
+        ranked_display = ranked_all[:5]
+        primary = ranked_display[0]
+
+    for item in ranked_display:
+        item.pop("has_any_match", None)
+
+    alternatives = [item["name"] for item in ranked_display[1:5]]
 
     clinical_output = {
         "primary_diagnosis": primary["name"],
@@ -366,7 +412,7 @@ def rank_differential_diagnoses(full_text, diagnoses):
         "alternatives": alternatives
     }
 
-    return ranked, clinical_output
+    return ranked_display, clinical_output
 
 
 def choose_age_specific_section(entry, age_group):
