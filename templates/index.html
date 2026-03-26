@@ -329,7 +329,9 @@
                         <div class="med-header">${escapeHtml(card.class || "Medicație")}</div>
                         <div class="med-row"><strong>Denumire:</strong> ${escapeHtml(card.name || "-")}</div>
                         <div class="med-row"><strong>Substanță activă:</strong> ${escapeHtml(card.substance || "-")}</div>
-                        <div class="med-row"><strong>Doză:</strong> ${escapeHtml(card.dose || "-")}</div>
+                        <div class="med-row"><strong>Doză copil:</strong> ${escapeHtml(card.dose_child || "-")}</div>
+                        <div class="med-row"><strong>Doză adult:</strong> ${escapeHtml(card.dose_adult || "-")}</div>
+                        <div class="med-row"><strong>Doză generală:</strong> ${escapeHtml(card.dose || "-")}</div>
                         <div class="med-row"><strong>Cale:</strong> ${escapeHtml(card.route || "-")}</div>
                         <div class="med-row"><strong>Frecvență:</strong> ${escapeHtml(card.frequency || "-")}</div>
                         <div class="med-row"><strong>Durată:</strong> ${escapeHtml(card.duration || "-")}</div>
