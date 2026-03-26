@@ -5,259 +5,182 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Asistent clinic în alergologie</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #eef2f5;
-            margin: 0;
-            padding: 0;
-        }
-
-        .container {
-            width: 90%;
-            max-width: 980px;
-            margin: 30px auto;
-            background: #f7f7f7;
-            padding: 20px;
-            border-radius: 14px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-        }
-
-        h1 {
-            color: #165b84;
-            margin-bottom: 18px;
-        }
-
-        .warning {
-            background: #f3e4b5;
-            color: #8a6500;
-            padding: 14px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-top: 16px;
-            margin-bottom: 8px;
-            font-size: 16px;
-        }
-
-        input, textarea, button, select {
-            width: 100%;
-            box-sizing: border-box;
-            padding: 14px;
-            border-radius: 8px;
-            border: 1px solid #c7d0d9;
-            font-size: 16px;
-        }
-
-        textarea {
-            min-height: 110px;
-            resize: vertical;
-        }
-
-        button {
-            margin-top: 18px;
-            background: #0f5f87;
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        button:hover {
-            background: #0b4f70;
-        }
-
-        .secondary-btn {
-            background: #3c6e71;
-        }
-
-        .secondary-btn:hover {
-            background: #2f585b;
-        }
-
-        .result-box {
-            margin-top: 24px;
-            padding: 18px;
-            background: white;
-            border-radius: 10px;
-            border: 1px solid #d9e1e7;
-        }
-
-        .section-title {
-            color: #165b84;
-            margin-top: 0;
-            margin-bottom: 12px;
-        }
-
-        .card {
-            background: #f9fbfc;
-            border-left: 4px solid #0f5f87;
-            padding: 12px;
-            margin-bottom: 12px;
-            border-radius: 6px;
-            line-height: 1.5;
-        }
-
-        .card-alert {
-            border-left-color: #b00020;
-            background: #fff5f6;
-        }
-
-        .card-main {
-            border-left-color: #1f7a4d;
-            background: #f4fbf7;
-        }
-
-        .muted {
-            color: #666;
-            font-size: 14px;
-        }
-
-        .loading {
-            margin-top: 15px;
-            color: #165b84;
-            font-weight: bold;
-        }
-
-        .error {
-            margin-top: 15px;
-            color: #b00020;
-            font-weight: bold;
-        }
-
-        .two-col {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 14px;
-        }
-
-        @media (max-width: 768px) {
-            .two-col {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        ul.clean-list {
-            margin: 0;
-            padding-left: 18px;
-        }
-
-        ul.clean-list li {
-            margin-bottom: 8px;
-        }
-
-        .chip {
-            display: inline-block;
-            background: #e8f1f7;
-            color: #165b84;
-            padding: 4px 10px;
-            border-radius: 999px;
-            font-size: 13px;
-            margin: 4px 6px 0 0;
-        }
-
-        .source-meta {
-            font-size: 13px;
-            color: #4d6b7c;
-            margin-top: 8px;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 999px;
-            font-size: 12px;
-            font-weight: bold;
-            margin-top: 6px;
-        }
-
-        .badge-mare {
-            background: #d9f2e3;
-            color: #0b6e3d;
-        }
-
-        .badge-moderata {
-            background: #fff1cc;
-            color: #8a6500;
-        }
-
-        .badge-redusa {
-            background: #f8d7da;
-            color: #8b1e2d;
-        }
-
-        .action-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-top: 12px;
-        }
-
-        @media (max-width: 768px) {
-            .action-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Asistent clinic în alergologie</h1>
-
-        <div class="warning">
-            Instrument de suport pentru medic, bazat pe surse PDF și o bază de cunoștințe în limba română. Nu înlocuiește judecata clinică.
-        </div>
-
-        <label for="symptoms">Simptome</label>
-        <textarea id="symptoms" placeholder="Ex: strănut, rinoree, prurit nazal, lăcrimare, wheezing"></textarea>
-
-        <div class="two-col">
+    <div class="app-shell">
+        <header class="topbar">
             <div>
-                <label for="age">Vârstă</label>
-                <input id="age" type="text" placeholder="Ex: 24">
+                <p class="eyebrow">Instrument clinic orientativ</p>
+                <h1>Asistent clinic în alergologie</h1>
+                <p class="subtitle">
+                    Suport pentru medic în evaluarea simptomelor alergologice, cu diagnostic diferențial,
+                    interpretare clinică, recomandări orientative și export PDF.
+                </p>
             </div>
-            <div>
-                <label for="sex">Sex</label>
-                <input id="sex" type="text" placeholder="Ex: feminin">
-            </div>
-        </div>
+        </header>
 
-        <label for="extra">Alte date clinice</label>
-        <textarea id="extra" placeholder="Ex: simptome sezoniere, expunere la polen, antecedente atopice"></textarea>
+        <main class="main-grid">
+            <section class="panel input-panel">
+                <div class="panel-header">
+                    <h2>Date clinice introduse</h2>
+                    <p>
+                        Introdu simptomele și contextul clinic. Rezultatul trebuie corelat cu anamneza,
+                        examenul clinic și investigațiile relevante.
+                    </p>
+                </div>
 
-        <button type="button" onclick="trimiteDate()">Generează diagnosticul diferențial</button>
+                <div class="warning-box">
+                    Instrument de suport pentru medic. Nu înlocuiește consultul medical,
+                    judecata clinică sau decizia terapeutică finală.
+                </div>
 
-        <div id="loading" class="loading" style="display:none;">Se analizează...</div>
-        <div id="error" class="error" style="display:none;"></div>
-        <div id="rezultat" class="result-box" style="display:none;"></div>
+                <div class="form-section">
+                    <label for="symptoms">Simptome</label>
+                    <textarea
+                        id="symptoms"
+                        placeholder="Ex: strănut, rinoree, prurit nazal, lăcrimare, wheezing, tuse nocturnă"
+                    ></textarea>
+                </div>
+
+                <div class="grid-two">
+                    <div class="form-section">
+                        <label for="age">Vârstă</label>
+                        <input id="age" type="text" placeholder="Ex: 24">
+                    </div>
+
+                    <div class="form-section">
+                        <label for="sex">Sex</label>
+                        <input id="sex" type="text" placeholder="Ex: feminin">
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <label for="extra">Alte date clinice</label>
+                    <textarea
+                        id="extra"
+                        placeholder="Ex: simptome sezoniere, expunere la polen, praf, animale, antecedente atopice, debut după masă"
+                    ></textarea>
+                </div>
+
+                <div class="action-row">
+                    <button type="button" class="primary-btn" onclick="trimiteDate()">
+                        Generează diagnosticul diferențial
+                    </button>
+                </div>
+
+                <div id="loading" class="loading-state" style="display:none;">
+                    Se analizează datele clinice...
+                </div>
+
+                <div id="error" class="error-box" style="display:none;"></div>
+            </section>
+
+            <section class="panel result-panel">
+                <div class="panel-header">
+                    <h2>Rezultat clinic orientativ</h2>
+                    <p>
+                        Aici vor apărea diagnosticul diferențial, elementele de susținere, red flags,
+                        investigațiile recomandate și conduita orientativă.
+                    </p>
+                </div>
+
+                <div id="emptyState" class="empty-state">
+                    <div class="empty-icon">🩺</div>
+                    <h3>Nu există încă o analiză generată</h3>
+                    <p>
+                        Completează datele clinice din stânga și apasă pe
+                        <strong>„Generează diagnosticul diferențial”</strong>.
+                    </p>
+                </div>
+
+                <div id="rezultat" class="result-content" style="display:none;"></div>
+            </section>
+        </main>
     </div>
 
     <script>
         let lastAnalysisPayload = null;
 
-        function probabilityBadge(probability) {
-            const normalized = (probability || "").toLowerCase();
-
-            let className = "badge badge-redusa";
-            if (normalized === "mare") className = "badge badge-mare";
-            if (normalized === "moderată" || normalized === "moderata") className = "badge badge-moderata";
-            if (normalized === "redusă" || normalized === "redusa") className = "badge badge-redusa";
-
-            return `<span class="${className}">Probabilitate: ${probability || "-"}</span>`;
+        function escapeHtml(value) {
+            return String(value ?? "")
+                .replaceAll("&", "&amp;")
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll('"', "&quot;")
+                .replaceAll("'", "&#039;");
         }
 
-        function severityCard(severity) {
-            let bg = "#eef2f5";
-            if (severity === "severă") bg = "#f8d7da";
-            if (severity === "moderată") bg = "#fff3cd";
-            if (severity === "ușoară") bg = "#d9f2e3";
+        function probabilityBadge(probability) {
+            const normalized = (probability || "").toLowerCase();
+            let className = "badge badge-low";
+
+            if (normalized === "mare") className = "badge badge-high";
+            if (normalized === "moderată" || normalized === "moderata") className = "badge badge-medium";
+            if (normalized === "redusă" || normalized === "redusa") className = "badge badge-low";
+
+            return `<span class="${className}">Probabilitate: ${escapeHtml(probability || "-")}</span>`;
+        }
+
+        function confidenceBadge(confidence) {
+            const normalized = (confidence || "").toLowerCase();
+            let className = "badge badge-low";
+
+            if (normalized === "mare") className = "badge badge-high";
+            if (normalized === "moderată" || normalized === "moderata") className = "badge badge-medium";
+            if (normalized === "scăzută" || normalized === "scazuta") className = "badge badge-low";
+
+            return `<span class="${className}">Încredere: ${escapeHtml(confidence || "-")}</span>`;
+        }
+
+        function severityBadge(severity) {
+            const normalized = (severity || "").toLowerCase();
+            let className = "badge badge-neutral";
+
+            if (normalized === "severă" || normalized === "severa") className = "badge badge-danger";
+            if (normalized === "moderată" || normalized === "moderata") className = "badge badge-medium";
+            if (normalized === "ușoară" || normalized === "usoara") className = "badge badge-soft";
+
+            return `<span class="${className}">Severitate estimată: ${escapeHtml(severity || "-")}</span>`;
+        }
+
+        function renderListCard(title, items, icon = "•") {
+            if (!items || items.length === 0) return "";
 
             return `
-                <div class="card" style="background:${bg}">
-                    <strong>Severitate estimată:</strong> ${severity || "-"}
+                <div class="result-card">
+                    <h3>${escapeHtml(title)}</h3>
+                    <ul class="clean-list">
+                        ${items.map(item => `<li><span class="list-icon">${icon}</span><span>${escapeHtml(item)}</span></li>`).join("")}
+                    </ul>
+                </div>
+            `;
+        }
+
+        function renderSourceCards(results, title = "Fragmente relevante din surse") {
+            if (!results || results.length === 0) {
+                return `
+                    <div class="result-card">
+                        <h3>${escapeHtml(title)}</h3>
+                        <p class="muted-text">Nu au fost găsite fragmente relevante în sursele disponibile.</p>
+                    </div>
+                `;
+            }
+
+            return `
+                <div class="result-card">
+                    <h3>${escapeHtml(title)}</h3>
+                    <div class="source-list">
+                        ${results.map(fragment => `
+                            <div class="source-card">
+                                <div class="source-text">${escapeHtml(fragment.text || "")}</div>
+                                <div class="source-meta">
+                                    Sursă: ${escapeHtml(fragment.source || "-")} ·
+                                    Pagina: ${escapeHtml(fragment.page || "-")} ·
+                                    Similaritate: ${escapeHtml(fragment.score || "-")}
+                                </div>
+                            </div>
+                        `).join("")}
+                    </div>
                 </div>
             `;
         }
@@ -271,6 +194,7 @@
             const rezultat = document.getElementById("rezultat");
             const loading = document.getElementById("loading");
             const errorBox = document.getElementById("error");
+            const emptyState = document.getElementById("emptyState");
 
             rezultat.style.display = "none";
             rezultat.innerHTML = "";
@@ -278,7 +202,7 @@
             errorBox.textContent = "";
 
             if (!symptoms) {
-                errorBox.textContent = "Te rog introdu simptomele.";
+                errorBox.textContent = "Te rog introdu simptomele pentru a genera analiza clinică.";
                 errorBox.style.display = "block";
                 return;
             }
@@ -314,148 +238,121 @@
                 let html = "";
 
                 if (c.red_flags && c.red_flags.length > 0) {
-                    html += `<h2 class="section-title">Red flags</h2>`;
-                    c.red_flags.forEach(x => {
-                        html += `<div class="card card-alert">${x}</div>`;
-                    });
+                    html += `
+                        <div class="result-card danger-card">
+                            <div class="card-label danger-label">Red flags</div>
+                            <h3>Semne care necesită prudență crescută</h3>
+                            <ul class="clean-list">
+                                ${c.red_flags.map(x => `<li><span class="list-icon">!</span><span>${escapeHtml(x)}</span></li>`).join("")}
+                            </ul>
+                        </div>
+                    `;
                 }
 
-                html += `<h2 class="section-title">Diagnostic diferențial</h2>`;
+                html += `
+                    <div class="result-card primary-card">
+                        <div class="card-label primary-label">Diagnostic principal</div>
+                        <h3>${escapeHtml(c.primary_diagnosis || "-")}</h3>
+                        <div class="badge-row">
+                            ${probabilityBadge(c.primary_probability)}
+                            ${severityBadge(c.severity)}
+                            ${confidenceBadge(c.confidence)}
+                        </div>
+                        ${c.associated_diagnosis ? `<p class="associated-line"><strong>Asociere probabilă:</strong> ${escapeHtml(c.associated_diagnosis)}</p>` : ""}
+                    </div>
+                `;
 
                 if (data.differential && data.differential.length > 0) {
-                    data.differential.forEach((item, index) => {
-                        const cardClass = index === 0 ? "card card-main" : "card";
-                        html += `
-                            <div class="${cardClass}">
-                                <strong>${item.name || "Diagnostic"}</strong><br>
-                                ${probabilityBadge(item.probability)}
-                                <div class="muted">Scor: ${item.score ?? "-"}</div>
-                            </div>
-                        `;
-                    });
-                } else {
-                    html += `<p>Nu au fost generate diagnostice diferențiale.</p>`;
-                }
-
-                html += `<h2 class="section-title">Interpretare clinică</h2>`;
-                html += `
-                    <div class="card card-main">
-                        <strong>Diagnostic principal:</strong><br>
-                        ${c.primary_diagnosis || "-"}<br>
-                        ${probabilityBadge(c.primary_probability)}
-                    </div>
-                `;
-
-                html += severityCard(c.severity);
-
-                html += `
-                    <div class="card">
-                        <strong>Grad de încredere:</strong> ${c.confidence || "-"}
-                    </div>
-                `;
-
-                if (c.associated_diagnosis) {
                     html += `
-                        <div class="card">
-                            <strong>Asociere probabilă:</strong><br>
-                            ${c.associated_diagnosis}
+                        <div class="result-card">
+                            <h3>Diagnostic diferențial</h3>
+                            <div class="diagnosis-grid">
+                                ${data.differential.map((item, index) => `
+                                    <div class="diagnosis-card ${index === 0 ? "diagnosis-card-main" : ""}">
+                                        <div class="diagnosis-top">
+                                            <strong>${escapeHtml(item.name || "Diagnostic")}</strong>
+                                            <span class="diagnosis-rank">#${index + 1}</span>
+                                        </div>
+                                        <div class="badge-row">
+                                            ${probabilityBadge(item.probability)}
+                                        </div>
+                                        <div class="small-muted">Scor clinic: ${escapeHtml(item.score ?? "-")}</div>
+                                    </div>
+                                `).join("")}
+                            </div>
                         </div>
                     `;
                 }
 
                 if (c.alternatives && c.alternatives.length > 0) {
                     html += `
-                        <div class="card">
-                            <strong>Diagnostice alternative:</strong><br>
-                            ${c.alternatives.map(x => `<span class="chip">${x}</span>`).join("")}
+                        <div class="result-card">
+                            <h3>Diagnostice alternative</h3>
+                            <div class="chip-row">
+                                ${c.alternatives.map(x => `<span class="chip">${escapeHtml(x)}</span>`).join("")}
+                            </div>
                         </div>
                     `;
                 }
 
-                if (c.supports && c.supports.length > 0) {
-                    html += `<h2 class="section-title">Elemente care susțin diagnosticul</h2>`;
-                    c.supports.forEach(x => {
-                        html += `<div class="card">${x}</div>`;
-                    });
-                }
-
-                if (c.limits && c.limits.length > 0) {
-                    html += `<h2 class="section-title">Elemente de interpretat cu prudență</h2>`;
-                    c.limits.forEach(x => {
-                        html += `<div class="card">${x}</div>`;
-                    });
-                }
-
-                if (c.recommended_tests && c.recommended_tests.length > 0) {
-                    html += `<h2 class="section-title">Investigații recomandate</h2>`;
-                    html += `<div class="card"><ul class="clean-list">`;
-                    c.recommended_tests.forEach(x => {
-                        html += `<li>${x}</li>`;
-                    });
-                    html += `</ul></div>`;
-                }
-
-                if (c.treatment_plan && c.treatment_plan.length > 0) {
-                    html += `<h2 class="section-title">Conduită orientativă</h2>`;
-                    html += `<div class="card"><ul class="clean-list">`;
-                    c.treatment_plan.forEach(x => {
-                        html += `<li>${x}</li>`;
-                    });
-                    html += `</ul></div>`;
-                }
+                html += renderListCard("Elemente care susțin diagnosticul", c.supports, "•");
+                html += renderListCard("Elemente de interpretat cu prudență", c.limits, "•");
+                html += renderListCard("Investigații recomandate", c.recommended_tests, "→");
+                html += renderListCard("Conduită orientativă", c.treatment_plan, "→");
 
                 if (data.differential && data.differential.length > 0) {
-                    html += `<h2 class="section-title">Alege diagnosticul final</h2>`;
-                    html += `<div class="card">`;
-                    html += `<label for="finalDiagnosis">Selectează diagnosticul final:</label>`;
-                    html += `<select id="finalDiagnosis">`;
-                    data.differential.forEach(item => {
-                        html += `<option value="${item.name}">${item.name}</option>`;
-                    });
-                    html += `</select>`;
-                    html += `<button type="button" onclick="cereTratament()" style="margin-top:12px;">Generează tratament și prevenție</button>`;
-                    html += `<div id="treatmentResult"></div>`;
-                    html += `</div>`;
+                    html += `
+                        <div class="result-card">
+                            <h3>Alege diagnosticul final</h3>
+                            <p class="muted-text">
+                                Selectează diagnosticul final pe care dorești să îl folosești pentru recomandările orientative.
+                            </p>
+
+                            <div class="final-diagnosis-box">
+                                <label for="finalDiagnosis">Diagnostic final</label>
+                                <select id="finalDiagnosis">
+                                    ${data.differential.map(item => `
+                                        <option value="${escapeHtml(item.name)}">${escapeHtml(item.name)}</option>
+                                    `).join("")}
+                                </select>
+
+                                <button type="button" class="primary-btn" onclick="cereTratament()">
+                                    Generează tratament și prevenție
+                                </button>
+                            </div>
+
+                            <div id="treatmentResult" class="nested-result"></div>
+                        </div>
+                    `;
                 }
 
                 html += `
-                    <div class="action-grid">
-                        <button type="button" class="secondary-btn" onclick="salveazaCaz()">Salvează cazul</button>
-                        <button type="button" class="secondary-btn" onclick="exportaPDF()">Export PDF pentru pacient</button>
+                    <div class="result-card">
+                        <h3>Acțiuni</h3>
+                        <div class="button-grid">
+                            <button type="button" class="secondary-btn" onclick="salveazaCaz()">Salvează cazul</button>
+                            <button type="button" class="secondary-btn" onclick="exportaPDF()">Export PDF pentru pacient</button>
+                        </div>
                     </div>
                 `;
 
-                html += `<h2 class="section-title">Fragmente relevante din surse</h2>`;
-                if (data.results && data.results.length > 0) {
-                    data.results.forEach(fragment => {
-                        html += `
-                            <div class="card">
-                                <div>${fragment.text}</div>
-                                <div class="source-meta">
-                                    Sursă: ${fragment.source} | Pagina: ${fragment.page} | Similaritate: ${fragment.score}
-                                </div>
-                            </div>
-                        `;
-                    });
-                } else {
-                    html += `<p>Nu au fost găsite fragmente relevante în PDF-urile încărcate.</p>`;
-                }
-
-                if (c.notes && c.notes.length > 0) {
-                    html += `<h2 class="section-title">Note</h2>`;
-                    c.notes.forEach(x => {
-                        html += `<div class="card">${x}</div>`;
-                    });
-                }
+                html += renderSourceCards(data.results, "Fragmente relevante din surse");
+                html += renderListCard("Note clinice", c.notes, "•");
 
                 if (data.warning) {
-                    html += `<p class="muted"><em>${data.warning}</em></p>`;
+                    html += `
+                        <div class="result-card note-card">
+                            <h3>Notă importantă</h3>
+                            <p class="muted-text">${escapeHtml(data.warning)}</p>
+                        </div>
+                    `;
                 }
 
                 rezultat.innerHTML = html;
+                emptyState.style.display = "none";
                 rezultat.style.display = "block";
             } catch (err) {
-                errorBox.textContent = "A apărut o eroare la analiză. Verifică terminalul.";
+                errorBox.textContent = "A apărut o eroare la analiză. Verifică logurile aplicației.";
                 errorBox.style.display = "block";
                 console.error(err);
             } finally {
@@ -471,7 +368,7 @@
 
             const diagnosis = select.value;
 
-            treatmentResult.innerHTML = `<div class="loading">Se generează recomandările...</div>`;
+            treatmentResult.innerHTML = `<div class="loading-state">Se generează recomandările orientative...</div>`;
 
             try {
                 const response = await fetch("/treatment", {
@@ -488,57 +385,80 @@
 
                 const data = await response.json();
 
-                let html = `<h2 class="section-title">Recomandări pentru: ${data.diagnosis}</h2>`;
+                let html = `
+                    <div class="nested-panel">
+                        <div class="card-label primary-label">Recomandări orientative</div>
+                        <h3>${escapeHtml(data.diagnosis || diagnosis)}</h3>
+                    </div>
+                `;
 
                 if (data.clinical_picture && data.clinical_picture.length > 0) {
-                    html += `<div class="card"><strong>Tablou clinic:</strong><ul class="clean-list">`;
-                    data.clinical_picture.forEach(x => {
-                        html += `<li>${x}</li>`;
-                    });
-                    html += `</ul></div>`;
+                    html += `
+                        <div class="nested-panel">
+                            <h4>Tablou clinic</h4>
+                            <ul class="clean-list">
+                                ${data.clinical_picture.map(x => `<li><span class="list-icon">•</span><span>${escapeHtml(x)}</span></li>`).join("")}
+                            </ul>
+                        </div>
+                    `;
                 }
 
                 if (data.treatment && data.treatment.length > 0) {
-                    html += `<div class="card"><strong>Tratament orientativ:</strong><ul class="clean-list">`;
-                    data.treatment.forEach(x => {
-                        html += `<li>${x}</li>`;
-                    });
-                    html += `</ul></div>`;
+                    html += `
+                        <div class="nested-panel">
+                            <h4>Tratament orientativ</h4>
+                            <ul class="clean-list">
+                                ${data.treatment.map(x => `<li><span class="list-icon">→</span><span>${escapeHtml(x)}</span></li>`).join("")}
+                            </ul>
+                        </div>
+                    `;
                 }
 
                 if (data.prevention && data.prevention.length > 0) {
-                    html += `<div class="card"><strong>Măsuri de prevenție:</strong><ul class="clean-list">`;
-                    data.prevention.forEach(x => {
-                        html += `<li>${x}</li>`;
-                    });
-                    html += `</ul></div>`;
+                    html += `
+                        <div class="nested-panel">
+                            <h4>Măsuri de prevenție</h4>
+                            <ul class="clean-list">
+                                ${data.prevention.map(x => `<li><span class="list-icon">→</span><span>${escapeHtml(x)}</span></li>`).join("")}
+                            </ul>
+                        </div>
+                    `;
                 }
 
                 if (data.allergen_avoidance && data.allergen_avoidance.length > 0) {
-                    html += `<div class="card"><strong>Evitarea alergenului:</strong><ul class="clean-list">`;
-                    data.allergen_avoidance.forEach(x => {
-                        html += `<li>${x}</li>`;
-                    });
-                    html += `</ul></div>`;
+                    html += `
+                        <div class="nested-panel">
+                            <h4>Evitarea alergenului</h4>
+                            <ul class="clean-list">
+                                ${data.allergen_avoidance.map(x => `<li><span class="list-icon">→</span><span>${escapeHtml(x)}</span></li>`).join("")}
+                            </ul>
+                        </div>
+                    `;
                 }
 
                 if (data.source_results && data.source_results.length > 0) {
-                    html += `<h2 class="section-title">Fragmente suplimentare din surse</h2>`;
-                    data.source_results.forEach(fragment => {
-                        html += `
-                            <div class="card">
-                                <div>${fragment.text}</div>
-                                <div class="source-meta">
-                                    Sursă: ${fragment.source} | Pagina: ${fragment.page} | Similaritate: ${fragment.score}
-                                </div>
+                    html += `
+                        <div class="nested-panel">
+                            <h4>Fragmente suplimentare din surse</h4>
+                            <div class="source-list">
+                                ${data.source_results.map(fragment => `
+                                    <div class="source-card">
+                                        <div class="source-text">${escapeHtml(fragment.text || "")}</div>
+                                        <div class="source-meta">
+                                            Sursă: ${escapeHtml(fragment.source || "-")} ·
+                                            Pagina: ${escapeHtml(fragment.page || "-")} ·
+                                            Similaritate: ${escapeHtml(fragment.score || "-")}
+                                        </div>
+                                    </div>
+                                `).join("")}
                             </div>
-                        `;
-                    });
+                        </div>
+                    `;
                 }
 
                 treatmentResult.innerHTML = html;
             } catch (err) {
-                treatmentResult.innerHTML = `<div class="error">A apărut o eroare la generarea recomandărilor.</div>`;
+                treatmentResult.innerHTML = `<div class="error-box">A apărut o eroare la generarea recomandărilor.</div>`;
                 console.error(err);
             }
         }
