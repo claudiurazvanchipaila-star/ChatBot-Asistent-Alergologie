@@ -61,6 +61,7 @@ def initialize_resources():
     book_documents = []
     semantic_index = None
 
+    # PDF-urile rămân opționale. Dacă lipsesc sau apar erori, aplicația merge în continuare.
     if pdf_paths:
         try:
             book_documents = load_books(pdf_paths)
@@ -116,9 +117,19 @@ def save_cases_to_disk(cases):
 
 
 def register_pdf_fonts():
-    regular_path = r"C:\Windows\Fonts\arial.ttf"
-    bold_path = r"C:\Windows\Fonts\arialbd.ttf"
-    italic_path = r"C:\Windows\Fonts\ariali.ttf"
+    """
+    Render nu are fonturile Windows, deci încercăm mai multe variante.
+    Dacă nu găsim nimic, folosim Helvetica.
+    """
+    candidate_fonts = [
+        ("ArialCustom", "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"),
+        ("ArialCustom-Bold", "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"),
+        ("ArialCustom-Italic", "/usr/share/fonts/truetype/dejavu/DejaVuSans-Oblique.ttf"),
+
+        ("ArialCustom", r"C:\Windows\Fonts\arial.ttf"),
+        ("ArialCustom-Bold", r"C:\Windows\Fonts\arialbd.ttf"),
+        ("ArialCustom-Italic", r"C:\Windows\Fonts\ariali.ttf"),
+    ]
 
     font_set = {
         "regular": "Helvetica",
@@ -127,17 +138,20 @@ def register_pdf_fonts():
     }
 
     try:
-        if os.path.exists(regular_path):
-            pdfmetrics.registerFont(TTFont("ArialCustom", regular_path))
+        for font_name, font_path in candidate_fonts:
+            if os.path.exists(font_path):
+                try:
+                    pdfmetrics.registerFont(TTFont(font_name, font_path))
+                except Exception:
+                    pass
+
+        if "ArialCustom" in pdfmetrics.getRegisteredFontNames():
             font_set["regular"] = "ArialCustom"
-
-        if os.path.exists(bold_path):
-            pdfmetrics.registerFont(TTFont("ArialCustom-Bold", bold_path))
+        if "ArialCustom-Bold" in pdfmetrics.getRegisteredFontNames():
             font_set["bold"] = "ArialCustom-Bold"
-
-        if os.path.exists(italic_path):
-            pdfmetrics.registerFont(TTFont("ArialCustom-Italic", italic_path))
+        if "ArialCustom-Italic" in pdfmetrics.getRegisteredFontNames():
             font_set["italic"] = "ArialCustom-Italic"
+
     except Exception as e:
         print(f"[EROARE] register_pdf_fonts: {e}")
 
@@ -166,6 +180,84 @@ def draw_wrapped_text(pdf, text, x, y, max_width=500, line_height=14, font_name=
     return y
 
 
+def clean_text(value):
+    return str(value or "").strip()
+
+
+def extract_patient_data(data):
+    return {
+        "symptoms": clean_text(data.get("symptoms")),
+        "age": clean_text(data.get("age")),
+        "sex": clean_text(data.get("sex")),
+        "weight": clean_text(data.get("weight")),
+        "context": clean_text(data.get("context")),
+        "extra": clean_text(data.get("extra")),
+        "severity": clean_text(data.get("severity")),
+        "personal_history": clean_text(data.get("personal_history")),
+        "family_history": clean_text(data.get("family_history")),
+    }
+
+
+def build_full_text(patient_data):
+    return " ".join([
+        patient_data.get("symptoms", ""),
+        patient_data.get("context", ""),
+        patient_data.get("extra", ""),
+        patient_data.get("personal_history", ""),
+        patient_data.get("family_history", "")
+    ]).strip()
+
+
+def build_semantic_query(patient_data):
+    return ". ".join([
+        patient_data.get("symptoms", ""),
+        patient_data.get("context", ""),
+        patient_data.get("extra", ""),
+        patient_data.get("personal_history", ""),
+        patient_data.get("family_history", "")
+    ]).strip(" .")
+
+
+def run_analysis_logic(data):
+    patient_data = extract_patient_data(data)
+    full_text = build_full_text(patient_data)
+
+    if not full_text:
+        return {
+            "error": "Nu au fost introduse suficiente date clinice."
+        }, 400
+
+    try:
+        differential, clinical_output = rank_differential_diagnoses(full_text, DIAGNOSES)
+    except Exception as e:
+        print(f"[EROARE] rank_differential_diagnoses: {e}")
+        differential, clinical_output = [], "Nu s-a putut genera analiza clinică."
+
+    semantic_query = build_semantic_query(patient_data)
+    results = safe_search_chunks(semantic_query, top_k=8)
+
+    response_payload = {
+        "differential": differential[:5] if isinstance(differential, list) else [],
+        "clinical_output": clinical_output,
+        "patient_context": {
+            "age": patient_data.get("age", ""),
+            "sex": patient_data.get("sex", ""),
+            "weight": patient_data.get("weight", ""),
+            "context": patient_data.get("context", ""),
+            "extra": patient_data.get("extra", ""),
+            "personal_history": patient_data.get("personal_history", ""),
+            "family_history": patient_data.get("family_history", "")
+        },
+        "results": results,
+        "warning": (
+            "Instrument de suport pentru medic, bazat pe surse clinice și logică orientativă. "
+            "Nu stabilește autonom diagnosticul final și nu înlocuiește decizia medicală."
+        )
+    }
+
+    return response_payload, 200
+
+
 @app.route("/")
 def home():
     return render_template("index.html")
@@ -184,83 +276,27 @@ def health():
 @app.route("/ask", methods=["POST"])
 def ask():
     """
-    Rută simplă pentru test rapid din interfața HTML.
-    Dacă vrei doar testarea conexiunii frontend-backend, aceasta este utilă.
+    IMPORTANT:
+    Frontend-ul tău poate chema /ask.
+    Ca să nu mai primești doar 'Date primite cu succes',
+    /ask folosește acum aceeași logică precum /analyze.
     """
     try:
         data = request.get_json(force=True)
-
-        symptoms = data.get("symptoms", "").strip()
-        age = data.get("age", "").strip()
-        weight = data.get("weight", "").strip()
-        sex = data.get("sex", "").strip()
-        personal_history = data.get("personal_history", "").strip()
-        family_history = data.get("family_history", "").strip()
-
-        response_text = (
-            f"Date primite cu succes.\n"
-            f"Simptome: {symptoms or '-'}\n"
-            f"Vârstă: {age or '-'}\n"
-            f"Greutate: {weight or '-'} kg\n"
-            f"Sex: {sex or '-'}\n"
-            f"Antecedente personale patologice: {personal_history or '-'}\n"
-            f"Antecedente heredocolaterale: {family_history or '-'}"
-        )
-
-        return jsonify({"response": response_text})
+        payload, status_code = run_analysis_logic(data)
+        return jsonify(payload), status_code
     except Exception as e:
-        return jsonify({"response": f"Eroare la procesare: {str(e)}"}), 500
+        return jsonify({
+            "error": f"Eroare la procesare: {str(e)}"
+        }), 500
 
 
 @app.route("/analyze", methods=["POST"])
 def analyze():
     try:
         data = request.get_json(force=True)
-
-        symptoms = data.get("symptoms", "").strip()
-        age = data.get("age", "").strip()
-        sex = data.get("sex", "").strip()
-        weight = data.get("weight", "").strip()
-        context = data.get("context", "").strip()
-        extra = data.get("extra", "").strip()
-        personal_history = data.get("personal_history", "").strip()
-        family_history = data.get("family_history", "").strip()
-
-        full_text = f"{symptoms} {context} {extra} {personal_history} {family_history}".strip()
-
-        if not full_text:
-            return jsonify({
-                "error": "Nu au fost introduse suficiente date clinice."
-            }), 400
-
-        try:
-            differential, clinical_output = rank_differential_diagnoses(full_text, DIAGNOSES)
-        except Exception as e:
-            print(f"[EROARE] rank_differential_diagnoses: {e}")
-            differential, clinical_output = [], "Nu s-a putut genera analiza clinică."
-
-        semantic_query = f"{symptoms}. {context}. {extra}. {personal_history}. {family_history}".strip()
-        results = safe_search_chunks(semantic_query, top_k=8)
-
-        return jsonify({
-            "differential": differential[:5] if isinstance(differential, list) else [],
-            "clinical_output": clinical_output,
-            "patient_context": {
-                "age": age,
-                "sex": sex,
-                "weight": weight,
-                "context": context,
-                "extra": extra,
-                "personal_history": personal_history,
-                "family_history": family_history
-            },
-            "results": results,
-            "warning": (
-                "Instrument de suport pentru medic, bazat pe surse PDF și logică clinică orientativă. "
-                "Nu stabilește autonom diagnosticul final și nu înlocuiește decizia medicală."
-            )
-        })
-
+        payload, status_code = run_analysis_logic(data)
+        return jsonify(payload), status_code
     except Exception as e:
         return jsonify({
             "error": f"Eroare la analiză: {str(e)}"
@@ -271,16 +307,9 @@ def analyze():
 def treatment():
     try:
         data = request.get_json(force=True)
+        patient_data = extract_patient_data(data)
 
-        diagnosis_name = data.get("diagnosis", "").strip()
-        age = data.get("age", "").strip()
-        weight = data.get("weight", "").strip()
-        symptoms = data.get("symptoms", "").strip()
-        context = data.get("context", "").strip()
-        extra = data.get("extra", "").strip()
-        severity = data.get("severity", "").strip()
-        personal_history = data.get("personal_history", "").strip()
-        family_history = data.get("family_history", "").strip()
+        diagnosis_name = clean_text(data.get("diagnosis"))
 
         if not diagnosis_name:
             return jsonify({
@@ -289,7 +318,11 @@ def treatment():
 
         semantic_query = (
             f"{diagnosis_name} tablou clinic tratament prevenție evitare alergen alergologie "
-            f"{symptoms} {context} {extra} {personal_history} {family_history}"
+            f"{patient_data.get('symptoms', '')} "
+            f"{patient_data.get('context', '')} "
+            f"{patient_data.get('extra', '')} "
+            f"{patient_data.get('personal_history', '')} "
+            f"{patient_data.get('family_history', '')}"
         ).strip()
 
         source_results = safe_search_chunks(semantic_query, top_k=5)
@@ -298,9 +331,9 @@ def treatment():
             treatment_data = get_treatment_details(
                 diagnosis_name,
                 KNOWLEDGE_RO,
-                age=age,
-                weight=weight,
-                severity=severity
+                age=patient_data.get("age", ""),
+                weight=patient_data.get("weight", ""),
+                severity=patient_data.get("severity", "")
             )
         except Exception as e:
             print(f"[EROARE] get_treatment_details: {e}")
@@ -309,14 +342,14 @@ def treatment():
         try:
             guideline_results = get_guideline_recommendations(
                 diagnosis_name=diagnosis_name,
-                symptoms=symptoms,
-                context=context,
-                extra=extra,
-                age=age,
-                weight=weight,
-                severity=severity,
-                personal_history=personal_history,
-                family_history=family_history
+                symptoms=patient_data.get("symptoms", ""),
+                context=patient_data.get("context", ""),
+                extra=patient_data.get("extra", ""),
+                age=patient_data.get("age", ""),
+                weight=patient_data.get("weight", ""),
+                severity=patient_data.get("severity", ""),
+                personal_history=patient_data.get("personal_history", ""),
+                family_history=patient_data.get("family_history", "")
             )
         except Exception as e:
             print(f"[EROARE] get_guideline_recommendations: {e}")
@@ -330,17 +363,18 @@ def treatment():
             "allergen_avoidance": treatment_data.get("allergen_avoidance", []),
             "medication_options": treatment_data.get("medication_options", []),
             "age_group_used": treatment_data.get("age_group_used", "vârstă neprecizată"),
-            "weight_used": treatment_data.get("weight_used", weight),
-            "severity_used": treatment_data.get("severity_used", severity),
+            "weight_used": treatment_data.get("weight_used", patient_data.get("weight", "")),
+            "severity_used": treatment_data.get("severity_used", patient_data.get("severity", "")),
             "guideline_results": guideline_results,
             "source_results": source_results,
             "patient_context": {
-                "age": age,
-                "weight": weight,
-                "context": context,
-                "extra": extra,
-                "personal_history": personal_history,
-                "family_history": family_history
+                "age": patient_data.get("age", ""),
+                "weight": patient_data.get("weight", ""),
+                "sex": patient_data.get("sex", ""),
+                "context": patient_data.get("context", ""),
+                "extra": patient_data.get("extra", ""),
+                "personal_history": patient_data.get("personal_history", ""),
+                "family_history": patient_data.get("family_history", "")
             },
             "warning": (
                 "Dozele și exemplele de substanțe active sunt orientative și trebuie confirmate în funcție de "
