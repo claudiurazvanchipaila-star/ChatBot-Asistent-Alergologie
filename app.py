@@ -17,27 +17,102 @@ from models import (
     get_treatment_details
 )
 
+try:
+    from guidelines_service import get_guideline_recommendations
+except Exception:
+    def get_guideline_recommendations(*args, **kwargs):
+        return []
+
+
 app = Flask(__name__)
 
 BOOKS_DIR = "books"
 CASES_DIR = "cases"
 CASES_FILE = os.path.join(CASES_DIR, "saved_cases.json")
+DIAGNOSES_FILE = "data/diagnoses.json"
+KNOWLEDGE_FILE = "data/allergy_knowledge_ro.json"
 
 os.makedirs(CASES_DIR, exist_ok=True)
 
-pdf_paths = []
-if os.path.exists(BOOKS_DIR):
-    pdf_paths = [
+
+def safe_load_json_file(path, default):
+    if not os.path.exists(path):
+        return default
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return default
+
+
+def get_pdf_paths():
+    if not os.path.exists(BOOKS_DIR):
+        return []
+    return [
         os.path.join(BOOKS_DIR, f)
         for f in os.listdir(BOOKS_DIR)
         if f.lower().endswith(".pdf")
     ]
 
-book_documents = load_books(pdf_paths) if pdf_paths else []
-semantic_index = initialize_semantic_index(book_documents, pdf_paths, force_rebuild=False) if pdf_paths else None
 
-diagnoses = load_diagnoses("data/diagnoses.json")
-knowledge_ro = load_romanian_knowledge("data/allergy_knowledge_ro.json")
+def initialize_resources():
+    pdf_paths = get_pdf_paths()
+
+    book_documents = []
+    semantic_index = None
+
+    if pdf_paths:
+        try:
+            book_documents = load_books(pdf_paths)
+        except Exception as e:
+            print(f"[EROARE] load_books: {e}")
+            book_documents = []
+
+        try:
+            semantic_index = initialize_semantic_index(
+                book_documents,
+                pdf_paths,
+                force_rebuild=False
+            )
+        except Exception as e:
+            print(f"[EROARE] initialize_semantic_index: {e}")
+            semantic_index = None
+
+    try:
+        diagnoses = load_diagnoses(DIAGNOSES_FILE)
+    except Exception as e:
+        print(f"[EROARE] load_diagnoses: {e}")
+        diagnoses = []
+
+    try:
+        knowledge_ro = load_romanian_knowledge(KNOWLEDGE_FILE)
+    except Exception as e:
+        print(f"[EROARE] load_romanian_knowledge: {e}")
+        knowledge_ro = {}
+
+    return pdf_paths, book_documents, semantic_index, diagnoses, knowledge_ro
+
+
+PDF_PATHS, BOOK_DOCUMENTS, SEMANTIC_INDEX, DIAGNOSES, KNOWLEDGE_RO = initialize_resources()
+
+
+def safe_search_chunks(query, top_k=5):
+    if not query or not SEMANTIC_INDEX:
+        return []
+    try:
+        return search_chunks(query, SEMANTIC_INDEX, top_k=top_k)
+    except Exception as e:
+        print(f"[EROARE] search_chunks: {e}")
+        return []
+
+
+def load_saved_cases():
+    return safe_load_json_file(CASES_FILE, [])
+
+
+def save_cases_to_disk(cases):
+    with open(CASES_FILE, "w", encoding="utf-8") as f:
+        json.dump(cases, f, ensure_ascii=False, indent=2)
 
 
 def register_pdf_fonts():
@@ -63,8 +138,8 @@ def register_pdf_fonts():
         if os.path.exists(italic_path):
             pdfmetrics.registerFont(TTFont("ArialCustom-Italic", italic_path))
             font_set["italic"] = "ArialCustom-Italic"
-    except Exception:
-        pass
+    except Exception as e:
+        print(f"[EROARE] register_pdf_fonts: {e}")
 
     return font_set
 
@@ -96,183 +171,322 @@ def home():
     return render_template("index.html")
 
 
+@app.route("/health", methods=["GET"])
+def health():
+    return jsonify({
+        "status": "ok",
+        "pdf_count": len(PDF_PATHS),
+        "semantic_index_ready": SEMANTIC_INDEX is not None,
+        "diagnoses_loaded": len(DIAGNOSES) if isinstance(DIAGNOSES, list) else 0
+    })
+
+
+@app.route("/ask", methods=["POST"])
+def ask():
+    """
+    Rută simplă pentru test rapid din interfața HTML.
+    Dacă vrei doar testarea conexiunii frontend-backend, aceasta este utilă.
+    """
+    try:
+        data = request.get_json(force=True)
+
+        symptoms = data.get("symptoms", "").strip()
+        age = data.get("age", "").strip()
+        weight = data.get("weight", "").strip()
+        sex = data.get("sex", "").strip()
+        personal_history = data.get("personal_history", "").strip()
+        family_history = data.get("family_history", "").strip()
+
+        response_text = (
+            f"Date primite cu succes.\n"
+            f"Simptome: {symptoms or '-'}\n"
+            f"Vârstă: {age or '-'}\n"
+            f"Greutate: {weight or '-'} kg\n"
+            f"Sex: {sex or '-'}\n"
+            f"Antecedente personale patologice: {personal_history or '-'}\n"
+            f"Antecedente heredocolaterale: {family_history or '-'}"
+        )
+
+        return jsonify({"response": response_text})
+    except Exception as e:
+        return jsonify({"response": f"Eroare la procesare: {str(e)}"}), 500
+
+
 @app.route("/analyze", methods=["POST"])
 def analyze():
-    data = request.get_json(force=True)
+    try:
+        data = request.get_json(force=True)
 
-    symptoms = data.get("symptoms", "")
-    age = data.get("age", "")
-    sex = data.get("sex", "")
-    extra = data.get("extra", "")
+        symptoms = data.get("symptoms", "").strip()
+        age = data.get("age", "").strip()
+        sex = data.get("sex", "").strip()
+        weight = data.get("weight", "").strip()
+        context = data.get("context", "").strip()
+        extra = data.get("extra", "").strip()
+        personal_history = data.get("personal_history", "").strip()
+        family_history = data.get("family_history", "").strip()
 
-    full_text = f"{symptoms} {extra}".strip()
-    differential, clinical_output = rank_differential_diagnoses(full_text, diagnoses)
+        full_text = f"{symptoms} {context} {extra} {personal_history} {family_history}".strip()
 
-    semantic_query = f"{symptoms}. {extra}".strip()
-    results = search_chunks(semantic_query, semantic_index, top_k=8) if semantic_index is not None else []
+        if not full_text:
+            return jsonify({
+                "error": "Nu au fost introduse suficiente date clinice."
+            }), 400
 
-    return jsonify({
-        "differential": differential[:5],
-        "clinical_output": clinical_output,
-        "patient_context": {
-            "age": age,
-            "sex": sex
-        },
-        "results": results,
-        "warning": "Instrument de suport pentru medic, bazat pe surse PDF și logică clinică orientativă. Nu stabilește autonom diagnosticul final și nu înlocuiește decizia medicală."
-    })
+        try:
+            differential, clinical_output = rank_differential_diagnoses(full_text, DIAGNOSES)
+        except Exception as e:
+            print(f"[EROARE] rank_differential_diagnoses: {e}")
+            differential, clinical_output = [], "Nu s-a putut genera analiza clinică."
+
+        semantic_query = f"{symptoms}. {context}. {extra}. {personal_history}. {family_history}".strip()
+        results = safe_search_chunks(semantic_query, top_k=8)
+
+        return jsonify({
+            "differential": differential[:5] if isinstance(differential, list) else [],
+            "clinical_output": clinical_output,
+            "patient_context": {
+                "age": age,
+                "sex": sex,
+                "weight": weight,
+                "context": context,
+                "extra": extra,
+                "personal_history": personal_history,
+                "family_history": family_history
+            },
+            "results": results,
+            "warning": (
+                "Instrument de suport pentru medic, bazat pe surse PDF și logică clinică orientativă. "
+                "Nu stabilește autonom diagnosticul final și nu înlocuiește decizia medicală."
+            )
+        })
+
+    except Exception as e:
+        return jsonify({
+            "error": f"Eroare la analiză: {str(e)}"
+        }), 500
 
 
 @app.route("/treatment", methods=["POST"])
 def treatment():
-    data = request.get_json(force=True)
+    try:
+        data = request.get_json(force=True)
 
-    diagnosis_name = data.get("diagnosis", "")
-    age = data.get("age", "")
-    symptoms = data.get("symptoms", "")
-    extra = data.get("extra", "")
+        diagnosis_name = data.get("diagnosis", "").strip()
+        age = data.get("age", "").strip()
+        weight = data.get("weight", "").strip()
+        symptoms = data.get("symptoms", "").strip()
+        context = data.get("context", "").strip()
+        extra = data.get("extra", "").strip()
+        severity = data.get("severity", "").strip()
+        personal_history = data.get("personal_history", "").strip()
+        family_history = data.get("family_history", "").strip()
 
-    semantic_query = f"{diagnosis_name} tablou clinic tratament prevenție evitare alergen alergologie {symptoms} {extra}".strip()
-    source_results = search_chunks(semantic_query, semantic_index, top_k=5) if semantic_index is not None else []
+        if not diagnosis_name:
+            return jsonify({
+                "error": "Diagnosticul nu a fost specificat."
+            }), 400
 
-    treatment_data = get_treatment_details(diagnosis_name, knowledge_ro, age=age)
+        semantic_query = (
+            f"{diagnosis_name} tablou clinic tratament prevenție evitare alergen alergologie "
+            f"{symptoms} {context} {extra} {personal_history} {family_history}"
+        ).strip()
 
-    return jsonify({
-        "diagnosis": treatment_data.get("diagnosis", diagnosis_name),
-        "clinical_picture": treatment_data.get("clinical_picture", []),
-        "treatment": treatment_data.get("treatment", []),
-        "prevention": treatment_data.get("prevention", []),
-        "allergen_avoidance": treatment_data.get("allergen_avoidance", []),
-        "medication_options": treatment_data.get("medication_options", []),
-        "age_group_used": treatment_data.get("age_group_used", "vârstă neprecizată"),
-        "source_results": source_results,
-        "warning": "Dozele și exemplele de substanțe active sunt orientative și trebuie confirmate în funcție de produsul disponibil, indicația exactă, comorbidități, contraindicații și contextul clinic individual."
-    })
+        source_results = safe_search_chunks(semantic_query, top_k=5)
+
+        try:
+            treatment_data = get_treatment_details(
+                diagnosis_name,
+                KNOWLEDGE_RO,
+                age=age,
+                weight=weight,
+                severity=severity
+            )
+        except Exception as e:
+            print(f"[EROARE] get_treatment_details: {e}")
+            treatment_data = {}
+
+        try:
+            guideline_results = get_guideline_recommendations(
+                diagnosis_name=diagnosis_name,
+                symptoms=symptoms,
+                context=context,
+                extra=extra,
+                age=age,
+                weight=weight,
+                severity=severity,
+                personal_history=personal_history,
+                family_history=family_history
+            )
+        except Exception as e:
+            print(f"[EROARE] get_guideline_recommendations: {e}")
+            guideline_results = []
+
+        return jsonify({
+            "diagnosis": treatment_data.get("diagnosis", diagnosis_name),
+            "clinical_picture": treatment_data.get("clinical_picture", []),
+            "treatment": treatment_data.get("treatment", []),
+            "prevention": treatment_data.get("prevention", []),
+            "allergen_avoidance": treatment_data.get("allergen_avoidance", []),
+            "medication_options": treatment_data.get("medication_options", []),
+            "age_group_used": treatment_data.get("age_group_used", "vârstă neprecizată"),
+            "weight_used": treatment_data.get("weight_used", weight),
+            "severity_used": treatment_data.get("severity_used", severity),
+            "guideline_results": guideline_results,
+            "source_results": source_results,
+            "patient_context": {
+                "age": age,
+                "weight": weight,
+                "context": context,
+                "extra": extra,
+                "personal_history": personal_history,
+                "family_history": family_history
+            },
+            "warning": (
+                "Dozele și exemplele de substanțe active sunt orientative și trebuie confirmate în funcție de "
+                "produsul disponibil, indicația exactă, greutate, severitate, comorbidități, contraindicații și contextul clinic individual."
+            )
+        })
+
+    except Exception as e:
+        return jsonify({
+            "error": f"Eroare la tratament: {str(e)}"
+        }), 500
 
 
 @app.route("/save_case", methods=["POST"])
 def save_case():
-    data = request.get_json(force=True)
+    try:
+        data = request.get_json(force=True)
 
-    case_entry = {
-        "saved_at": datetime.now().isoformat(timespec="seconds"),
-        "patient_summary": data.get("patient_summary", {}),
-        "analysis": data.get("analysis", {})
-    }
+        case_entry = {
+            "saved_at": datetime.now().isoformat(timespec="seconds"),
+            "patient_summary": data.get("patient_summary", {}),
+            "analysis": data.get("analysis", {})
+        }
 
-    existing = []
-    if os.path.exists(CASES_FILE):
-        try:
-            with open(CASES_FILE, "r", encoding="utf-8") as f:
-                existing = json.load(f)
-        except Exception:
-            existing = []
+        existing = load_saved_cases()
+        existing.append(case_entry)
+        save_cases_to_disk(existing)
 
-    existing.append(case_entry)
+        return jsonify({
+            "message": "Caz salvat cu succes.",
+            "count": len(existing),
+            "path": CASES_FILE
+        })
 
-    with open(CASES_FILE, "w", encoding="utf-8") as f:
-        json.dump(existing, f, ensure_ascii=False, indent=2)
-
-    return jsonify({
-        "message": "Caz salvat cu succes.",
-        "count": len(existing),
-        "path": CASES_FILE
-    })
+    except Exception as e:
+        return jsonify({
+            "error": f"Eroare la salvarea cazului: {str(e)}"
+        }), 500
 
 
 @app.route("/export_pdf", methods=["POST"])
 def export_pdf():
-    data = request.get_json(force=True)
+    try:
+        data = request.get_json(force=True)
 
-    patient = data.get("patient_summary", {})
-    analysis = data.get("analysis", {})
+        patient = data.get("patient_summary", {})
+        analysis = data.get("analysis", {})
 
-    fonts = register_pdf_fonts()
+        fonts = register_pdf_fonts()
 
-    buffer = BytesIO()
-    pdf = canvas.Canvas(buffer, pagesize=A4)
-    _, height = A4
+        buffer = BytesIO()
+        pdf = canvas.Canvas(buffer, pagesize=A4)
+        _, height = A4
 
-    y = height - 40
+        y = height - 40
 
-    pdf.setTitle("Raport orientativ alergologie")
-    pdf.setFont(fonts["bold"], 16)
-    pdf.drawString(40, y, "Raport orientativ - Asistent clinic în alergologie")
-    y -= 28
-
-    pdf.setFont(fonts["regular"], 10)
-    y = draw_wrapped_text(
-        pdf,
-        f"Data generării: {datetime.now().strftime('%d.%m.%Y %H:%M')}",
-        40,
-        y,
-        font_name=fonts["regular"]
-    )
-    y -= 8
-
-    sections = [
-        ("Date introduse", [
-            f"Simptome: {patient.get('symptoms', '-')}",
-            f"Vârstă: {patient.get('age', '-')}",
-            f"Sex: {patient.get('sex', '-')}",
-            f"Alte date clinice: {patient.get('extra', '-')}"
-        ]),
-        ("Diagnostic principal", [
-            f"{analysis.get('primary_diagnosis', '-')}",
-            f"Probabilitate: {analysis.get('primary_probability', '-')}",
-            f"Severitate estimată: {analysis.get('severity', '-')}",
-            f"Grad de încredere: {analysis.get('confidence', '-')}"
-        ]),
-        ("Diagnostice alternative", analysis.get("alternatives", [])),
-        ("Elemente care susțin diagnosticul", analysis.get("supports", [])),
-        ("Elemente de interpretat cu prudență", analysis.get("limits", [])),
-        ("Investigații recomandate", analysis.get("recommended_tests", [])),
-        ("Conduită orientativă", analysis.get("treatment_plan", [])),
-        ("Red flags", analysis.get("red_flags", [])),
-        ("Note", analysis.get("notes", []))
-    ]
-
-    for title, items in sections:
-        if y < 100:
-            pdf.showPage()
-            y = height - 40
-
-        pdf.setFont(fonts["bold"], 12)
-        pdf.drawString(40, y, title)
-        y -= 18
+        pdf.setTitle("Raport orientativ alergologie")
+        pdf.setFont(fonts["bold"], 16)
+        pdf.drawString(40, y, "Raport orientativ - Asistent clinic în alergologie")
+        y -= 28
 
         pdf.setFont(fonts["regular"], 10)
-        if not items:
-            y = draw_wrapped_text(pdf, "-", 50, y, font_name=fonts["regular"])
-        else:
-            for item in items:
-                if y < 80:
-                    pdf.showPage()
-                    y = height - 40
-                y = draw_wrapped_text(pdf, f"- {item}", 50, y, font_name=fonts["regular"])
+        y = draw_wrapped_text(
+            pdf,
+            f"Data generării: {datetime.now().strftime('%d.%m.%Y %H:%M')}",
+            40,
+            y,
+            font_name=fonts["regular"]
+        )
         y -= 8
 
-    pdf.setFont(fonts["italic"], 9)
-    disclaimer = "Document orientativ. Nu înlocuiește consultul medical, examenul clinic și decizia terapeutică."
-    y = draw_wrapped_text(
-        pdf,
-        disclaimer,
-        40,
-        y,
-        max_width=500,
-        font_name=fonts["italic"],
-        font_size=9
-    )
+        sections = [
+            ("Date introduse", [
+                f"Simptome: {patient.get('symptoms', '-')}",
+                f"Vârstă: {patient.get('age', '-')}",
+                f"Greutate: {patient.get('weight', '-')}",
+                f"Sex: {patient.get('sex', '-')}",
+                f"Context clinic: {patient.get('context', '-')}",
+                f"Alte date clinice: {patient.get('extra', '-')}",
+                f"Antecedente personale patologice: {patient.get('personal_history', '-')}",
+                f"Antecedente heredocolaterale: {patient.get('family_history', '-')}"
+            ]),
+            ("Diagnostic principal", [
+                f"{analysis.get('primary_diagnosis', '-')}",
+                f"Probabilitate: {analysis.get('primary_probability', '-')}",
+                f"Severitate estimată: {analysis.get('severity', '-')}",
+                f"Grad de încredere: {analysis.get('confidence', '-')}"
+            ]),
+            ("Diagnostice alternative", analysis.get("alternatives", [])),
+            ("Elemente care susțin diagnosticul", analysis.get("supports", [])),
+            ("Elemente de interpretat cu prudență", analysis.get("limits", [])),
+            ("Investigații recomandate", analysis.get("recommended_tests", [])),
+            ("Conduită orientativă", analysis.get("treatment_plan", [])),
+            ("Red flags", analysis.get("red_flags", [])),
+            ("Note", analysis.get("notes", []))
+        ]
 
-    pdf.save()
-    buffer.seek(0)
+        for title, items in sections:
+            if y < 100:
+                pdf.showPage()
+                y = height - 40
 
-    return send_file(
-        buffer,
-        as_attachment=True,
-        download_name="raport_alergologie_pacient.pdf",
-        mimetype="application/pdf"
-    )
+            pdf.setFont(fonts["bold"], 12)
+            pdf.drawString(40, y, title)
+            y -= 18
+
+            pdf.setFont(fonts["regular"], 10)
+            if not items:
+                y = draw_wrapped_text(pdf, "-", 50, y, font_name=fonts["regular"])
+            else:
+                for item in items:
+                    if y < 80:
+                        pdf.showPage()
+                        y = height - 40
+                    y = draw_wrapped_text(pdf, f"- {item}", 50, y, font_name=fonts["regular"])
+            y -= 8
+
+        pdf.setFont(fonts["italic"], 9)
+        disclaimer = (
+            "Document orientativ. Nu înlocuiește consultul medical, examenul clinic și decizia terapeutică. "
+            "Dozele medicamentoase trebuie verificate în funcție de produs, greutate, vârstă și severitate."
+        )
+        y = draw_wrapped_text(
+            pdf,
+            disclaimer,
+            40,
+            y,
+            max_width=500,
+            font_name=fonts["italic"],
+            font_size=9
+        )
+
+        pdf.save()
+        buffer.seek(0)
+
+        return send_file(
+            buffer,
+            as_attachment=True,
+            download_name="raport_alergologie_pacient.pdf",
+            mimetype="application/pdf"
+        )
+
+    except Exception as e:
+        return jsonify({
+            "error": f"Eroare la export PDF: {str(e)}"
+        }), 500
 
 
 if __name__ == "__main__":

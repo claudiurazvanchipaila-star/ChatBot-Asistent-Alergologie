@@ -14,6 +14,8 @@
     --warning-soft: #fff4d6;
     --danger: #b4232f;
     --danger-soft: #fff1f3;
+    --info-soft: #eef7fd;
+    --info-border: #d4e8f5;
     --shadow: 0 10px 30px rgba(21, 52, 76, 0.08);
     --radius-xl: 22px;
     --radius-lg: 16px;
@@ -67,7 +69,7 @@ body {
 
 .subtitle {
     margin: 0;
-    max-width: 900px;
+    max-width: 980px;
     color: var(--muted);
     font-size: 16px;
     line-height: 1.65;
@@ -116,7 +118,7 @@ body {
     border-radius: var(--radius-md);
     padding: 14px 16px;
     margin-bottom: 18px;
-    line-height: 1.5;
+    line-height: 1.6;
     font-size: 14px;
 }
 
@@ -309,19 +311,22 @@ button:active {
     color: var(--danger);
 }
 
-.result-card h3 {
+.result-card h3,
+.nested-panel h3 {
     margin: 0 0 12px;
     color: var(--text);
     font-size: 20px;
 }
 
-.result-card h4 {
+.result-card h4,
+.nested-panel h4 {
     margin: 0 0 10px;
     color: var(--text);
     font-size: 17px;
 }
 
-.result-card h5 {
+.result-card h5,
+.nested-panel h5 {
     margin: 0;
     color: var(--text);
     font-size: 16px;

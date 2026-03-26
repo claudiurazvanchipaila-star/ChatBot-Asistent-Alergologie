@@ -99,6 +99,35 @@ def parse_age(age_value):
         return None
 
 
+def parse_weight(weight_value):
+    if weight_value is None:
+        return None
+
+    if isinstance(weight_value, (int, float)):
+        return float(weight_value)
+
+    text = str(weight_value).strip().replace(",", ".")
+    cleaned = ""
+    dot_seen = False
+
+    for ch in text:
+        if ch.isdigit():
+            cleaned += ch
+        elif ch == "." and not dot_seen:
+            cleaned += ch
+            dot_seen = True
+        elif cleaned:
+            break
+
+    if not cleaned or cleaned == ".":
+        return None
+
+    try:
+        return float(cleaned)
+    except Exception:
+        return None
+
+
 def age_group_label(age):
     if age is None:
         return "vârstă neprecizată"
@@ -111,6 +140,27 @@ def age_group_label(age):
     if age <= 17:
         return "12–17 ani"
     return "adult"
+
+
+def normalize_severity(severity_value, fallback_text=""):
+    value = (severity_value or "").strip().lower()
+
+    mapping = {
+        "usoara": "ușoară",
+        "ușoară": "ușoară",
+        "moderata": "moderată",
+        "moderată": "moderată",
+        "severa": "severă",
+        "severă": "severă"
+    }
+
+    if value in mapping:
+        return mapping[value]
+
+    if value:
+        return value
+
+    return classify_severity(fallback_text)
 
 
 def score_to_probability(score):
@@ -376,6 +426,27 @@ def build_notes(text, ranked):
     return deduplicate(notes)
 
 
+def format_weight_value(weight):
+    if weight is None:
+        return ""
+    return f"{weight:.1f} kg"
+
+
+def calculate_mg_per_kg(weight, mg_per_kg, max_total_mg=None):
+    if weight is None:
+        return None
+    dose = weight * mg_per_kg
+    if max_total_mg is not None:
+        dose = min(dose, max_total_mg)
+    return round(dose, 2)
+
+
+def build_weight_hint(weight, text_if_missing, text_if_present):
+    if weight is None:
+        return text_if_missing
+    return text_if_present
+
+
 def build_medication_entry(
     med_class,
     active_substance,
@@ -384,7 +455,10 @@ def build_medication_entry(
     frequency,
     adult_dose,
     pediatric_dose,
-    observations=""
+    observations="",
+    weight_based_dose="",
+    severity_adjustment="",
+    adverse_reactions=""
 ):
     return {
         "class": med_class,
@@ -394,12 +468,51 @@ def build_medication_entry(
         "frequency": frequency,
         "adult_dose": adult_dose,
         "pediatric_dose": pediatric_dose,
-        "observations": observations
+        "observations": observations,
+        "weight_based_dose": weight_based_dose,
+        "severity_adjustment": severity_adjustment,
+        "adverse_reactions": adverse_reactions
     }
 
 
-def get_age_based_antihistamine_options(age):
+def get_age_based_antihistamine_options(age, weight=None, severity=""):
     meds = []
+    severity_text = normalize_severity(severity)
+
+    cetirizine_weight = ""
+    loratadine_weight = ""
+    desloratadine_weight = ""
+
+    if weight is not None:
+        cet_dose = calculate_mg_per_kg(weight, 0.25, max_total_mg=10)
+        lor_dose = calculate_mg_per_kg(weight, 0.2, max_total_mg=10)
+        desl_dose = calculate_mg_per_kg(weight, 0.125, max_total_mg=5)
+
+        cetirizine_weight = (
+            f"Greutate introdusă: {format_weight_value(weight)}. "
+            f"Orientativ, doza zilnică poate fi estimată la ~0,25 mg/kg/zi "
+            f"(≈ {cet_dose} mg/zi, fără a depăși uzual 10 mg/zi), cu verificarea formei farmaceutice."
+        )
+        loratadine_weight = (
+            f"Greutate introdusă: {format_weight_value(weight)}. "
+            f"Orientativ, doza zilnică poate fi estimată la ~0,2 mg/kg/zi "
+            f"(≈ {lor_dose} mg/zi, fără a depăși uzual 10 mg/zi), cu verificarea produsului disponibil."
+        )
+        desloratadine_weight = (
+            f"Greutate introdusă: {format_weight_value(weight)}. "
+            f"Orientativ, doza zilnică poate fi estimată la ~0,125 mg/kg/zi "
+            f"(≈ {desl_dose} mg/zi, fără a depăși uzual 5 mg/zi), cu verificarea formei farmaceutice."
+        )
+
+    severity_adjustment = ""
+    if severity_text == "moderată":
+        severity_adjustment = "În forme moderate se poate prefera asocierea cu măsuri locale și reevaluare clinică precoce."
+    elif severity_text == "severă":
+        severity_adjustment = "În forme severe, antihistaminicul singur poate fi insuficient; reevaluează diagnosticul, afectarea sistemică și necesitatea trimiterii."
+
+    cetirizine_adverse = "Somnolență, xerostomie, cefalee, ocazional amețeală."
+    loratadine_adverse = "Cefalee, fatigabilitate, xerostomie; sedarea este de obicei redusă."
+    desloratadine_adverse = "Cefalee, xerostomie, fatigabilitate; rar palpitații sau reacții de hipersensibilitate."
 
     if age is None:
         meds.append(build_medication_entry(
@@ -410,7 +523,10 @@ def get_age_based_antihistamine_options(age):
             frequency="o dată pe zi",
             adult_dose="5–10 mg/zi",
             pediatric_dose="2–5 ani: 2,5 mg/zi; dacă este necesar până la 5 mg/zi. ≥6 ani: 5–10 mg/zi.",
-            observations="Ajustarea exactă depinde de forma farmaceutică și contextul clinic."
+            observations="Ajustarea exactă depinde de forma farmaceutică și contextul clinic.",
+            weight_based_dose=cetirizine_weight,
+            severity_adjustment=severity_adjustment,
+            adverse_reactions=cetirizine_adverse
         ))
         meds.append(build_medication_entry(
             med_class="Antihistaminic oral",
@@ -420,7 +536,10 @@ def get_age_based_antihistamine_options(age):
             frequency="o dată pe zi",
             adult_dose="10 mg/zi",
             pediatric_dose="2–5 ani: 5 mg/zi. ≥6 ani: 10 mg/zi.",
-            observations="Sub 2 ani: este necesară evaluare medicală individuală."
+            observations="Sub 2 ani: este necesară evaluare medicală individuală.",
+            weight_based_dose=loratadine_weight,
+            severity_adjustment=severity_adjustment,
+            adverse_reactions=loratadine_adverse
         ))
         meds.append(build_medication_entry(
             med_class="Antihistaminic oral",
@@ -430,7 +549,10 @@ def get_age_based_antihistamine_options(age):
             frequency="o dată pe zi",
             adult_dose="5 mg/zi",
             pediatric_dose="1–5 ani: 1,25 mg/zi; 6–11 ani: 2,5 mg/zi; ≥12 ani: 5 mg/zi.",
-            observations="Utilă în rinită alergică și urticarie, în funcție de context."
+            observations="Utilă în rinită alergică și urticarie, în funcție de context.",
+            weight_based_dose=desloratadine_weight,
+            severity_adjustment=severity_adjustment,
+            adverse_reactions=desloratadine_adverse
         ))
         return meds
 
@@ -443,7 +565,10 @@ def get_age_based_antihistamine_options(age):
             frequency="în funcție de produs",
             adult_dose="Nu se aplică",
             pediatric_dose="Sub 2 ani: alegerea și doza trebuie individualizate strict de medic, în funcție de produs și context.",
-            observations="Evită automatizarea dozei la această grupă de vârstă."
+            observations="Evită automatizarea dozei la această grupă de vârstă.",
+            weight_based_dose=f"Greutate introdusă: {format_weight_value(weight)}" if weight is not None else "",
+            severity_adjustment=severity_adjustment,
+            adverse_reactions="Somnolență, iritabilitate, xerostomie, tulburări digestive ușoare; profilul depinde de substanța aleasă."
         ))
         return meds
 
@@ -456,7 +581,10 @@ def get_age_based_antihistamine_options(age):
             frequency="o dată pe zi sau divizat la 12 ore",
             adult_dose="Nu se aplică",
             pediatric_dose="2,5 mg/zi; dacă este necesar până la 5 mg/zi sau 2,5 mg la 12 ore.",
-            observations="Orientează doza după forma farmaceutică disponibilă."
+            observations="Orientează doza după forma farmaceutică disponibilă.",
+            weight_based_dose=cetirizine_weight,
+            severity_adjustment=severity_adjustment,
+            adverse_reactions=cetirizine_adverse
         ))
         meds.append(build_medication_entry(
             med_class="Antihistaminic oral",
@@ -466,7 +594,10 @@ def get_age_based_antihistamine_options(age):
             frequency="o dată pe zi",
             adult_dose="Nu se aplică",
             pediatric_dose="5 mg/zi",
-            observations=""
+            observations="",
+            weight_based_dose=loratadine_weight,
+            severity_adjustment=severity_adjustment,
+            adverse_reactions=loratadine_adverse
         ))
         meds.append(build_medication_entry(
             med_class="Antihistaminic oral",
@@ -476,7 +607,10 @@ def get_age_based_antihistamine_options(age):
             frequency="o dată pe zi",
             adult_dose="Nu se aplică",
             pediatric_dose="1,25 mg/zi",
-            observations=""
+            observations="",
+            weight_based_dose=desloratadine_weight,
+            severity_adjustment=severity_adjustment,
+            adverse_reactions=desloratadine_adverse
         ))
         return meds
 
@@ -489,7 +623,10 @@ def get_age_based_antihistamine_options(age):
             frequency="o dată pe zi",
             adult_dose="Nu se aplică",
             pediatric_dose="5–10 mg/zi",
-            observations="Alege doza după severitate și toleranță."
+            observations="Alege doza după severitate și toleranță.",
+            weight_based_dose=cetirizine_weight,
+            severity_adjustment=severity_adjustment,
+            adverse_reactions=cetirizine_adverse
         ))
         meds.append(build_medication_entry(
             med_class="Antihistaminic oral",
@@ -499,7 +636,10 @@ def get_age_based_antihistamine_options(age):
             frequency="o dată pe zi",
             adult_dose="Nu se aplică",
             pediatric_dose="10 mg/zi",
-            observations=""
+            observations="",
+            weight_based_dose=loratadine_weight,
+            severity_adjustment=severity_adjustment,
+            adverse_reactions=loratadine_adverse
         ))
         meds.append(build_medication_entry(
             med_class="Antihistaminic oral",
@@ -509,7 +649,10 @@ def get_age_based_antihistamine_options(age):
             frequency="o dată pe zi",
             adult_dose="Nu se aplică",
             pediatric_dose="2,5 mg/zi",
-            observations=""
+            observations="",
+            weight_based_dose=desloratadine_weight,
+            severity_adjustment=severity_adjustment,
+            adverse_reactions=desloratadine_adverse
         ))
         return meds
 
@@ -522,7 +665,10 @@ def get_age_based_antihistamine_options(age):
             frequency="o dată pe zi",
             adult_dose="Nu se aplică",
             pediatric_dose="5–10 mg/zi",
-            observations="Doză uzuală de adolescent."
+            observations="Doză uzuală de adolescent.",
+            weight_based_dose=cetirizine_weight,
+            severity_adjustment=severity_adjustment,
+            adverse_reactions=cetirizine_adverse
         ))
         meds.append(build_medication_entry(
             med_class="Antihistaminic oral",
@@ -532,7 +678,10 @@ def get_age_based_antihistamine_options(age):
             frequency="o dată pe zi",
             adult_dose="Nu se aplică",
             pediatric_dose="10 mg/zi",
-            observations=""
+            observations="",
+            weight_based_dose=loratadine_weight,
+            severity_adjustment=severity_adjustment,
+            adverse_reactions=loratadine_adverse
         ))
         meds.append(build_medication_entry(
             med_class="Antihistaminic oral",
@@ -542,7 +691,10 @@ def get_age_based_antihistamine_options(age):
             frequency="o dată pe zi",
             adult_dose="Nu se aplică",
             pediatric_dose="5 mg/zi",
-            observations=""
+            observations="",
+            weight_based_dose=desloratadine_weight,
+            severity_adjustment=severity_adjustment,
+            adverse_reactions=desloratadine_adverse
         ))
         return meds
 
@@ -554,7 +706,10 @@ def get_age_based_antihistamine_options(age):
         frequency="o dată pe zi",
         adult_dose="5–10 mg/zi",
         pediatric_dose="Nu se aplică",
-        observations=""
+        observations="",
+        weight_based_dose=cetirizine_weight,
+        severity_adjustment=severity_adjustment,
+        adverse_reactions=cetirizine_adverse
     ))
     meds.append(build_medication_entry(
         med_class="Antihistaminic oral",
@@ -564,7 +719,10 @@ def get_age_based_antihistamine_options(age):
         frequency="o dată pe zi",
         adult_dose="10 mg/zi",
         pediatric_dose="Nu se aplică",
-        observations=""
+        observations="",
+        weight_based_dose=loratadine_weight,
+        severity_adjustment=severity_adjustment,
+        adverse_reactions=loratadine_adverse
     ))
     meds.append(build_medication_entry(
         med_class="Antihistaminic oral",
@@ -574,13 +732,25 @@ def get_age_based_antihistamine_options(age):
         frequency="o dată pe zi",
         adult_dose="5 mg/zi",
         pediatric_dose="Nu se aplică",
-        observations=""
+        observations="",
+        weight_based_dose=desloratadine_weight,
+        severity_adjustment=severity_adjustment,
+        adverse_reactions=desloratadine_adverse
     ))
     return meds
 
 
-def get_intranasal_steroid_options(age):
+def get_intranasal_steroid_options(age, severity=""):
     meds = []
+    severity_text = normalize_severity(severity)
+
+    severity_adjustment = ""
+    if severity_text == "moderată":
+        severity_adjustment = "În forme moderate, folosirea regulată zilnică este de preferat față de administrarea sporadică."
+    elif severity_text == "severă":
+        severity_adjustment = "În forme severe, combină tratamentul local cu reevaluare clinică și control al triggerilor."
+
+    mometasone_adverse = "Epistaxis, iritație nazală, senzație de uscăciune nazală, cefalee; rar candidoză locală."
 
     if age is not None and age < 2:
         meds.append(build_medication_entry(
@@ -591,7 +761,9 @@ def get_intranasal_steroid_options(age):
             frequency="o dată pe zi",
             adult_dose="Nu se aplică",
             pediatric_dose="Sub 2 ani: nu automatiza; necesită evaluare medicală individuală.",
-            observations="Utilizarea sub 2 ani nu se recomandă fără evaluare dedicată."
+            observations="Utilizarea sub 2 ani nu se recomandă fără evaluare dedicată.",
+            severity_adjustment=severity_adjustment,
+            adverse_reactions=mometasone_adverse
         ))
         return meds
 
@@ -604,7 +776,9 @@ def get_intranasal_steroid_options(age):
             frequency="o dată pe zi",
             adult_dose="Nu se aplică",
             pediatric_dose="1 puf în fiecare nară o dată pe zi",
-            observations="Pentru administrare regulată; adultul poate supraveghea copilul."
+            observations="Pentru administrare regulată; adultul poate supraveghea copilul.",
+            severity_adjustment=severity_adjustment,
+            adverse_reactions=mometasone_adverse
         ))
         return meds
 
@@ -616,13 +790,22 @@ def get_intranasal_steroid_options(age):
         frequency="o dată pe zi",
         adult_dose="2 pufuri în fiecare nară o dată pe zi",
         pediatric_dose="≥12 ani: aceeași schemă ca la adult; 2–11 ani: 1 puf în fiecare nară o dată pe zi",
-        observations="Se administrează regulat; nu spray în ochi sau gură."
+        observations="Se administrează regulat; nu spray în ochi sau gură.",
+        severity_adjustment=severity_adjustment,
+        adverse_reactions=mometasone_adverse
     ))
     return meds
 
 
-def get_ophthalmic_options(age):
+def get_ophthalmic_options(age, severity=""):
     meds = []
+    severity_text = normalize_severity(severity)
+
+    severity_adjustment = ""
+    if severity_text == "severă":
+        severity_adjustment = "În simptomatologie oculară intensă, ia în calcul reevaluare oftalmologică și excluderea altor cauze."
+
+    olopatadine_adverse = "Iritație oculară locală, senzație de arsură, gust amar, uscăciune oculară, cefalee."
 
     if age is not None and age < 2:
         meds.append(build_medication_entry(
@@ -633,7 +816,9 @@ def get_ophthalmic_options(age):
             frequency="în funcție de produs",
             adult_dose="Nu se aplică",
             pediatric_dose="Sub 2 ani: evaluare medicală individuală.",
-            observations="Nu automatiza doza sub 2 ani."
+            observations="Nu automatiza doza sub 2 ani.",
+            severity_adjustment=severity_adjustment,
+            adverse_reactions=olopatadine_adverse
         ))
         return meds
 
@@ -645,13 +830,44 @@ def get_ophthalmic_options(age):
         frequency="1 picătură de 2 ori pe zi sau, pentru anumite concentrații, 1 dată pe zi",
         adult_dose="1 picătură în ochiul afectat de 2 ori/zi sau 1 dată/zi, în funcție de formulă",
         pediatric_dose="≥2 ani: aceeași schemă, în funcție de formulă",
-        observations="Dacă se folosesc și alte produse oftalmice, păstrează interval între administrări."
+        observations="Dacă se folosesc și alte produse oftalmice, păstrează interval între administrări.",
+        severity_adjustment=severity_adjustment,
+        adverse_reactions=olopatadine_adverse
     ))
     return meds
 
 
-def get_asthma_options(age):
+def get_asthma_options(age, weight=None, severity=""):
     meds = []
+    severity_text = normalize_severity(severity)
+
+    salbutamol_weight_based = ""
+    budesonide_weight_based = ""
+    severity_adjustment_reliever = ""
+    severity_adjustment_controller = ""
+
+    if weight is not None:
+        salbutamol_weight_based = (
+            f"Greutate introdusă: {format_weight_value(weight)}. "
+            f"Pentru administrarea inhalatorie nu se folosește de rutină o formulă simplă mg/kg; "
+            f"schema se adaptează după vârstă, dispozitiv, răspuns clinic și contextul exacerbării."
+        )
+        budesonide_weight_based = (
+            f"Greutate introdusă: {format_weight_value(weight)}. "
+            f"Pentru budesonid inhalator/nebulizat nu există o schemă unică sigură strict mg/kg; "
+            f"doza se corelează cu vârsta, severitatea, produsul și dispozitivul folosit."
+        )
+
+    if severity_text == "moderată":
+        severity_adjustment_reliever = "Necesită reevaluarea frecvenței utilizării; folosirea repetată sugerează control insuficient."
+        severity_adjustment_controller = "În severitate moderată, este frecvent necesar controller zilnic și reevaluare a tehnicii."
+    elif severity_text == "severă":
+        severity_adjustment_reliever = "În severitate mare, bronhodilatatorul de salvare singur este insuficient; impune evaluare urgentă."
+        severity_adjustment_controller = "În severitate mare, este necesară treaptă terapeutică superioară și reevaluare clinică rapidă."
+
+    salbutamol_adverse = "Tremor, tahicardie, palpitații, agitație, hipokaliemie în utilizare repetată."
+    budesonide_adverse = "Candidoză orală, disfonie, iritație locală; la doze mari sau utilizare prelungită pot apărea efecte sistemice."
+    combo_adverse = "Tremor, palpitații, cefalee, candidoză orală, disfonie; profil combinat ICS + LABA."
 
     if age is not None and age < 4:
         meds.append(build_medication_entry(
@@ -662,7 +878,10 @@ def get_asthma_options(age):
             frequency="la nevoie",
             adult_dose="Nu se aplică",
             pediatric_dose="Sub 4 ani: schema trebuie individualizată; frecvent este necesar dispozitiv cu spacer și evaluare pediatrică.",
-            observations="Nu automatiza doza doar după vârstă la această grupă."
+            observations="Nu automatiza doza doar după vârstă la această grupă.",
+            weight_based_dose=salbutamol_weight_based,
+            severity_adjustment=severity_adjustment_reliever,
+            adverse_reactions=salbutamol_adverse
         ))
         meds.append(build_medication_entry(
             med_class="Controller inhalator",
@@ -672,7 +891,10 @@ def get_asthma_options(age):
             frequency="zilnic",
             adult_dose="Nu se aplică",
             pediatric_dose="La copilul mic, alegerea formei și dozei depinde de vârstă, dispozitiv și severitate.",
-            observations="Necesită individualizare."
+            observations="Necesită individualizare.",
+            weight_based_dose=budesonide_weight_based,
+            severity_adjustment=severity_adjustment_controller,
+            adverse_reactions=budesonide_adverse
         ))
         return meds
 
@@ -684,7 +906,10 @@ def get_asthma_options(age):
         frequency="la nevoie; pentru bronhospasm acut sau înainte de efort",
         adult_dose="2 pufuri la nevoie; uzual la 4–6 ore dacă este necesar",
         pediatric_dose="≥4 ani: 2 pufuri la nevoie; uzual la 4–6 ore dacă este necesar",
-        observations="Tehnica inhalatorie și folosirea spacer-ului trebuie verificate."
+        observations="Tehnica inhalatorie și folosirea spacer-ului trebuie verificate.",
+        weight_based_dose=salbutamol_weight_based,
+        severity_adjustment=severity_adjustment_reliever,
+        adverse_reactions=salbutamol_adverse
     ))
 
     meds.append(build_medication_entry(
@@ -695,7 +920,10 @@ def get_asthma_options(age):
         frequency="zilnic",
         adult_dose="Doza se stabilește după severitate; uzual scheme low-dose/medium-dose conform controlului clinic",
         pediatric_dose="Doza se adaptează după vârstă, dispozitiv și severitate; la copil mic poate fi folosită și suspensie pentru nebulizare",
-        observations="Nu este medicament pentru criza acută."
+        observations="Nu este medicament pentru criza acută.",
+        weight_based_dose=budesonide_weight_based,
+        severity_adjustment=severity_adjustment_controller,
+        adverse_reactions=budesonide_adverse
     ))
 
     if age is not None and age >= 12:
@@ -707,7 +935,9 @@ def get_asthma_options(age):
             frequency="în funcție de schema aleasă",
             adult_dose="Poate fi utilizat ca reliever sau în schemă maintenance-and-reliever, conform produsului și severității",
             pediatric_dose="≥12 ani: poate fi folosit similar adolescentului/adultului, conform produsului",
-            observations="Preferință de ghid la adolescenți și adulți pentru anumite strategii; verifică produsul disponibil și schema exactă."
+            observations="Verifică produsul disponibil și schema exactă.",
+            severity_adjustment=severity_adjustment_controller,
+            adverse_reactions=combo_adverse
         ))
     elif age is not None and 6 <= age <= 11:
         meds.append(build_medication_entry(
@@ -718,13 +948,25 @@ def get_asthma_options(age):
             frequency="în funcție de schema aleasă",
             adult_dose="Nu se aplică",
             pediatric_dose="La copilul 6–11 ani, alegerea combinației și a schemei trebuie corelată cu ghidul și produsul aprobat local.",
-            observations="Nu automatiza doza exactă doar după vârstă."
+            observations="Nu automatiza doza exactă doar după vârstă.",
+            severity_adjustment=severity_adjustment_controller,
+            adverse_reactions=combo_adverse
         ))
 
     return meds
 
 
-def get_dermatitis_options(age):
+def get_dermatitis_options(age, severity=""):
+    severity_text = normalize_severity(severity)
+
+    emollient_adjustment = ""
+    antiinflam_adjustment = ""
+
+    if severity_text == "moderată":
+        antiinflam_adjustment = "În forme moderate, este frecvent necesar tratament antiinflamator local pe durată limitată și reevaluare."
+    elif severity_text == "severă":
+        antiinflam_adjustment = "În forme severe, extinse sau refractare, ia în calcul trimitere dermatologică/alergologică."
+
     return [
         build_medication_entry(
             med_class="Îngrijire de bază",
@@ -734,7 +976,9 @@ def get_dermatitis_options(age):
             frequency="de mai multe ori pe zi",
             adult_dose="Aplicare repetată pe zonele afectate și pe tegumentul uscat",
             pediatric_dose="Aplicare repetată pe zonele afectate și pe tegumentul uscat",
-            observations="Bază a tratamentului în dermatita atopică."
+            observations="Bază a tratamentului în dermatita atopică.",
+            severity_adjustment=emollient_adjustment,
+            adverse_reactions="De obicei bine tolerat; rar senzație de usturime, iritație locală sau intoleranță la excipienți."
         ),
         build_medication_entry(
             med_class="Antiinflamator topic",
@@ -744,14 +988,16 @@ def get_dermatitis_options(age):
             frequency="conform recomandării medicale",
             adult_dose="Alegerea potenței și duratei depinde de zonă, severitate și întindere",
             pediatric_dose="Necesită alegere atentă a potenței și duratei, mai ales la copil",
-            observations="Nu automatiza potența sau durata fără context clinic."
+            observations="Nu automatiza potența sau durata fără context clinic.",
+            severity_adjustment=antiinflam_adjustment,
+            adverse_reactions="Atrofie cutanată, telangiectazii, iritație locală, hipopigmentare; risc mai mare la utilizare prelungită sau pe zone sensibile."
         )
     ]
 
 
-def get_urticaria_options(age):
+def get_urticaria_options(age, weight=None, severity=""):
     meds = []
-    meds.extend(get_age_based_antihistamine_options(age))
+    meds.extend(get_age_based_antihistamine_options(age, weight=weight, severity=severity))
     meds.append(build_medication_entry(
         med_class="Măsură generală",
         active_substance="Evitarea triggerului",
@@ -760,12 +1006,14 @@ def get_urticaria_options(age):
         frequency="continuu",
         adult_dose="Identifică și evită factorul declanșator plauzibil",
         pediatric_dose="Identifică și evită factorul declanșator plauzibil",
-        observations="Nu toate urticariile sunt de cauză alergică."
+        observations="Nu toate urticariile sunt de cauză alergică.",
+        severity_adjustment="În severitate mare sau asociere cu afectare respiratorie, reevaluează imediat posibilitatea de anafilaxie." if normalize_severity(severity) == "severă" else "",
+        adverse_reactions="Nu se aplică pentru măsura non-farmacologică."
     ))
     return meds
 
 
-def get_food_allergy_options(age):
+def get_food_allergy_options(age, weight=None, severity=""):
     meds = []
     meds.append(build_medication_entry(
         med_class="Măsură generală",
@@ -775,17 +1023,32 @@ def get_food_allergy_options(age):
         frequency="continuu până la clarificare",
         adult_dose="Evitarea alimentului suspect dacă relația temporală este convingătoare",
         pediatric_dose="Evitarea alimentului suspect dacă relația temporală este convingătoare",
-        observations="Necesită clarificare alergologică ulterioară."
+        observations="Necesită clarificare alergologică ulterioară.",
+        severity_adjustment="În prezența semnelor sistemice, tratează ca urgență și exclude anafilaxia." if normalize_severity(severity) == "severă" else "",
+        adverse_reactions="Nu se aplică pentru măsura non-farmacologică."
     ))
-    meds.extend(get_age_based_antihistamine_options(age))
+    meds.extend(get_age_based_antihistamine_options(age, weight=weight, severity=severity))
     return meds
 
 
-def get_anaphylaxis_options(age):
+def get_anaphylaxis_options(age, weight=None, severity=""):
     meds = []
 
     adult_dose = "Adrenalină IM 0,5 mg (0,5 mL din soluția 1 mg/mL), în coapsa anterolaterală"
     pediatric_dose = "Copil: 0,01 mg/kg IM (0,01 mL/kg din soluția 1 mg/mL), până la maximum uzual 0,3–0,5 mg"
+    weight_based_dose = ""
+
+    if weight is not None:
+        adrenaline_mg = round(0.01 * weight, 3)
+        adrenaline_ml = round(0.01 * weight, 3)
+        if adrenaline_mg > 0.5:
+            adrenaline_mg = 0.5
+            adrenaline_ml = 0.5
+        weight_based_dose = (
+            f"La greutatea introdusă ({format_weight_value(weight)}): "
+            f"adrenalină IM ≈ {adrenaline_mg} mg ({adrenaline_ml} mL din soluția 1 mg/mL), "
+            f"fără a depăși doza maximă uzuală."
+        )
 
     meds.append(build_medication_entry(
         med_class="Medicație de primă linie în urgență",
@@ -795,308 +1058,657 @@ def get_anaphylaxis_options(age):
         frequency="imediat; se poate repeta conform evaluării clinice",
         adult_dose=adult_dose,
         pediatric_dose=pediatric_dose,
-        observations="La copil doza este dependentă de greutate, nu doar de vârstă. Necesită management de urgență."
+        observations="La copil doza este dependentă de greutate, nu doar de vârstă. Necesită management de urgență.",
+        weight_based_dose=weight_based_dose,
+        severity_adjustment="Anafilaxia este o urgență medicală. Adrenalina IM este intervenția de primă linie și nu trebuie întârziată.",
+        adverse_reactions="Tahicardie, palpitații, tremor, anxietate, cefalee; în context de anafilaxie, beneficiul depășește riscurile potențiale."
     ))
 
     meds.append(build_medication_entry(
-        med_class="Suport adjunct",
-        active_substance="Oxigen / fluide / alte măsuri de urgență",
-        pharmacologic_name="Măsuri de resuscitare și suport",
-        administration_route="în funcție de intervenție",
-        frequency="după necesitate",
-        adult_dose="În funcție de severitate și protocol",
-        pediatric_dose="În funcție de severitate și protocol",
-        observations="Antihistaminicele și corticosteroizii nu înlocuiesc adrenalina în anafilaxie."
+        med_class="Măsură suportivă de urgență",
+        active_substance="Oxigen",
+        pharmacologic_name="Oxigenoterapie",
+        administration_route="inhalator / mască",
+        frequency="continuu, conform evaluării clinice",
+        adult_dose="Se administrează în funcție de statusul respirator și saturație",
+        pediatric_dose="Se administrează în funcție de statusul respirator și saturație",
+        observations="Măsură suportivă; nu înlocuiește adrenalina IM.",
+        severity_adjustment="Indicat în afectare respiratorie, hipoxemie sau instabilitate clinică.",
+        adverse_reactions="Nu se aplică uzual în utilizarea corectă pe termen scurt."
+    ))
+
+    meds.append(build_medication_entry(
+        med_class="Măsură suportivă de urgență",
+        active_substance="Fluide i.v.",
+        pharmacologic_name="Cristaloizi intravenos",
+        administration_route="intravenos",
+        frequency="conform evaluării clinice",
+        adult_dose="În hipotensiune / șoc, conform protocolului de urgență",
+        pediatric_dose="În hipotensiune / șoc, conform protocolului pediatric de urgență",
+        observations="Necesită monitorizare și management medical de urgență.",
+        severity_adjustment="Util dacă există hipotensiune, colaps circulator sau răspuns insuficient inițial.",
+        adverse_reactions="Supraincărcare volemică în anumite contexte; necesită monitorizare."
+    ))
+
+    meds.append(build_medication_entry(
+        med_class="Tratament adjuvant",
+        active_substance="Antihistaminic H1",
+        pharmacologic_name="Antihistaminic oral / parenteral",
+        administration_route="oral / injectabil",
+        frequency="după stabilizarea inițială",
+        adult_dose="Doza depinde de produsul ales",
+        pediatric_dose="Doza depinde de vârstă, greutate și produs",
+        observations="Adjuvant pentru simptome cutanate; nu înlocuiește adrenalina.",
+        severity_adjustment="Se administrează doar ca adjuvant, după inițierea măsurilor de urgență.",
+        adverse_reactions="Somnolență, xerostomie, amețeală, rareori reacții paradoxale."
+    ))
+
+    meds.append(build_medication_entry(
+        med_class="Tratament adjuvant",
+        active_substance="Salbutamol / Albuterol",
+        pharmacologic_name="Beta2-agonist inhalator cu durată scurtă de acțiune",
+        administration_route="inhalator / nebulizare",
+        frequency="la nevoie, ca adjuvant",
+        adult_dose="Conform produsului și protocolului de urgență",
+        pediatric_dose="Conform produsului, vârstei și răspunsului clinic",
+        observations="Poate fi util în bronhospasm asociat, dar nu tratează cauza principală a anafilaxiei.",
+        severity_adjustment="Util doar dacă există wheezing / bronhospasm asociat.",
+        adverse_reactions="Tremor, tahicardie, palpitații, agitație."
     ))
 
     return meds
 
 
-def get_structured_treatment_by_diagnosis(diagnosis_name, age):
-    name = (diagnosis_name or "").lower()
+def get_medication_options(primary_name, age=None, weight=None, severity=""):
+    primary_name = (primary_name or "").lower()
 
-    if "rinit" in name:
-        meds = []
-        meds.extend(get_age_based_antihistamine_options(age))
-        meds.extend(get_intranasal_steroid_options(age))
-        meds.append(build_medication_entry(
-            med_class="Măsură adjuvantă",
-            active_substance="Ser salin",
-            pharmacologic_name="Soluție salină / lavaj nazal",
-            administration_route="intranzal",
-            frequency="1–2 sau mai multe administrări/zi, după necesitate",
-            adult_dose="Lavaj / irigare nazală după toleranță",
-            pediatric_dose="Lavaj / irigare nazală după toleranță și cooperare",
-            observations="Poate reduce simptomele și îmbunătăți confortul."
-        ))
-        return meds
+    if "anafilaxie" in primary_name:
+        return get_anaphylaxis_options(age=age, weight=weight, severity=severity)
 
-    if "conjunctivit" in name:
-        meds = []
-        meds.extend(get_ophthalmic_options(age))
-        meds.extend(get_age_based_antihistamine_options(age))
-        return meds
+    if "alergie alimentară" in primary_name:
+        return get_food_allergy_options(age=age, weight=weight, severity=severity)
 
-    if "astm" in name:
-        return get_asthma_options(age)
+    if "urticarie" in primary_name or "angioedem" in primary_name:
+        return get_urticaria_options(age=age, weight=weight, severity=severity)
 
-    if "dermatită" in name:
-        return get_dermatitis_options(age)
+    if "dermatită" in primary_name:
+        return get_dermatitis_options(age=age, severity=severity)
 
-    if "urticarie" in name or "angioedem" in name:
-        return get_urticaria_options(age)
+    if "astm" in primary_name:
+        return get_asthma_options(age=age, weight=weight, severity=severity)
+
+    meds = []
+
+    if "rinită" in primary_name:
+        meds.extend(get_age_based_antihistamine_options(age, weight=weight, severity=severity))
+        meds.extend(get_intranasal_steroid_options(age, severity=severity))
+
+    if "conjunctivită" in primary_name:
+        meds.extend(get_age_based_antihistamine_options(age, weight=weight, severity=severity))
+        meds.extend(get_ophthalmic_options(age, severity=severity))
+
+    if not meds:
+        meds.extend(get_age_based_antihistamine_options(age, weight=weight, severity=severity))
+
+    return meds
+
+
+def extract_diagnosis_terms(diagnosis):
+    terms = []
+
+    for key in ["name", "aliases", "synonyms", "keywords", "symptoms", "clinical_clues"]:
+        value = diagnosis.get(key, [])
+        if isinstance(value, str):
+            value = [value]
+        if isinstance(value, list):
+            for item in value:
+                if item:
+                    terms.append(str(item).strip().lower())
+
+    return deduplicate(terms)
+
+
+def score_diagnosis(text, diagnosis):
+    text = normalize_text(text)
+    score = 0
+    matched_terms = []
+
+    name = (diagnosis.get("name") or "").strip().lower()
+    symptoms = diagnosis.get("symptoms", [])
+    keywords = diagnosis.get("keywords", [])
+    red_flags = diagnosis.get("red_flags", [])
+    triggers = diagnosis.get("triggers", [])
+
+    if isinstance(symptoms, str):
+        symptoms = [symptoms]
+    if isinstance(keywords, str):
+        keywords = [keywords]
+    if isinstance(red_flags, str):
+        red_flags = [red_flags]
+    if isinstance(triggers, str):
+        triggers = [triggers]
+
+    for item in symptoms:
+        item_norm = normalize_text(item)
+        if item_norm and item_norm in text:
+            score += 3
+            matched_terms.append(item)
+
+    for item in keywords:
+        item_norm = normalize_text(item)
+        if item_norm and item_norm in text:
+            score += 2
+            matched_terms.append(item)
+
+    for item in triggers:
+        item_norm = normalize_text(item)
+        if item_norm and item_norm in text:
+            score += 2
+            matched_terms.append(item)
+
+    for item in red_flags:
+        item_norm = normalize_text(item)
+        if item_norm and item_norm in text:
+            score += 4
+            matched_terms.append(item)
+
+    if name and name in text:
+        score += 1
+        matched_terms.append(diagnosis.get("name", ""))
+
+    # bonusuri clinice simple
+    if "anafilaxie" in name:
+        if contains_any(text, ["urticarie", "angioedem", "edem buze", "edem lingual"]) and contains_any(
+            text,
+            ["dispnee", "dispnee severă", "hipotensiune", "șoc", "voce răgușită", "dificultăți la înghițire"]
+        ):
+            score += 5
+
+    if "rinită alergică" in name:
+        if contains_any(text, ["strănut", "rinoree", "prurit nazal", "nas înfundat"]):
+            score += 3
+        if contains_any(text, ["polen", "ambrozie", "acarieni", "praf"]):
+            score += 2
+
+    if "conjunctivită alergică" in name:
+        if contains_any(text, ["lăcrimare", "prurit ocular", "ochi roșii"]):
+            score += 3
+
+    if "astm alergic" in name:
+        if contains_any(text, ["wheezing", "șuierături", "dispnee", "tuse nocturnă", "constricție toracică"]):
+            score += 4
+
+    if "dermatită atopică" in name:
+        if contains_any(text, ["dermatită", "prurit cutanat", "piele uscată", "eczema"]):
+            score += 4
 
     if "alergie alimentară" in name:
-        return get_food_allergy_options(age)
+        if contains_any(text, ["după masă", "aliment", "vărsături", "prurit faringian", "prurit oral"]):
+            score += 4
 
-    if "anafilaxie" in name:
-        return get_anaphylaxis_options(age)
-
-    return [
-        build_medication_entry(
-            med_class="Tratament orientativ",
-            active_substance="Individualizare clinică",
-            pharmacologic_name="Abordare terapeutică personalizată",
-            administration_route="în funcție de context",
-            frequency="în funcție de context",
-            adult_dose="Se stabilește după diagnosticul final, severitate și comorbidități",
-            pediatric_dose="Se stabilește după diagnosticul final, vârstă și, dacă este cazul, greutate",
-            observations="Necesită corelare clinică și terapeutică individuală."
-        )
-    ]
+    return score, deduplicate(matched_terms)
 
 
-def build_clinical_output(symptoms_text, ranked):
-    text = normalize_text(symptoms_text)
-
-    output = {
-        "primary_diagnosis": None,
-        "primary_probability": None,
-        "associated_diagnosis": None,
-        "alternatives": [],
-        "supports": [],
-        "limits": [],
-        "recommended_tests": [],
-        "treatment_plan": [],
-        "red_flags": [],
-        "notes": [],
-        "severity": classify_severity(text),
-        "confidence": determine_confidence(ranked)
-    }
-
-    if ranked:
-        output["primary_diagnosis"] = ranked[0]["name"]
-        output["primary_probability"] = ranked[0]["probability"]
-
-    if len(ranked) > 1:
-        top_names = [x["name"].lower() for x in ranked[:3]]
-
-        if any("rinit" in x for x in top_names) and any("astm" in x for x in top_names):
-            output["associated_diagnosis"] = "Asociere probabilă rinită alergică + astm alergic"
-
-        elif any("rinit" in x for x in top_names) and any("conjunctivit" in x for x in top_names):
-            output["associated_diagnosis"] = "Asociere probabilă rinită alergică + conjunctivită alergică"
-
-        elif any("urticarie" in x for x in top_names) and any("angioedem" in x for x in top_names):
-            output["associated_diagnosis"] = "Asociere probabilă urticarie + angioedem"
-
-    output["alternatives"] = [x["name"] for x in ranked[1:4]]
-
-    primary_name = output["primary_diagnosis"] or ""
-
-    output["supports"] = build_supports(text, primary_name)
-    output["limits"] = build_limits(text)
-    output["recommended_tests"] = build_recommended_tests(text, primary_name)
-    output["treatment_plan"] = build_treatment_plan(text, primary_name, output["severity"])
-    output["red_flags"] = build_red_flags(text)
-    output["notes"] = build_notes(text, ranked)
-
-    return output
-
-
-def rank_differential_diagnoses(symptoms_text, diagnoses):
-    symptoms_text = normalize_text(symptoms_text)
+def rank_diagnoses(text, diagnoses, top_n=5):
     ranked = []
 
-    strong_terms = {
-        "wheezing", "dispnee", "dispnee severă", "stridor", "hipotensiune",
-        "edem lingual", "șoc", "șoc anafilactic", "angioedem",
-        "urticarie", "edem buze", "edem pleoape", "prurit oral",
-        "dificultăți la înghițire", "voce răgușită", "edem faringian"
-    }
-
-    medium_terms = {
-        "șuierături", "tuse nocturnă", "prurit nazal", "prurit ocular",
-        "lăcrimare", "ochi roșii", "rinoree", "strănut",
-        "vărsături", "dureri abdominale", "diaree", "nas înfundat",
-        "eczeme", "dermatită", "prurit cutanat", "constricție toracică"
-    }
-
     for diagnosis in diagnoses:
-        score = 0
-        matched_keywords = []
-
-        for keyword in diagnosis.get("keywords", []):
-            keyword_lower = normalize_text(keyword)
-
-            if keyword_lower in symptoms_text:
-                matched_keywords.append(keyword)
-
-                if keyword_lower in strong_terms:
-                    score += 3
-                elif keyword_lower in medium_terms:
-                    score += 2
-                else:
-                    score += 1
-
-        name = diagnosis["name"].lower()
-
-        if "anafilaxie" in name:
-            severe_signs = [
-                "hipotensiune", "dispnee severă", "edem lingual",
-                "șoc", "angioedem", "stridor", "voce răgușită",
-                "dificultăți la înghițire", "pierderea conștienței", "edem faringian"
-            ]
-            skin_or_gi = ["urticarie", "prurit oral", "edem buze", "vărsături", "diaree"]
-            if contains_any(symptoms_text, severe_signs):
-                score += 5
-            if contains_any(symptoms_text, skin_or_gi):
-                score += 2
-            if not contains_any(symptoms_text, severe_signs):
-                score = max(score - 2, 0)
-
-        if "alergie alimentară" in name:
-            if contains_any(symptoms_text, ["după masă", "aliment", "reacție după aliment", "prurit oral", "prurit faringian"]):
-                score += 3
-            if contains_any(symptoms_text, ["vărsături", "dureri abdominale", "diaree", "urticarie"]):
-                score += 2
-
-        if "conjunctivit" in name:
-            if contains_any(symptoms_text, ["lăcrimare", "prurit ocular", "ochi roșii"]):
-                score += 3
-
-        if "rinit" in name:
-            if contains_any(symptoms_text, ["strănut", "rinoree", "prurit nazal", "nas înfundat"]):
-                score += 3
-            if contains_any(symptoms_text, ["polen", "sezon", "acarieni", "praf"]):
-                score += 1
-
-        if "astm" in name:
-            if contains_any(symptoms_text, ["wheezing", "dispnee", "șuierături", "tuse nocturnă", "constricție toracică"]):
-                score += 4
-            if contains_any(symptoms_text, ["efort", "noaptea", "alergeni", "praf", "acarieni"]):
-                score += 1
-            if not contains_any(symptoms_text, ["wheezing", "dispnee", "șuierături", "tuse nocturnă", "constricție toracică"]):
-                score = max(score - 1, 0)
-
-        if "dermatită" in name:
-            skin_signs = ["eczeme", "piele", "leziuni", "prurit cutanat", "dermatită", "piele uscată"]
-            if contains_any(symptoms_text, skin_signs):
-                score += 3
-            else:
-                score = max(score - 2, 0)
-
-        if "urticarie" in name:
-            if contains_any(symptoms_text, ["urticarie", "papule", "plăci pruriginoase", "prurit cutanat"]):
-                score += 3
-
-        if "angioedem" in name:
-            if contains_any(symptoms_text, ["angioedem", "edem buze", "edem pleoape", "edem lingual", "edem faringian"]):
-                score += 4
-
+        score, matched = score_diagnosis(text, diagnosis)
         if score > 0:
             ranked.append({
-                "name": diagnosis["name"],
+                "name": diagnosis.get("name", "Diagnostic nespecificat"),
                 "score": score,
                 "probability": score_to_probability(score),
-                "matched_keywords": matched_keywords
+                "matched_terms": matched,
+                "definition": diagnosis.get("definition", ""),
+                "category": diagnosis.get("category", "")
             })
 
     ranked.sort(key=lambda x: x["score"], reverse=True)
+    return ranked[:top_n]
 
-    clinical_output = build_clinical_output(symptoms_text, ranked)
+
+def find_primary_diagnosis(text, diagnoses):
+    ranked = rank_diagnoses(text, diagnoses, top_n=5)
+    if not ranked:
+        return None, []
+    return ranked[0], ranked
+
+
+def enrich_from_knowledge(primary_name, knowledge_base):
+    if not primary_name:
+        return {}
+
+    key = primary_name.strip().lower()
+    return knowledge_base.get(key, {})
+
+
+def merge_lists(*args):
+    result = []
+    for arg in args:
+        if isinstance(arg, str):
+            arg = [arg]
+        if isinstance(arg, list):
+            result.extend(arg)
+    return deduplicate(result)
+
+
+def build_prevention_plan(primary_name, text=""):
+    primary_name = (primary_name or "").lower()
+    prevention = []
+
+    if "rinită" in primary_name or "conjunctivită" in primary_name:
+        prevention.extend([
+            "Reducerea expunerii la alergeni relevanți clinic (polen, acarieni, epitelii de animale), dacă sensibilizarea este confirmată sau foarte probabilă.",
+            "Aerisește locuința strategic și adaptează expunerea în perioadele de polenizare intensă.",
+            "Igienă nazală și oculară după expuneri relevante, în funcție de toleranță."
+        ])
+
+    if "astm" in primary_name:
+        prevention.extend([
+            "Evitarea triggerilor cunoscuți și monitorizarea controlului simptomelor.",
+            "Verificarea tehnicii inhalatorii și a aderenței la tratamentul controller.",
+            "Plan scris de acțiune pentru exacerbări, dacă este disponibil."
+        ])
+
+    if "dermatită" in primary_name:
+        prevention.extend([
+            "Îngrijire regulată cu emolient și evitare a iritanților cutanați.",
+            "Alegerea produselor de igienă blânde și evitarea supraspălării tegumentului."
+        ])
+
+    if "urticarie" in primary_name or "angioedem" in primary_name:
+        prevention.extend([
+            "Identificarea contextului de apariție și evitarea triggerului plauzibil, dacă acesta poate fi stabilit.",
+            "Reevaluare dacă episoadele recidivează sau devin sistemice."
+        ])
+
+    if "alergie alimentară" in primary_name:
+        prevention.extend([
+            "Evitarea alimentului suspect până la clarificare alergologică.",
+            "Citirea atentă a etichetelor și educație privind expunerile accidentale."
+        ])
+
+    if "anafilaxie" in primary_name:
+        prevention.extend([
+            "Identificarea triggerului probabil prin evaluare alergologică după stabilizare.",
+            "Educație privind recunoașterea precoce a simptomelor și conduita de urgență.",
+            "Plan de urgență individualizat și, unde este indicat, autoinjector de adrenalină conform recomandării specialistului."
+        ])
+
+    if not prevention:
+        prevention.append("Măsurile preventive trebuie individualizate în funcție de triggerii probabili și de contextul clinic.")
+
+    return deduplicate(prevention)
+
+
+def build_differential_diagnoses(ranked, primary_name):
+    differential = []
+
+    for item in ranked:
+        name = item.get("name", "")
+        if name and name.lower() != (primary_name or "").lower():
+            differential.append(name)
+
+    return differential[:4]
+
+
+def build_case_summary(symptoms_text, age=None, sex=None, weight=None):
+    parts = []
+
+    if symptoms_text:
+        parts.append(f"Simptome raportate: {symptoms_text.strip()}.")
+
+    age_label = age_group_label(age)
+    parts.append(f"Grupă de vârstă estimată: {age_label}.")
+
+    if age is not None:
+        parts.append(f"Vârstă declarată: {age} ani.")
+
+    if sex:
+        parts.append(f"Sex: {sex}.")
+
+    if weight is not None:
+        parts.append(f"Greutate declarată: {format_weight_value(weight)}.")
+
+    return " ".join(parts)
+
+
+def evaluate_allergy_case(symptoms_text, age=None, sex=None, weight=None,
+                          diagnoses_path="data/diagnoses.json",
+                          knowledge_path="data/allergy_knowledge_ro.json"):
+    text = normalize_text(symptoms_text)
+    age = parse_age(age)
+    weight = parse_weight(weight)
+    sex = (sex or "").strip()
+
+    diagnoses = load_diagnoses(diagnoses_path)
+    knowledge = load_romanian_knowledge(knowledge_path)
+
+    primary, ranked = find_primary_diagnosis(text, diagnoses)
+    severity = classify_severity(text)
+
+    if not primary:
+        return {
+            "case_summary": build_case_summary(symptoms_text, age=age, sex=sex, weight=weight),
+            "input": {
+                "symptoms": symptoms_text,
+                "age": age,
+                "sex": sex,
+                "weight": weight
+            },
+            "severity": severity,
+            "confidence": "scăzută",
+            "primary_diagnosis": None,
+            "ranked_diagnoses": [],
+            "differential_diagnoses": [],
+            "supports": build_supports(text, ""),
+            "limits": build_limits(text),
+            "red_flags": build_red_flags(text),
+            "recommended_tests": build_recommended_tests(text, ""),
+            "treatment_plan": ["Nu a putut fi generată o ipoteză principală suficient de robustă. Este necesară completarea anamnezei și evaluarea clinică."],
+            "prevention": ["Prevenția depinde de triggerul probabil și de diagnosticul final."],
+            "medications": [],
+            "notes": build_notes(text, []),
+            "knowledge": {}
+        }
+
+    primary_name = primary.get("name", "")
+    confidence = determine_confidence(ranked)
+    knowledge_item = enrich_from_knowledge(primary_name, knowledge)
+
+    supports = merge_lists(
+        build_supports(text, primary_name),
+        knowledge_item.get("supports", [])
+    )
+
+    limits = merge_lists(
+        build_limits(text),
+        knowledge_item.get("limits", [])
+    )
+
+    red_flags = merge_lists(
+        build_red_flags(text),
+        knowledge_item.get("red_flags", [])
+    )
+
+    recommended_tests = merge_lists(
+        build_recommended_tests(text, primary_name),
+        knowledge_item.get("recommended_tests", [])
+    )
+
+    treatment_plan = merge_lists(
+        build_treatment_plan(text, primary_name, severity),
+        knowledge_item.get("treatment_plan", [])
+    )
+
+    prevention = merge_lists(
+        build_prevention_plan(primary_name, text),
+        knowledge_item.get("prevention", [])
+    )
+
+    medications = get_medication_options(
+        primary_name=primary_name,
+        age=age,
+        weight=weight,
+        severity=severity
+    )
+
+    notes = merge_lists(
+        build_notes(text, ranked),
+        knowledge_item.get("notes", [])
+    )
+
+    result = {
+        "case_summary": build_case_summary(symptoms_text, age=age, sex=sex, weight=weight),
+        "input": {
+            "symptoms": symptoms_text,
+            "age": age,
+            "sex": sex,
+            "weight": weight
+        },
+        "severity": severity,
+        "confidence": confidence,
+        "primary_diagnosis": {
+            "name": primary_name,
+            "score": primary.get("score", 0),
+            "probability": primary.get("probability", "redusă"),
+            "definition": primary.get("definition", ""),
+            "category": primary.get("category", "")
+        },
+        "ranked_diagnoses": ranked,
+        "differential_diagnoses": build_differential_diagnoses(ranked, primary_name),
+        "supports": supports,
+        "limits": limits,
+        "red_flags": red_flags,
+        "recommended_tests": recommended_tests,
+        "treatment_plan": treatment_plan,
+        "prevention": prevention,
+        "medications": medications,
+        "notes": notes,
+        "knowledge": knowledge_item
+    }
+
+    return result
+
+def rank_differential_diagnoses(symptoms_text, diagnoses):
+    text = normalize_text(symptoms_text)
+    ranked = rank_diagnoses(text, diagnoses, top_n=10)
+
+    severity = classify_severity(text)
+    confidence = determine_confidence(ranked)
+
+    primary_name = ranked[0]["name"] if ranked else ""
+    primary_probability = ranked[0]["probability"] if ranked else None
+
+    associated_diagnosis = None
+    if len(ranked) > 1:
+        top_names = [item.get("name", "").lower() for item in ranked[:3]]
+
+        if any("rinit" in x for x in top_names) and any("astm" in x for x in top_names):
+            associated_diagnosis = "Asociere probabilă rinită alergică + astm alergic"
+        elif any("rinit" in x for x in top_names) and any("conjunctivit" in x for x in top_names):
+            associated_diagnosis = "Asociere probabilă rinită alergică + conjunctivită alergică"
+        elif any("urticarie" in x for x in top_names) and any("angioedem" in x for x in top_names):
+            associated_diagnosis = "Asociere probabilă urticarie + angioedem"
+
+    clinical_output = {
+        "primary_diagnosis": primary_name if primary_name else None,
+        "primary_probability": primary_probability,
+        "associated_diagnosis": associated_diagnosis,
+        "alternatives": build_differential_diagnoses(ranked, primary_name),
+        "supports": build_supports(text, primary_name),
+        "limits": build_limits(text),
+        "recommended_tests": build_recommended_tests(text, primary_name),
+        "treatment_plan": build_treatment_plan(text, primary_name, severity),
+        "red_flags": build_red_flags(text),
+        "notes": build_notes(text, ranked),
+        "severity": severity,
+        "confidence": confidence
+    }
 
     return ranked, clinical_output
 
 
-def get_treatment_details(diagnosis_name, knowledge_ro=None, age=None):
-    name = (diagnosis_name or "").lower()
+def get_treatment_details(diagnosis_name, knowledge_ro=None, age=None, weight=None, severity=None):
+    name = (diagnosis_name or "").strip().lower()
     parsed_age = parse_age(age)
-    age_label = age_group_label(parsed_age)
+    parsed_weight = parse_weight(weight)
+    normalized_severity = normalize_severity(severity)
 
+    knowledge_item = {}
     if knowledge_ro and name in knowledge_ro:
-        item = knowledge_ro[name]
-        return {
-            "diagnosis": item["name"],
-            "clinical_picture": item.get("clinical_picture", []),
-            "treatment": item.get("treatment", []),
-            "prevention": item.get("prevention", []),
-            "allergen_avoidance": item.get("allergen_avoidance", []),
-            "medication_options": get_structured_treatment_by_diagnosis(item["name"], parsed_age),
-            "age_group_used": age_label
-        }
+        knowledge_item = knowledge_ro.get(name, {})
 
-    fallback = {
-        "diagnosis": diagnosis_name,
-        "clinical_picture": [],
-        "treatment": ["Tratamentul trebuie individualizat în funcție de contextul clinic, severitate și recomandările medicale."],
-        "prevention": ["Prevenția depinde de identificarea și evitarea factorilor declanșatori relevanți clinic."],
-        "allergen_avoidance": ["Evitarea alergenului se recomandă doar după corelare clinică și identificare corectă."],
-        "medication_options": get_structured_treatment_by_diagnosis(diagnosis_name, parsed_age),
-        "age_group_used": age_label
+    diagnosis_label = knowledge_item.get("name", diagnosis_name)
+
+    clinical_picture = merge_lists(
+        knowledge_item.get("clinical_picture", []),
+        knowledge_item.get("symptoms", []),
+        knowledge_item.get("supports", [])
+    )
+
+    treatment = merge_lists(
+        knowledge_item.get("treatment", []),
+        knowledge_item.get("treatment_plan", [])
+    )
+
+    prevention = merge_lists(
+        knowledge_item.get("prevention", []),
+        build_prevention_plan(diagnosis_label)
+    )
+
+    allergen_avoidance = merge_lists(
+        knowledge_item.get("allergen_avoidance", []),
+        knowledge_item.get("avoidance", [])
+    )
+
+    medication_options = get_medication_options(
+        primary_name=diagnosis_label,
+        age=parsed_age,
+        weight=parsed_weight,
+        severity=normalized_severity
+    )
+
+    if not clinical_picture:
+        if "rinit" in name:
+            clinical_picture = [
+                "Strănut",
+                "Rinoree",
+                "Prurit nazal",
+                "Obstrucție nazală / nas înfundat"
+            ]
+        elif "conjunctivit" in name:
+            clinical_picture = [
+                "Prurit ocular",
+                "Lăcrimare",
+                "Hiperemie conjunctivală / ochi roșii"
+            ]
+        elif "astm" in name:
+            clinical_picture = [
+                "Wheezing / șuierături",
+                "Dispnee variabilă",
+                "Tuse, adesea nocturnă",
+                "Constricție toracică"
+            ]
+        elif "dermatită" in name:
+            clinical_picture = [
+                "Prurit cutanat",
+                "Leziuni eczematoase",
+                "Piele uscată",
+                "Evoluție recurentă"
+            ]
+        elif "urticarie" in name or "angioedem" in name:
+            clinical_picture = [
+                "Plăci pruriginoase și/sau edem localizat",
+                "Episod acut sau recurent",
+                "Posibilă legătură cu trigger medicamentos, alimentar sau infecțios"
+            ]
+        elif "alergie alimentară" in name:
+            clinical_picture = [
+                "Reacție în context alimentar",
+                "Manifestări cutanate, digestive și/sau respiratorii",
+                "Relație temporală sugestivă cu ingestia"
+            ]
+        elif "anafilaxie" in name:
+            clinical_picture = [
+                "Reacție acută sistemică cu potențial vital",
+                "Afectare respiratorie, cardiovasculară, cutanată și/sau digestivă",
+                "Necesită intervenție de urgență"
+            ]
+
+    if not treatment:
+        if "rinit" in name:
+            treatment = [
+                "Evitarea expunerii la alergenii relevanți clinic.",
+                "Lavaj nazal cu ser salin, după toleranță.",
+                "Antihistaminic oral și/sau corticosteroid intranazal, în funcție de severitate și context."
+            ]
+        elif "conjunctivit" in name:
+            treatment = [
+                "Evitarea expunerilor alergene/iritative.",
+                "Antihistaminic ocular sau oral, după caz.",
+                "Reevaluare dacă simptomele sunt persistente sau severe."
+            ]
+        elif "astm" in name:
+            treatment = [
+                "Bronhodilatator de salvare la nevoie.",
+                "Tratament controller în funcție de severitate și gradul de control.",
+                "Verificarea tehnicii inhalatorii și monitorizarea exacerbărilor."
+            ]
+        elif "dermatită" in name:
+            treatment = [
+                "Emoliere susținută.",
+                "Tratament antiinflamator topic în funcție de severitate.",
+                "Evitarea iritanților cutanați și reevaluare dacă leziunile persistă."
+            ]
+        elif "urticarie" in name or "angioedem" in name:
+            treatment = [
+                "Antihistaminic H1 de generația a doua.",
+                "Identificarea și evitarea posibilului trigger.",
+                "Reevaluare promptă dacă apar semne respiratorii sau afectare sistemică."
+            ]
+        elif "alergie alimentară" in name:
+            treatment = [
+                "Evitarea alimentului suspect până la clarificare.",
+                "Tratament simptomatic în funcție de manifestări.",
+                "Evaluare alergologică dacă tabloul este repetitiv sau sever."
+            ]
+        elif "anafilaxie" in name:
+            treatment = [
+                "Adrenalină IM de primă linie.",
+                "Măsuri suportive și monitorizare de urgență.",
+                "După stabilizare: clarificarea triggerului și plan de prevenție secundară."
+            ]
+        else:
+            treatment = [
+                "Tratamentul trebuie individualizat în funcție de tabloul clinic, severitate și contextul pacientului."
+            ]
+
+    if not prevention:
+        prevention = [
+            "Măsurile preventive trebuie adaptate triggerilor relevanți clinic și contextului individual."
+        ]
+
+    if not allergen_avoidance:
+        if "rinit" in name or "conjunctivit" in name:
+            allergen_avoidance = [
+                "Reducerea expunerii la polen, acarieni sau epitelii de animale, dacă sunt relevante clinic.",
+                "Igienă nazală/oculară după expunere și adaptarea mediului domestic."
+            ]
+        elif "astm" in name:
+            allergen_avoidance = [
+                "Evitarea triggerilor respiratori relevanți clinic.",
+                "Controlul expunerii la alergeni inhalatori atunci când aceștia sunt implicați."
+            ]
+        elif "dermatită" in name:
+            allergen_avoidance = [
+                "Evitarea iritanților cutanați și a produselor slab tolerate.",
+                "Adaptarea rutinei de îngrijire și alegerea produselor blânde."
+            ]
+        elif "alergie alimentară" in name:
+            allergen_avoidance = [
+                "Evitarea alimentului suspect până la clarificare alergologică.",
+                "Citirea atentă a etichetelor și prevenirea expunerilor accidentale."
+            ]
+        elif "anafilaxie" in name:
+            allergen_avoidance = [
+                "Identificarea și evitarea triggerului probabil după evaluare de specialitate.",
+                "Plan de urgență pentru eventuale reexpuneri accidentale."
+            ]
+        else:
+            allergen_avoidance = [
+                "Evitarea triggerilor relevanți clinic trebuie individualizată."
+            ]
+
+    return {
+        "diagnosis": diagnosis_label,
+        "clinical_picture": deduplicate(clinical_picture),
+        "treatment": deduplicate(treatment),
+        "prevention": deduplicate(prevention),
+        "allergen_avoidance": deduplicate(allergen_avoidance),
+        "medication_options": medication_options,
+        "age_group_used": age_group_label(parsed_age),
+        "weight_used": parsed_weight if parsed_weight is not None else "",
+        "severity_used": normalized_severity
     }
-
-    if "astm" in name:
-        fallback["clinical_picture"] = [
-            "Wheezing / șuierături",
-            "Dispnee variabilă",
-            "Tuse, adesea nocturnă",
-            "Variabilitate a simptomelor la expunere/alergeni"
-        ]
-        fallback["treatment"] = [
-            "Tratamentul trebuie adaptat severității și gradului de control.",
-            "Se recomandă evaluarea controlului simptomelor și tehnicii inhalatorii.",
-            "Necesită monitorizare clinică și eventual explorare funcțională respiratorie."
-        ]
-
-    elif "rinit" in name:
-        fallback["clinical_picture"] = [
-            "Strănut",
-            "Rinoree",
-            "Prurit nazal",
-            "Nas înfundat"
-        ]
-        fallback["treatment"] = [
-            "Se recomandă evitare alergenică, dacă este posibil.",
-            "Pot fi utile antihistaminicele și/sau corticosteroizii intranazali, conform recomandării medicale."
-        ]
-
-    elif "conjunctivit" in name:
-        fallback["clinical_picture"] = [
-            "Prurit ocular",
-            "Lăcrimare",
-            "Hiperemie conjunctivală"
-        ]
-        fallback["treatment"] = [
-            "Evitarea triggerilor relevanți clinic și tratament local/oral, după caz."
-        ]
-
-    elif "urticarie" in name or "angioedem" in name:
-        fallback["clinical_picture"] = [
-            "Plăci pruriginoase și/sau edem localizat"
-        ]
-        fallback["treatment"] = [
-            "Tratament antihistaminic și monitorizare clinică; reevaluare dacă apar semne respiratorii sau progresie rapidă."
-        ]
-
-    elif "anafilaxie" in name:
-        fallback["clinical_picture"] = [
-            "Reacție acută cu potențial sever, cu afectare respiratorie, cardiovasculară, cutanată sau digestivă"
-        ]
-        fallback["treatment"] = [
-            "Anafilaxia reprezintă urgență medicală.",
-            "Prioritatea este stabilizarea imediată și evaluarea de urgență."
-        ]
-
-    return fallback
-
