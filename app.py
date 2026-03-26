@@ -568,12 +568,7 @@ def treatment():
                 "error": "Diagnosticul nu a fost specificat."
             }), 400
 
-        semantic_query = (
-            f"{diagnosis_name} tablou clinic tratament prevenție evitare alergen alergologie "
-            f"{symptoms} {context} {extra}"
-        ).strip()
-
-        source_results = safe_search_chunks(semantic_query, top_k=5)
+        source_results = []
 
         try:
             treatment_data = get_treatment_details(
@@ -587,19 +582,7 @@ def treatment():
             print(f"[EROARE] get_treatment_details: {e}")
             treatment_data = {}
 
-        try:
-            guideline_results = get_guideline_recommendations(
-                diagnosis_name=diagnosis_name,
-                symptoms=symptoms,
-                context=context,
-                extra=extra,
-                age=age,
-                weight=weight,
-                severity=severity
-            )
-        except Exception as e:
-            print(f"[EROARE] get_guideline_recommendations: {e}")
-            guideline_results = []
+        guideline_results = []
 
         clinical_picture = to_clean_list(treatment_data.get("clinical_picture", []))
         treatment_plan = to_clean_list(treatment_data.get("treatment", []))
