@@ -601,6 +601,8 @@ def treatment():
                     "class": med.get("class", ""),
                     "name": med.get("name", ""),
                     "substance": med.get("substance", ""),
+                    "dose_child": med.get("dose_child", ""),
+                    "dose_adult": med.get("dose_adult", ""),
                     "dose": med.get("dose", ""),
                     "route": med.get("route", ""),
                     "frequency": med.get("frequency", ""),
@@ -609,7 +611,11 @@ def treatment():
                     "adverse_reactions": med.get("adverse_reactions", "")
                 })
 
-                label_parts = [med.get("class", ""), med.get("name", ""), med.get("dose", "")]
+                label_parts = [
+                    med.get("class", ""),
+                    med.get("name", ""),
+                    med.get("dose_adult", "") or med.get("dose", "")
+                ]
                 label = " | ".join([p for p in label_parts if p])
                 if label:
                     simple_medications.append(label)
