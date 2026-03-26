@@ -94,7 +94,27 @@ def initialize_resources():
     return pdf_paths, book_documents, semantic_index, diagnoses, knowledge_ro
 
 
-PDF_PATHS, BOOK_DOCUMENTS, SEMANTIC_INDEX, DIAGNOSES, KNOWLEDGE_RO = initialize_resources()
+# Pe Render evităm încărcarea resurselor grele la startup,
+# astfel încât aplicația să deschidă portul rapid.
+# Local poți păstra inițializarea completă.
+if os.environ.get("RENDER") or os.environ.get("IS_RENDER") or os.environ.get("RENDER_SERVICE_ID"):
+    PDF_PATHS = []
+    BOOK_DOCUMENTS = []
+    SEMANTIC_INDEX = None
+
+    try:
+        DIAGNOSES = load_diagnoses(DIAGNOSES_FILE)
+    except Exception as e:
+        print(f"[EROARE] load_diagnoses: {e}")
+        DIAGNOSES = []
+
+    try:
+        KNOWLEDGE_RO = load_romanian_knowledge(KNOWLEDGE_FILE)
+    except Exception as e:
+        print(f"[EROARE] load_romanian_knowledge: {e}")
+        KNOWLEDGE_RO = {}
+else:
+    PDF_PATHS, BOOK_DOCUMENTS, SEMANTIC_INDEX, DIAGNOSES, KNOWLEDGE_RO = initialize_resources()
 
 
 def safe_search_chunks(query, top_k=5):
@@ -276,10 +296,8 @@ def health():
 @app.route("/ask", methods=["POST"])
 def ask():
     """
-    IMPORTANT:
-    Frontend-ul tău poate chema /ask.
-    Ca să nu mai primești doar 'Date primite cu succes',
-    /ask folosește acum aceeași logică precum /analyze.
+    Frontend-ul poate chema /ask.
+    Îi dăm aceeași logică precum /analyze.
     """
     try:
         data = request.get_json(force=True)
