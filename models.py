@@ -1099,3 +1099,4 @@ def get_treatment_details(diagnosis_name, knowledge_ro=None, age=None):
         ]
 
     return fallback
+
