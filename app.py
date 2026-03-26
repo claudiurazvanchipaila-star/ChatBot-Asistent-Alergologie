@@ -34,7 +34,8 @@ if os.path.exists(BOOKS_DIR):
     ]
 
 book_documents = load_books(pdf_paths) if pdf_paths else []
-semantic_index = initialize_semantic_index(book_documents, pdf_paths, force_rebuild=False)
+semantic_index = initialize_semantic_index(book_documents, pdf_paths, force_rebuild=False) if pdf_paths else None
+
 diagnoses = load_diagnoses("data/diagnoses.json")
 knowledge_ro = load_romanian_knowledge("data/allergy_knowledge_ro.json")
 
@@ -108,7 +109,7 @@ def analyze():
     differential, clinical_output = rank_differential_diagnoses(full_text, diagnoses)
 
     semantic_query = f"{symptoms}. {extra}".strip()
-    results = search_chunks(semantic_query, semantic_index, top_k=8)
+    results = search_chunks(semantic_query, semantic_index, top_k=8) if semantic_index is not None else []
 
     return jsonify({
         "differential": differential[:5],
@@ -124,7 +125,7 @@ def treatment():
     diagnosis_name = data.get("diagnosis", "")
 
     semantic_query = f"{diagnosis_name} tablou clinic tratament prevenție evitare alergen alergologie"
-    source_results = search_chunks(semantic_query, semantic_index, top_k=5)
+    source_results = search_chunks(semantic_query, semantic_index, top_k=5) if semantic_index is not None else []
     treatment_data = get_treatment_details(diagnosis_name, knowledge_ro)
 
     return jsonify({
@@ -178,7 +179,7 @@ def export_pdf():
 
     buffer = BytesIO()
     pdf = canvas.Canvas(buffer, pagesize=A4)
-    width, height = A4
+    _, height = A4
 
     y = height - 40
 
@@ -188,7 +189,13 @@ def export_pdf():
     y -= 28
 
     pdf.setFont(fonts["regular"], 10)
-    y = draw_wrapped_text(pdf, f"Data generării: {datetime.now().strftime('%d.%m.%Y %H:%M')}", 40, y, font_name=fonts["regular"])
+    y = draw_wrapped_text(
+        pdf,
+        f"Data generării: {datetime.now().strftime('%d.%m.%Y %H:%M')}",
+        40,
+        y,
+        font_name=fonts["regular"]
+    )
     y -= 8
 
     sections = [
@@ -235,7 +242,15 @@ def export_pdf():
 
     pdf.setFont(fonts["italic"], 9)
     disclaimer = "Document orientativ. Nu înlocuiește consultul medical, examenul clinic și decizia terapeutică."
-    y = draw_wrapped_text(pdf, disclaimer, 40, y, max_width=500, font_name=fonts["italic"], font_size=9)
+    y = draw_wrapped_text(
+        pdf,
+        disclaimer,
+        40,
+        y,
+        max_width=500,
+        font_name=fonts["italic"],
+        font_size=9
+    )
 
     pdf.save()
     buffer.seek(0)
