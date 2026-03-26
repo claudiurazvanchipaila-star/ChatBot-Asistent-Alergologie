@@ -1,0 +1,88 @@
+[
+  {
+    "saved_at": "2026-03-26T00:29:06",
+    "patient_summary": {
+      "symptoms": "strănut, rinoree, prurit nazal, lăcrimare",
+      "age": "25",
+      "sex": "masculin",
+      "extra": "simptome sezoniere, expunere la polen"
+    },
+    "analysis": {
+      "alternatives": [
+        "Conjunctivită alergică"
+      ],
+      "associated_diagnosis": null,
+      "limits": [
+        "Lipsa semnelor infecțioase sau a simptomelor de alarmă susține o cauză non-infecțioasă."
+      ],
+      "notes": [
+        "Rezultatul este orientativ și trebuie corelat cu anamneza completă, examenul clinic și investigațiile paraclinice."
+      ],
+      "primary_diagnosis": "Rinită alergică",
+      "primary_probability": "mare",
+      "recommended_tests": [
+        "Prick test la aeroalergeni uzuali",
+        "IgE specifice orientate de anamneză",
+        "Evaluare ORL dacă simptomatologia este persistentă sau atipică"
+      ],
+      "red_flags": [],
+      "supports": [
+        "Simptomatologia nazală și/sau oculară susține o afectare alergică de căi aeriene superioare.",
+        "Caracterul sezonier sau expunerea la polen susține o cauză alergică inhalatorie."
+      ],
+      "treatment_plan": [
+        "Evitarea alergenului suspectat, pe cât posibil",
+        "Antihistaminic oral de generația a II-a, în funcție de context",
+        "Corticosteroid intranazal dacă simptomatologia este moderat-severă sau persistentă",
+        "Spălături nazale cu ser fiziologic ca adjuvant"
+      ]
+    }
+  },
+  {
+    "saved_at": "2026-03-26T00:42:55",
+    "patient_summary": {
+      "symptoms": "strănut, rinoree, prurit nazal, lăcrimare",
+      "age": "22",
+      "sex": "masculin",
+      "extra": "expunere la polen"
+    },
+    "analysis": {
+      "alternatives": [
+        "Conjunctivită alergică"
+      ],
+      "associated_diagnosis": "Asociere probabilă rinită alergică + conjunctivită alergică",
+      "confidence": "mare",
+      "limits": [
+        "Lipsa semnelor infecțioase sau a simptomelor de alarmă susține o cauză non-infecțioasă."
+      ],
+      "notes": [
+        "Rezultatul este orientativ și trebuie corelat cu anamneza completă, examenul clinic și investigațiile paraclinice."
+      ],
+      "primary_diagnosis": "Rinită alergică",
+      "primary_probability": "mare",
+      "recommended_tests": [
+        "Prick test la aeroalergeni uzuali",
+        "IgE specifice orientate de anamneză",
+        "Evaluare ORL dacă simptomatologia este persistentă sau atipică",
+        "Spirometrie cu test bronhodilatator",
+        "Peak-flow monitoring, dacă este disponibil",
+        "Evaluare alergologică pentru sensibilizare la aeroalergeni"
+      ],
+      "red_flags": [],
+      "severity": "ușoară",
+      "supports": [
+        "Simptomatologia nazală și/sau oculară susține o afectare alergică de căi aeriene superioare.",
+        "Caracterul sezonier sau expunerea la alergeni inhalatori susține o cauză alergică respiratorie."
+      ],
+      "treatment_plan": [
+        "Evitarea alergenului suspectat, pe cât posibil",
+        "Antihistaminic oral de generația a II-a, în funcție de context",
+        "Corticosteroid intranazal dacă simptomatologia este moderat-severă sau persistentă",
+        "Spălături nazale cu ser fiziologic ca adjuvant",
+        "Evaluarea controlului simptomelor respiratorii și a frecvenței episoadelor",
+        "Bronhodilatator de salvare, conform recomandării medicale",
+        "Corticoterapie inhalatorie dacă tabloul clinic susține inflamație bronșică persistentă"
+      ]
+    }
+  }
+]

@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asistent clinic în alergologie</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #eef2f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 980px;
+            margin: 30px auto;
+            background: #f7f7f7;
+            padding: 20px;
+            border-radius: 14px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+
+        h1 {
+            color: #165b84;
+            margin-bottom: 18px;
+        }
+
+        .warning {
+            background: #f3e4b5;
+            color: #8a6500;
+            padding: 14px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-top: 16px;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        input, textarea, button, select {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 14px;
+            border-radius: 8px;
+            border: 1px solid #c7d0d9;
+            font-size: 16px;
+        }
+
+        textarea {
+            min-height: 110px;
+            resize: vertical;
+        }
+
+        button {
+            margin-top: 18px;
+            background: #0f5f87;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #0b4f70;
+        }
+
+        .secondary-btn {
+            background: #3c6e71;
+        }
+
+        .secondary-btn:hover {
+            background: #2f585b;
+        }
+
+        .result-box {
+            margin-top: 24px;
+            padding: 18px;
+            background: white;
+            border-radius: 10px;
+            border: 1px solid #d9e1e7;
+        }
+
+        .section-title {
+            color: #165b84;
+            margin-top: 0;
+            margin-bottom: 12px;
+        }
+
+        .card {
+            background: #f9fbfc;
+            border-left: 4px solid #0f5f87;
+            padding: 12px;
+            margin-bottom: 12px;
+            border-radius: 6px;
+            line-height: 1.5;
+        }
+
+        .card-alert {
+            border-left-color: #b00020;
+            background: #fff5f6;
+        }
+
+        .card-main {
+            border-left-color: #1f7a4d;
+            background: #f4fbf7;
+        }
+
+        .muted {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .loading {
+            margin-top: 15px;
+            color: #165b84;
+            font-weight: bold;
+        }
+
+        .error {
+            margin-top: 15px;
+            color: #b00020;
+            font-weight: bold;
+        }
+
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .two-col {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        ul.clean-list {
+            margin: 0;
+            padding-left: 18px;
+        }
+
+        ul.clean-list li {
+            margin-bottom: 8px;
+        }
+
+        .chip {
+            display: inline-block;
+            background: #e8f1f7;
+            color: #165b84;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 13px;
+            margin: 4px 6px 0 0;
+        }
+
+        .source-meta {
+            font-size: 13px;
+            color: #4d6b7c;
+            margin-top: 8px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: 6px;
+        }
+
+        .badge-mare {
+            background: #d9f2e3;
+            color: #0b6e3d;
+        }
+
+        .badge-moderata {
+            background: #fff1cc;
+            color: #8a6500;
+        }
+
+        .badge-redusa {
+            background: #f8d7da;
+            color: #8b1e2d;
+        }
+
+        .action-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        @media (max-width: 768px) {
+            .action-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Asistent clinic în alergologie</h1>
+
+        <div class="warning">
+            Instrument de suport pentru medic, bazat pe surse PDF și o bază de cunoștințe în limba română. Nu înlocuiește judecata clinică.
+        </div>
+
+        <label for="symptoms">Simptome</label>
+        <textarea id="symptoms" placeholder="Ex: strănut, rinoree, prurit nazal, lăcrimare, wheezing"></textarea>
+
+        <div class="two-col">
+            <div>
+                <label for="age">Vârstă</label>
+                <input id="age" type="text" placeholder="Ex: 24">
+            </div>
+            <div>
+                <label for="sex">Sex</label>
+                <input id="sex" type="text" placeholder="Ex: feminin">
+            </div>
+        </div>
+
+        <label for="extra">Alte date clinice</label>
+        <textarea id="extra" placeholder="Ex: simptome sezoniere, expunere la polen, antecedente atopice"></textarea>
+
+        <button type="button" onclick="trimiteDate()">Generează diagnosticul diferențial</button>
+
+        <div id="loading" class="loading" style="display:none;">Se analizează...</div>
+        <div id="error" class="error" style="display:none;"></div>
+        <div id="rezultat" class="result-box" style="display:none;"></div>
+    </div>
+
+    <script>
+        let lastAnalysisPayload = null;
+
+        function probabilityBadge(probability) {
+            const normalized = (probability || "").toLowerCase();
+
+            let className = "badge badge-redusa";
+            if (normalized === "mare") className = "badge badge-mare";
+            if (normalized === "moderată" || normalized === "moderata") className = "badge badge-moderata";
+            if (normalized === "redusă" || normalized === "redusa") className = "badge badge-redusa";
+
+            return `<span class="${className}">Probabilitate: ${probability || "-"}</span>`;
+        }
+
+        function severityCard(severity) {
+            let bg = "#eef2f5";
+            if (severity === "severă") bg = "#f8d7da";
+            if (severity === "moderată") bg = "#fff3cd";
+            if (severity === "ușoară") bg = "#d9f2e3";
+
+            return `
+                <div class="card" style="background:${bg}">
+                    <strong>Severitate estimată:</strong> ${severity || "-"}
+                </div>
+            `;
+        }
+
+        async function trimiteDate() {
+            const symptoms = document.getElementById("symptoms").value.trim();
+            const age = document.getElementById("age").value.trim();
+            const sex = document.getElementById("sex").value.trim();
+            const extra = document.getElementById("extra").value.trim();
+
+            const rezultat = document.getElementById("rezultat");
+            const loading = document.getElementById("loading");
+            const errorBox = document.getElementById("error");
+
+            rezultat.style.display = "none";
+            rezultat.innerHTML = "";
+            errorBox.style.display = "none";
+            errorBox.textContent = "";
+
+            if (!symptoms) {
+                errorBox.textContent = "Te rog introdu simptomele.";
+                errorBox.style.display = "block";
+                return;
+            }
+
+            loading.style.display = "block";
+
+            try {
+                const response = await fetch("/analyze", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        symptoms: symptoms,
+                        age: age,
+                        sex: sex,
+                        extra: extra
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error("Serverul a răspuns cu eroare.");
+                }
+
+                const data = await response.json();
+                const c = data.clinical_output || {};
+
+                lastAnalysisPayload = {
+                    patient_summary: { symptoms, age, sex, extra },
+                    analysis: c
+                };
+
+                let html = "";
+
+                if (c.red_flags && c.red_flags.length > 0) {
+                    html += `<h2 class="section-title">Red flags</h2>`;
+                    c.red_flags.forEach(x => {
+                        html += `<div class="card card-alert">${x}</div>`;
+                    });
+                }
+
+                html += `<h2 class="section-title">Diagnostic diferențial</h2>`;
+
+                if (data.differential && data.differential.length > 0) {
+                    data.differential.forEach((item, index) => {
+                        const cardClass = index === 0 ? "card card-main" : "card";
+                        html += `
+                            <div class="${cardClass}">
+                                <strong>${item.name || "Diagnostic"}</strong><br>
+                                ${probabilityBadge(item.probability)}
+                                <div class="muted">Scor: ${item.score ?? "-"}</div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    html += `<p>Nu au fost generate diagnostice diferențiale.</p>`;
+                }
+
+                html += `<h2 class="section-title">Interpretare clinică</h2>`;
+                html += `
+                    <div class="card card-main">
+                        <strong>Diagnostic principal:</strong><br>
+                        ${c.primary_diagnosis || "-"}<br>
+                        ${probabilityBadge(c.primary_probability)}
+                    </div>
+                `;
+
+                html += severityCard(c.severity);
+
+                html += `
+                    <div class="card">
+                        <strong>Grad de încredere:</strong> ${c.confidence || "-"}
+                    </div>
+                `;
+
+                if (c.associated_diagnosis) {
+                    html += `
+                        <div class="card">
+                            <strong>Asociere probabilă:</strong><br>
+                            ${c.associated_diagnosis}
+                        </div>
+                    `;
+                }
+
+                if (c.alternatives && c.alternatives.length > 0) {
+                    html += `
+                        <div class="card">
+                            <strong>Diagnostice alternative:</strong><br>
+                            ${c.alternatives.map(x => `<span class="chip">${x}</span>`).join("")}
+                        </div>
+                    `;
+                }
+
+                if (c.supports && c.supports.length > 0) {
+                    html += `<h2 class="section-title">Elemente care susțin diagnosticul</h2>`;
+                    c.supports.forEach(x => {
+                        html += `<div class="card">${x}</div>`;
+                    });
+                }
+
+                if (c.limits && c.limits.length > 0) {
+                    html += `<h2 class="section-title">Elemente de interpretat cu prudență</h2>`;
+                    c.limits.forEach(x => {
+                        html += `<div class="card">${x}</div>`;
+                    });
+                }
+
+                if (c.recommended_tests && c.recommended_tests.length > 0) {
+                    html += `<h2 class="section-title">Investigații recomandate</h2>`;
+                    html += `<div class="card"><ul class="clean-list">`;
+                    c.recommended_tests.forEach(x => {
+                        html += `<li>${x}</li>`;
+                    });
+                    html += `</ul></div>`;
+                }
+
+                if (c.treatment_plan && c.treatment_plan.length > 0) {
+                    html += `<h2 class="section-title">Conduită orientativă</h2>`;
+                    html += `<div class="card"><ul class="clean-list">`;
+                    c.treatment_plan.forEach(x => {
+                        html += `<li>${x}</li>`;
+                    });
+                    html += `</ul></div>`;
+                }
+
+                if (data.differential && data.differential.length > 0) {
+                    html += `<h2 class="section-title">Alege diagnosticul final</h2>`;
+                    html += `<div class="card">`;
+                    html += `<label for="finalDiagnosis">Selectează diagnosticul final:</label>`;
+                    html += `<select id="finalDiagnosis">`;
+                    data.differential.forEach(item => {
+                        html += `<option value="${item.name}">${item.name}</option>`;
+                    });
+                    html += `</select>`;
+                    html += `<button type="button" onclick="cereTratament()" style="margin-top:12px;">Generează tratament și prevenție</button>`;
+                    html += `<div id="treatmentResult"></div>`;
+                    html += `</div>`;
+                }
+
+                html += `
+                    <div class="action-grid">
+                        <button type="button" class="secondary-btn" onclick="salveazaCaz()">Salvează cazul</button>
+                        <button type="button" class="secondary-btn" onclick="exportaPDF()">Export PDF pentru pacient</button>
+                    </div>
+                `;
+
+                html += `<h2 class="section-title">Fragmente relevante din surse</h2>`;
+                if (data.results && data.results.length > 0) {
+                    data.results.forEach(fragment => {
+                        html += `
+                            <div class="card">
+                                <div>${fragment.text}</div>
+                                <div class="source-meta">
+                                    Sursă: ${fragment.source} | Pagina: ${fragment.page} | Similaritate: ${fragment.score}
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    html += `<p>Nu au fost găsite fragmente relevante în PDF-urile încărcate.</p>`;
+                }
+
+                if (c.notes && c.notes.length > 0) {
+                    html += `<h2 class="section-title">Note</h2>`;
+                    c.notes.forEach(x => {
+                        html += `<div class="card">${x}</div>`;
+                    });
+                }
+
+                if (data.warning) {
+                    html += `<p class="muted"><em>${data.warning}</em></p>`;
+                }
+
+                rezultat.innerHTML = html;
+                rezultat.style.display = "block";
+            } catch (err) {
+                errorBox.textContent = "A apărut o eroare la analiză. Verifică terminalul.";
+                errorBox.style.display = "block";
+                console.error(err);
+            } finally {
+                loading.style.display = "none";
+            }
+        }
+
+        async function cereTratament() {
+            const select = document.getElementById("finalDiagnosis");
+            const treatmentResult = document.getElementById("treatmentResult");
+
+            if (!select || !treatmentResult) return;
+
+            const diagnosis = select.value;
+
+            treatmentResult.innerHTML = `<div class="loading">Se generează recomandările...</div>`;
+
+            try {
+                const response = await fetch("/treatment", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ diagnosis: diagnosis })
+                });
+
+                if (!response.ok) {
+                    throw new Error("Eroare la generarea recomandărilor.");
+                }
+
+                const data = await response.json();
+
+                let html = `<h2 class="section-title">Recomandări pentru: ${data.diagnosis}</h2>`;
+
+                if (data.clinical_picture && data.clinical_picture.length > 0) {
+                    html += `<div class="card"><strong>Tablou clinic:</strong><ul class="clean-list">`;
+                    data.clinical_picture.forEach(x => {
+                        html += `<li>${x}</li>`;
+                    });
+                    html += `</ul></div>`;
+                }
+
+                if (data.treatment && data.treatment.length > 0) {
+                    html += `<div class="card"><strong>Tratament orientativ:</strong><ul class="clean-list">`;
+                    data.treatment.forEach(x => {
+                        html += `<li>${x}</li>`;
+                    });
+                    html += `</ul></div>`;
+                }
+
+                if (data.prevention && data.prevention.length > 0) {
+                    html += `<div class="card"><strong>Măsuri de prevenție:</strong><ul class="clean-list">`;
+                    data.prevention.forEach(x => {
+                        html += `<li>${x}</li>`;
+                    });
+                    html += `</ul></div>`;
+                }
+
+                if (data.allergen_avoidance && data.allergen_avoidance.length > 0) {
+                    html += `<div class="card"><strong>Evitarea alergenului:</strong><ul class="clean-list">`;
+                    data.allergen_avoidance.forEach(x => {
+                        html += `<li>${x}</li>`;
+                    });
+                    html += `</ul></div>`;
+                }
+
+                if (data.source_results && data.source_results.length > 0) {
+                    html += `<h2 class="section-title">Fragmente suplimentare din surse</h2>`;
+                    data.source_results.forEach(fragment => {
+                        html += `
+                            <div class="card">
+                                <div>${fragment.text}</div>
+                                <div class="source-meta">
+                                    Sursă: ${fragment.source} | Pagina: ${fragment.page} | Similaritate: ${fragment.score}
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+
+                treatmentResult.innerHTML = html;
+            } catch (err) {
+                treatmentResult.innerHTML = `<div class="error">A apărut o eroare la generarea recomandărilor.</div>`;
+                console.error(err);
+            }
+        }
+
+        async function salveazaCaz() {
+            if (!lastAnalysisPayload) {
+                alert("Generează mai întâi analiza.");
+                return;
+            }
+
+            try {
+                const response = await fetch("/save_case", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(lastAnalysisPayload)
+                });
+
+                const data = await response.json();
+                alert(data.message || "Caz salvat.");
+            } catch (err) {
+                alert("Nu s-a putut salva cazul.");
+                console.error(err);
+            }
+        }
+
+        async function exportaPDF() {
+            if (!lastAnalysisPayload) {
+                alert("Generează mai întâi analiza.");
+                return;
+            }
+
+            try {
+                const response = await fetch("/export_pdf", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(lastAnalysisPayload)
+                });
+
+                if (!response.ok) {
+                    throw new Error("Eroare la export PDF.");
+                }
+
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "raport_alergologie_pacient.pdf";
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+            } catch (err) {
+                alert("Nu s-a putut exporta PDF-ul.");
+                console.error(err);
+            }
+        }
+    </script>
+</body>
+</html>

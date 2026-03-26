@@ -1,0 +1,70 @@
+[
+  {
+    "name": "Rinită alergică",
+    "keywords": [
+      "strănut", "rinoree", "nas înfundat", "congestie nazală",
+      "prurit nazal", "mâncărime nazală", "ochi care lăcrimează",
+      "prurit ocular", "sezonier", "polen", "acarieni"
+    ],
+    "treatment_terms": ["rinită alergică", "tratament", "antihistaminic", "corticosteroid intranazal"],
+    "prevention_terms": ["evitare alergen", "polen", "acarieni", "prevenție", "control mediu"]
+  },
+  {
+    "name": "Conjunctivită alergică",
+    "keywords": [
+      "prurit ocular", "mâncărime la ochi", "ochi roșii",
+      "lăcrimare", "edem palpebral", "secreții apoase"
+    ],
+    "treatment_terms": ["conjunctivită alergică", "tratament", "antihistaminic ocular"],
+    "prevention_terms": ["evitare alergen", "prevenție", "polen", "acarieni"]
+  },
+  {
+    "name": "Astm alergic",
+    "keywords": [
+      "wheezing", "șuierături", "tuse", "dispnee",
+      "senzație de constricție toracică", "respirație grea",
+      "agravare nocturnă", "agravare la alergeni"
+    ],
+    "treatment_terms": ["astm alergic", "tratament", "bronhodilatator", "corticosteroid inhalator"],
+    "prevention_terms": ["evitare alergen", "control expunere", "acarieni", "mucegai", "polen"]
+  },
+  {
+    "name": "Dermatită atopică",
+    "keywords": [
+      "prurit", "eczeme", "erupție", "piele uscată",
+      "lichenificare", "leziuni flexurale", "mâncărime", "dermatită"
+    ],
+    "treatment_terms": ["dermatită atopică", "tratament", "emolient", "corticosteroid topic"],
+    "prevention_terms": ["îngrijirea pielii", "evitare iritanți", "prevenție"]
+  },
+  {
+    "name": "Urticarie alergică / Angioedem",
+    "keywords": [
+      "urticarie", "papule", "plăci pruriginoase",
+      "edem buze", "edem pleoape", "angioedem",
+      "mâncărime", "erupție fugace"
+    ],
+    "treatment_terms": ["urticarie", "angioedem", "tratament", "antihistaminic"],
+    "prevention_terms": ["evitare declanșator", "prevenție", "alergen", "medicament"]
+  },
+  {
+    "name": "Alergie alimentară",
+    "keywords": [
+      "urticarie după masă", "prurit oral", "furnicături orale",
+      "edem buze", "vărsături", "dureri abdominale",
+      "diaree", "wheezing după aliment", "reacție după aliment"
+    ],
+    "treatment_terms": ["alergie alimentară", "tratament", "evitare aliment", "anafilaxie"],
+    "prevention_terms": ["evitare aliment", "etichetare", "prevenție", "educație"]
+  },
+  {
+    "name": "Anafilaxie",
+    "keywords": [
+      "dispnee severă", "wheezing", "stridor", "voce răgușită",
+      "hipotensiune", "amețeală", "colaps", "edem lingual",
+      "dificultăți la înghițire", "reacție severă", "șoc anafilactic"
+    ],
+    "treatment_terms": ["anafilaxie", "tratament de urgență", "adrenalină", "epinefrină"],
+    "prevention_terms": ["autoinjector", "evitare alergen", "plan de acțiune", "prevenție"]
+  }
+]

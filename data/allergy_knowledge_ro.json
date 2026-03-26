@@ -1,0 +1,183 @@
+[
+  {
+    "name": "Rinită alergică",
+    "clinical_picture": [
+      "Strănut repetat",
+      "Rinoree apoasă",
+      "Prurit nazal",
+      "Congestie nazală / nas înfundat",
+      "Simptome sezoniere sau perene, în funcție de alergen",
+      "Poate fi asociată cu simptome oculare"
+    ],
+    "treatment": [
+      "Antihistaminic oral de generația a II-a",
+      "Corticosteroid intranazal dacă simptomatologia este moderată-severă sau persistentă",
+      "Spălături nazale cu ser fiziologic",
+      "Imunoterapie alergen-specifică în cazuri selectate"
+    ],
+    "prevention": [
+      "Reducerea expunerii la polen, acarieni sau alți alergeni incriminați",
+      "Controlul mediului interior",
+      "Monitorizarea relației dintre sezon / expunere și simptome"
+    ],
+    "allergen_avoidance": [
+      "Limitarea expunerii la polen în perioadele de vârf",
+      "Schimbarea hainelor după expunere externă",
+      "Igienă nazală după contactul cu alergenii"
+    ]
+  },
+  {
+    "name": "Conjunctivită alergică",
+    "clinical_picture": [
+      "Prurit ocular intens",
+      "Lăcrimare",
+      "Roșeață oculară",
+      "Senzație de arsură sau usturime",
+      "Edem palpebral posibil",
+      "Formele sezoniere sunt frecvent legate de polen; cele perene de acarieni, praf, epiteliu de animale"
+    ],
+    "treatment": [
+      "Antihistaminic ocular, în funcție de context",
+      "Măsuri de igienă oculară",
+      "Tratament simptomatic local recomandat de specialist",
+      "Controlul alergiei nazale asociate, când există"
+    ],
+    "prevention": [
+      "Reducerea expunerii la aeroalergeni",
+      "Evitarea frecării ochilor",
+      "Monitorizarea sezonalității simptomelor"
+    ],
+    "allergen_avoidance": [
+      "Limitarea expunerii la polen și praf",
+      "Igienă oculară după expunere",
+      "Protecție oculară în medii cu expunere crescută"
+    ]
+  },
+  {
+    "name": "Astm alergic",
+    "clinical_picture": [
+      "Wheezing / șuierături",
+      "Dispnee",
+      "Tuse, inclusiv tuse nocturnă",
+      "Constricție toracică",
+      "Simptome agravate la alergeni, noaptea sau sezonier",
+      "Poate fi asociat cu rinită alergică"
+    ],
+    "treatment": [
+      "Bronhodilatator de salvare, conform recomandării medicale",
+      "Corticoterapie inhalatorie dacă este indicată",
+      "Evaluarea controlului simptomelor și a frecvenței episoadelor",
+      "Biologice în forme selectate, severe, conform specialistului"
+    ],
+    "prevention": [
+      "Reducerea expunerii la triggerii alergici și iritativi",
+      "Educație privind tehnica inhalatorie",
+      "Plan de monitorizare a controlului astmului"
+    ],
+    "allergen_avoidance": [
+      "Evitarea aeroalergenilor relevanți",
+      "Reducerea expunerii la fum, poluanți și iritanți respiratori",
+      "Controlul mediului interior"
+    ]
+  },
+  {
+    "name": "Anafilaxie",
+    "clinical_picture": [
+      "Debut rapid după expunerea la un alergen",
+      "Dispnee severă, wheezing sau stridor",
+      "Edem lingual sau angioedem",
+      "Voce răgușită / dificultăți la înghițire",
+      "Hipotensiune, amețeală, colaps",
+      "Poate asocia simptome cutanate, digestive și respiratorii"
+    ],
+    "treatment": [
+      "Tratament de urgență conform protocolului medical",
+      "Adrenalină / epinefrină conform indicației medicale",
+      "Monitorizare medicală imediată",
+      "Evaluare ulterioară alergologică pentru identificarea cauzei"
+    ],
+    "prevention": [
+      "Plan de acțiune pentru reacții severe",
+      "Educație privind recunoașterea precoce a simptomelor",
+      "Prescripție și instruire pentru autoinjector, dacă este indicat"
+    ],
+    "allergen_avoidance": [
+      "Evitarea strictă a alergenului implicat după confirmare",
+      "Citirea etichetelor / evitarea expunerii accidentale",
+      "Informarea familiei sau a personalului relevant privind riscul"
+    ]
+  },
+  {
+    "name": "Urticarie alergică / Angioedem",
+    "clinical_picture": [
+      "Papule sau plăci pruriginoase",
+      "Leziuni fugace migratoare",
+      "Edem la nivelul buzelor, pleoapelor sau altor zone",
+      "Prurit important",
+      "Poate apărea izolat sau în context de reacție alergică"
+    ],
+    "treatment": [
+      "Antihistaminic, conform recomandării medicale",
+      "Monitorizarea evoluției leziunilor și a edemului",
+      "Evaluare urgentă dacă apar semne respiratorii sau circulatorii",
+      "În forme cronice selectate, terapii suplimentare recomandate de specialist"
+    ],
+    "prevention": [
+      "Identificarea și evitarea triggerului suspectat",
+      "Documentarea contextului de apariție a episoadelor"
+    ],
+    "allergen_avoidance": [
+      "Evitarea alimentului, medicamentului sau altui trigger suspectat până la clarificare"
+    ]
+  },
+  {
+    "name": "Dermatită atopică",
+    "clinical_picture": [
+      "Prurit cutanat cronic",
+      "Piele uscată",
+      "Eczeme / erupții recurente",
+      "Leziuni flexurale frecvente",
+      "Evoluție cronică, recidivantă",
+      "Asociere posibilă cu rinită alergică sau astm (atopic march)"
+    ],
+    "treatment": [
+      "Emoliente regulate",
+      "Antiinflamator topic, în funcție de severitate și localizare",
+      "Îngrijirea barierei cutanate",
+      "Controlul suprainfecției, dacă este cazul"
+    ],
+    "prevention": [
+      "Hidratarea constantă a tegumentului",
+      "Evitarea iritanților cutanați",
+      "Rutine blânde de îngrijire a pielii"
+    ],
+    "allergen_avoidance": [
+      "Reducerea contactului cu iritanți și factori declanșatori individuali"
+    ]
+  },
+  {
+    "name": "Alergie alimentară",
+    "clinical_picture": [
+      "Reacții după ingestia unui aliment suspect",
+      "Urticarie, angioedem, prurit oral",
+      "Vărsături, dureri abdominale, diaree",
+      "Poate apărea wheezing sau anafilaxie în forme severe",
+      "IgE-mediată poate avea debut rapid"
+    ],
+    "treatment": [
+      "Evitarea alimentului suspectat până la clarificare",
+      "Tratament simptomatic în funcție de severitate și recomandarea medicală",
+      "Adrenalină / epinefrină în reacțiile severe, conform indicației medicale",
+      "Evaluare alergologică pentru confirmare și conduită"
+    ],
+    "prevention": [
+      "Citirea atentă a etichetelor",
+      "Educație privind expunerea accidentală",
+      "Introducerea alimentelor conform recomandărilor actuale și contextului clinic"
+    ],
+    "allergen_avoidance": [
+      "Excluderea alimentului suspectat până la clarificarea diagnosticului",
+      "Atenție la contaminarea încrucișată"
+    ]
+  }
+]
