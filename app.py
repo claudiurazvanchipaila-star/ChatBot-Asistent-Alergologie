@@ -469,6 +469,7 @@ def ask():
         sex = data.get("sex", "")
         weight = data.get("weight", "")
         context = data.get("context", "")
+        triggers = data.get("triggers", "")
         extra = data.get("extra", "")
 
         response_text = (
@@ -478,6 +479,7 @@ def ask():
             f"Sex: {sex or '-'}\n"
             f"Greutate: {weight or '-'}\n"
             f"Context: {context or '-'}\n"
+            f"Expuneri și factori declanșatori: {triggers or '-'}\n"
             f"Alte date: {extra or '-'}"
         )
 
@@ -496,9 +498,10 @@ def analyze():
         sex = str(data.get("sex", "")).strip()
         weight = str(data.get("weight", "")).strip()
         context = str(data.get("context", "")).strip()
+        triggers = str(data.get("triggers", "")).strip()
         extra = str(data.get("extra", "")).strip()
 
-        full_text = " ".join(part for part in [symptoms, context, extra] if part).strip()
+        full_text = " ".join(part for part in [symptoms, context, triggers, extra] if part).strip()
 
         if not full_text:
             return jsonify({
@@ -514,7 +517,7 @@ def analyze():
         differential = normalize_differential_list(raw_differential)
         analysis = normalize_clinical_output(raw_clinical_output, differential)
 
-        semantic_query = " ".join(part for part in [symptoms, context, extra] if part).strip()
+        semantic_query = " ".join(part for part in [symptoms, context, triggers, extra] if part).strip()
         results = safe_search_chunks(semantic_query, top_k=8)
 
         response = {
@@ -533,6 +536,7 @@ def analyze():
                 "sex": sex,
                 "weight": weight,
                 "context": context,
+                "triggers": triggers,
                 "extra": extra
             },
             "results": results,
@@ -560,6 +564,7 @@ def treatment():
         weight = str(data.get("weight", "")).strip()
         symptoms = str(data.get("symptoms", "")).strip()
         context = str(data.get("context", "")).strip()
+        triggers = str(data.get("triggers", "")).strip()
         extra = str(data.get("extra", "")).strip()
         severity = str(data.get("severity", "")).strip()
 
@@ -641,6 +646,8 @@ def treatment():
             "guideline_results": guideline_results,
             "guideline_cards": guideline_cards,
             "source_results": source_results,
+            "context_used": context,
+            "triggers_used": triggers,
             "warning": (
                 "Dozele și exemplele de substanțe active sunt orientative și trebuie confirmate în funcție de "
                 "produsul disponibil, indicația exactă, greutate, severitate, comorbidități, contraindicații și contextul clinic individual."
@@ -720,6 +727,7 @@ def export_pdf():
                 f"Greutate: {patient.get('weight', '-')}",
                 f"Sex: {patient.get('sex', '-')}",
                 f"Context clinic: {patient.get('context', '-')}",
+                f"Expuneri și factori declanșatori: {patient.get('triggers', '-')}",
                 f"Alte date clinice: {patient.get('extra', '-')}"
             ]),
             ("Diagnostic principal", [
