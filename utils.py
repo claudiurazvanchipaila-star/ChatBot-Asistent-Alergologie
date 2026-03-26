@@ -1,6 +1,5 @@
-from langchain_community.document_loaders import PyPDFLoader
 from sentence_transformers import SentenceTransformer
-from sklearn.metrics.pairwise import cosine_similarity
+from pypdf import PdfReader
 import os
 import pickle
 import numpy as np
@@ -10,7 +9,6 @@ import hashlib
 MODEL_NAME = "paraphrase-multilingual-MiniLM-L12-v2"
 INDEX_FILE = "books_index.pkl"
 
-# termeni alergologici pentru filtrarea paginilor relevante
 ALLERGY_TERMS = [
     "allergy", "allergic", "allergen", "allergens",
     "anaphylaxis", "rhinitis", "asthma", "urticaria",
@@ -36,6 +34,7 @@ def get_embedding_model():
 
 def normalize_text(text):
     text = (text or "").lower()
+
     replacements = {
         "stranut": "strănut",
         "lacrimare": "lăcrimare",
@@ -43,20 +42,20 @@ def normalize_text(text):
         "rinita": "rinită",
         "dermatita": "dermatită",
         "conjunctivita": "conjunctivită",
-        "suieraturi": "șuierături"
+        "suieraturi": "șuierături",
+        "varsaturi": "vărsături",
+        "dureri abdominale": "dureri abdominale",
+        "voce ragusita": "voce răgușită"
     }
+
     for old, new in replacements.items():
         text = text.replace(old, new)
+
+    text = re.sub(r"\s+", " ", text).strip()
     return text
 
 
 def get_books_signature(pdf_paths):
-    """
-    Creează o semnătură unică pentru setul curent de PDF-uri:
-    - nume fișier
-    - mărime
-    - data modificării
-    """
     parts = []
 
     for path in sorted(pdf_paths):
@@ -74,6 +73,35 @@ def page_is_relevant(text):
     return hits >= 2
 
 
+def extract_text_from_pdf(path):
+    pages = []
+
+    try:
+        reader = PdfReader(path)
+
+        for page_index, page in enumerate(reader.pages):
+            try:
+                page_text = page.extract_text() or ""
+            except Exception as e:
+                print(f"[AVERTISMENT] Nu am putut extrage textul din pagina {page_index + 1} a fișierului {os.path.basename(path)}: {e}")
+                page_text = ""
+
+            page_text = page_text.strip()
+            if page_text:
+                pages.append({
+                    "page_content": page_text,
+                    "metadata": {
+                        "page": page_index + 1
+                    }
+                })
+
+    except Exception as e:
+        print(f"[AVERTISMENT] Nu am putut deschide PDF-ul {os.path.basename(path)}")
+        print(f"[MOTIV] {e}")
+
+    return pages
+
+
 def load_books(pdf_paths):
     documents = []
 
@@ -82,21 +110,25 @@ def load_books(pdf_paths):
         print(f"[INFO] Încep încărcarea: {file_name}")
 
         try:
-            loader = PyPDFLoader(path)
-            loaded_docs = loader.load()
+            loaded_pages = extract_text_from_pdf(path)
 
             filtered_docs = []
-            for doc in loaded_docs:
-                page_text = (doc.page_content or "").strip()
+            for item in loaded_pages:
+                page_text = (item.get("page_content") or "").strip()
                 if not page_text:
                     continue
 
                 if page_is_relevant(page_text):
-                    doc.metadata["source_name"] = file_name
-                    filtered_docs.append(doc)
+                    filtered_docs.append({
+                        "page_content": page_text,
+                        "metadata": {
+                            "source_name": file_name,
+                            "page": item.get("metadata", {}).get("page", "?")
+                        }
+                    })
 
             documents.extend(filtered_docs)
-            print(f"[OK] Încărcat: {file_name} | pagini relevante: {len(filtered_docs)} / {len(loaded_docs)}")
+            print(f"[OK] Încărcat: {file_name} | pagini relevante: {len(filtered_docs)} / {len(loaded_pages)}")
 
         except Exception as e:
             print(f"[AVERTISMENT] Nu am putut încărca: {file_name}")
@@ -120,8 +152,10 @@ def split_text(text, chunk_size=700, overlap=120):
         chunk = text[start:end].strip()
         if chunk:
             chunks.append(chunk)
+
         if end == text_length:
             break
+
         start = max(end - overlap, 0)
 
     return chunks
@@ -131,7 +165,8 @@ def sentence_split(text):
     text = (text or "").strip()
     if not text:
         return []
-    sentences = re.split(r'(?<=[.!?])\s+', text)
+
+    sentences = re.split(r"(?<=[.!?])\s+", text)
     return [s.strip() for s in sentences if len(s.strip()) > 40]
 
 
@@ -146,12 +181,13 @@ def prepare_chunks(documents):
     per_source_count = {}
 
     for doc in documents:
-        page_text = (doc.page_content or "").strip()
+        page_text = (doc.get("page_content") or "").strip()
         if not page_text:
             continue
 
-        source = doc.metadata.get("source_name", "Sursă necunoscută")
-        page = doc.metadata.get("page", "?")
+        metadata = doc.get("metadata", {})
+        source = metadata.get("source_name", "Sursă necunoscută")
+        page = metadata.get("page", "?")
 
         page_chunks = split_text(page_text)
 
@@ -160,12 +196,12 @@ def prepare_chunks(documents):
             if chunk_is_relevant(chunk):
                 useful_chunks.append(chunk)
 
-        useful_chunks = useful_chunks[:2]  # maxim 2 chunk-uri / pagină
+        useful_chunks = useful_chunks[:2]
 
         for chunk in useful_chunks:
             current_count = per_source_count.get(source, 0)
 
-            if current_count >= 600:  # maxim 600 chunk-uri / sursă
+            if current_count >= 600:
                 continue
 
             prepared.append({
@@ -217,6 +253,7 @@ def save_semantic_index(index_data, filepath=INDEX_FILE):
 def load_semantic_index(filepath=INDEX_FILE):
     if not os.path.exists(filepath):
         return None
+
     with open(filepath, "rb") as f:
         return pickle.load(f)
 
@@ -262,6 +299,14 @@ def pick_best_sentence(chunk_text, query_words):
     return best_sentence[:700].strip()
 
 
+def cosine_similarity_manual(query_embedding, embeddings):
+    if embeddings is None or len(embeddings) == 0:
+        return np.array([])
+
+    query_vector = query_embedding[0]
+    return np.dot(embeddings, query_vector)
+
+
 def search_chunks(query, semantic_index, top_k=8):
     query = (query or "").strip()
     if not query:
@@ -274,9 +319,13 @@ def search_chunks(query, semantic_index, top_k=8):
         return []
 
     model = get_embedding_model()
-    query_embedding = model.encode([query], convert_to_numpy=True, normalize_embeddings=True)
+    query_embedding = model.encode(
+        [query],
+        convert_to_numpy=True,
+        normalize_embeddings=True
+    )
 
-    scores = cosine_similarity(query_embedding, embeddings)[0]
+    scores = cosine_similarity_manual(query_embedding, embeddings)
     ranked_idx = np.argsort(scores)[::-1]
 
     query_words = [w for w in re.findall(r"\w+", query.lower()) if len(w) > 3]
@@ -286,6 +335,7 @@ def search_chunks(query, semantic_index, top_k=8):
 
     for idx in ranked_idx:
         score = float(scores[idx])
+
         if score < 0.22:
             continue
 
