@@ -286,6 +286,63 @@ function formatSourceItem(item) {
     `;
 }
 
+function formatKeyLabel(key) {
+    return String(key)
+        .replaceAll("_", " ")
+        .replace(/\b\w/g, char => char.toUpperCase());
+}
+
+function formatArrayValue(arr, indent = "") {
+    if (!Array.isArray(arr) || arr.length === 0) {
+        return indent + "-";
+    }
+
+    return arr.map(item => {
+        if (typeof item === "object" && item !== null) {
+            return indent + "- " + formatClinicalOutput(item, indent + "  ").trim();
+        }
+        return indent + "- " + safeValue(item);
+    }).join("\n");
+}
+
+function formatClinicalOutput(value, indent = "") {
+    if (value === null || value === undefined) {
+        return "Nu a fost generată analiza clinică.";
+    }
+
+    if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
+        return String(value);
+    }
+
+    if (Array.isArray(value)) {
+        return formatArrayValue(value, indent);
+    }
+
+    if (typeof value === "object") {
+        const entries = Object.entries(value);
+
+        if (entries.length === 0) {
+            return "Nu a fost generată analiza clinică.";
+        }
+
+        return entries.map(([key, val]) => {
+            const label = formatKeyLabel(key);
+
+            if (Array.isArray(val)) {
+                return `${indent}${label}:\n${formatArrayValue(val, indent + "  ")}`;
+            }
+
+            if (typeof val === "object" && val !== null) {
+                return `${indent}${label}:\n${formatClinicalOutput(val, indent + "  ")}`;
+            }
+
+            return `${indent}${label}: ${safeValue(val)}`;
+        }).join("\n\n");
+    }
+
+    return String(value);
+}
+
 function trimite() {
     const responseBox = document.getElementById("response");
     const differentialSection = document.getElementById("differentialSection");
@@ -324,8 +381,8 @@ function trimite() {
         return data;
     })
     .then(data => {
-        const clinicalOutput = safeValue(data.clinical_output, "Nu a fost generată analiza clinică.");
-        responseBox.innerText = clinicalOutput;
+        const clinicalOutput = data.clinical_output;
+        responseBox.innerText = formatClinicalOutput(clinicalOutput);
 
         if (Array.isArray(data.differential) && data.differential.length > 0) {
             differentialSection.classList.remove("hidden");
