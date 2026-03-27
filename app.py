@@ -9,7 +9,6 @@ from reportlab.pdfgen import canvas
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 
-from utils import load_books, search_chunks, initialize_semantic_index
 from models import (
     load_diagnoses,
     load_romanian_knowledge,
@@ -26,7 +25,6 @@ except Exception:
 
 app = Flask(__name__)
 
-BOOKS_DIR = "books"
 CASES_DIR = "cases"
 CASES_FILE = os.path.join(CASES_DIR, "saved_cases.json")
 DIAGNOSES_FILE = "data/diagnoses.json"
@@ -45,39 +43,7 @@ def safe_load_json_file(path, default):
         return default
 
 
-def get_pdf_paths():
-    if not os.path.exists(BOOKS_DIR):
-        return []
-    return [
-        os.path.join(BOOKS_DIR, f)
-        for f in os.listdir(BOOKS_DIR)
-        if f.lower().endswith(".pdf")
-    ]
-
-
 def initialize_resources():
-    pdf_paths = get_pdf_paths()
-
-    book_documents = []
-    semantic_index = None
-
-    if pdf_paths:
-        try:
-            book_documents = load_books(pdf_paths)
-        except Exception as e:
-            print(f"[EROARE] load_books: {e}")
-            book_documents = []
-
-        try:
-            semantic_index = initialize_semantic_index(
-                book_documents,
-                pdf_paths,
-                force_rebuild=False
-            )
-        except Exception as e:
-            print(f"[EROARE] initialize_semantic_index: {e}")
-            semantic_index = None
-
     try:
         diagnoses = load_diagnoses(DIAGNOSES_FILE)
     except Exception as e:
@@ -90,20 +56,10 @@ def initialize_resources():
         print(f"[EROARE] load_romanian_knowledge: {e}")
         knowledge_ro = {}
 
-    return pdf_paths, book_documents, semantic_index, diagnoses, knowledge_ro
+    return diagnoses, knowledge_ro
 
 
-PDF_PATHS, BOOK_DOCUMENTS, SEMANTIC_INDEX, DIAGNOSES, KNOWLEDGE_RO = initialize_resources()
-
-
-def safe_search_chunks(query, top_k=5):
-    if not query or not SEMANTIC_INDEX:
-        return []
-    try:
-        return search_chunks(query, SEMANTIC_INDEX, top_k=top_k)
-    except Exception as e:
-        print(f"[EROARE] search_chunks: {e}")
-        return []
+DIAGNOSES, KNOWLEDGE_RO = initialize_resources()
 
 
 def load_saved_cases():
@@ -453,8 +409,7 @@ def home():
 def health():
     return jsonify({
         "status": "ok",
-        "pdf_count": len(PDF_PATHS),
-        "semantic_index_ready": SEMANTIC_INDEX is not None,
+        "pdf_support": False,
         "diagnoses_loaded": len(DIAGNOSES) if isinstance(DIAGNOSES, list) else 0
     })
 
@@ -517,9 +472,6 @@ def analyze():
         differential = normalize_differential_list(raw_differential)
         analysis = normalize_clinical_output(raw_clinical_output, differential)
 
-        semantic_query = " ".join(part for part in [symptoms, context, triggers, extra] if part).strip()
-        results = safe_search_chunks(semantic_query, top_k=8)
-
         response = {
             "analysis": analysis,
             "main_diagnosis": {
@@ -539,9 +491,8 @@ def analyze():
                 "triggers": triggers,
                 "extra": extra
             },
-            "results": results,
             "warning": (
-                "Instrument de suport pentru medic, bazat pe surse clinice și logică orientativă. "
+                "Instrument de suport pentru medic, bazat pe logică clinică orientativă și pe datele introduse. "
                 "Nu stabilește autonom diagnosticul final și nu înlocuiește decizia medicală."
             )
         }
@@ -588,6 +539,23 @@ def treatment():
             treatment_data = {}
 
         guideline_results = []
+        guideline_query = " ".join(part for part in [diagnosis_name, symptoms, context, triggers, extra] if part).strip()
+
+        try:
+            guideline_results = get_guideline_recommendations(
+                diagnosis_name=diagnosis_name,
+                symptoms=symptoms,
+                context=context,
+                triggers=triggers,
+                extra=extra,
+                severity=severity,
+                age=age,
+                weight=weight,
+                query=guideline_query
+            ) or []
+        except Exception as e:
+            print(f"[EROARE] get_guideline_recommendations: {e}")
+            guideline_results = []
 
         clinical_picture = to_clean_list(treatment_data.get("clinical_picture", []))
         treatment_plan = to_clean_list(treatment_data.get("treatment", []))
