@@ -13,12 +13,35 @@
       "lăcrimare",
       "sezonier",
       "polen",
-      "acarieni"
+      "acarieni",
+      "simptome la praf",
+      "simptome la polen",
+      "simptome la pisică"
     ],
     "strong_keywords": [
       "strănut în salve",
       "prurit nazal",
       "prurit ocular",
+      "simptome sezoniere",
+      "expunere la polen",
+      "expunere la acarieni",
+      "rinoree apoasă",
+      "lăcrimare oculară"
+    ],
+    "minimum_required_terms": [
+      "strănut",
+      "prurit nazal",
+      "rinoree",
+      "prurit ocular",
+      "lăcrimare",
+      "polen",
+      "acarieni"
+    ],
+    "high_value_terms": [
+      "strănut în salve",
+      "prurit nazal",
+      "prurit ocular",
+      "rinoree apoasă",
       "simptome sezoniere",
       "expunere la polen",
       "expunere la acarieni"
@@ -28,6 +51,16 @@
       "secreții purulente",
       "durere facială intensă",
       "odinofagie severă"
+    ],
+    "contradiction_terms": [
+      "febră",
+      "odinofagie",
+      "durere în gât",
+      "mialgii",
+      "frison",
+      "stare generală alterată",
+      "secreții purulente",
+      "contact infecțios"
     ],
     "severity": "ușoară",
     "associated_diagnoses": [
@@ -41,7 +74,8 @@
     ],
     "limits": [
       "Absența semnelor infecțioase majore susține o cauză non-infecțioasă, dar nu stabilește singură diagnosticul.",
-      "Lipsa unui factor declanșator clar reduce specificitatea orientării etiologice și necesită anamneză suplimentară."
+      "Lipsa unui factor declanșator clar reduce specificitatea orientării etiologice și necesită anamneză suplimentară.",
+      "Febra, odinofagia și alterarea stării generale orientează mai degrabă către cauze infecțioase."
     ],
     "recommended_tests": [
       "Anamneză orientată pe sezonalitate, expuneri și context ocupațional/domestic.",
@@ -87,11 +121,29 @@
       "secreții apoase",
       "edem palpebral"
     ],
+    "minimum_required_terms": [
+      "prurit ocular",
+      "lăcrimare",
+      "ochi roșii",
+      "edem palpebral"
+    ],
+    "high_value_terms": [
+      "prurit ocular intens",
+      "lăcrimare",
+      "secreții apoase"
+    ],
     "exclude_keywords": [
       "secreții purulente",
       "durere oculară severă",
       "scădere de vedere",
       "fotofobie severă"
+    ],
+    "contradiction_terms": [
+      "secreții purulente",
+      "durere oculară severă",
+      "scădere de vedere",
+      "fotofobie",
+      "unilateral intens"
     ],
     "severity": "ușoară",
     "associated_diagnoses": [
@@ -145,20 +197,53 @@
       "senzație de constricție toracică",
       "respirație grea",
       "agravare nocturnă",
-      "agravare la alergeni"
+      "agravare la alergeni",
+      "episoade recurente",
+      "atopie",
+      "simptome la efort",
+      "simptome la praf",
+      "simptome la polen"
     ],
     "strong_keywords": [
       "wheezing",
       "șuierături",
       "dispnee",
       "agravare nocturnă",
-      "constricție toracică"
+      "constricție toracică",
+      "tuse nocturnă",
+      "agravare la alergeni"
+    ],
+    "minimum_required_terms": [
+      "wheezing",
+      "șuierături",
+      "tuse nocturnă",
+      "constricție toracică",
+      "agravare la alergeni",
+      "agravare nocturnă"
+    ],
+    "high_value_terms": [
+      "wheezing",
+      "șuierături",
+      "tuse nocturnă",
+      "agravare nocturnă",
+      "agravare la alergeni",
+      "atopie"
     ],
     "exclude_keywords": [
       "durere toracică tipică ischemică",
       "hemoptizie",
       "edeme gambiere",
       "febră mare persistentă"
+    ],
+    "contradiction_terms": [
+      "palpitații fără wheezing",
+      "parestezii",
+      "furnicături",
+      "teamă intensă",
+      "senzație de moarte iminentă",
+      "hiperventilație",
+      "debut exclusiv emoțional",
+      "anxietate acută fără wheezing"
     ],
     "severity": "moderată",
     "associated_diagnoses": [
@@ -172,7 +257,8 @@
     ],
     "limits": [
       "Tusea și dispneea au multiple cauze și necesită diferențiere față de alte patologii respiratorii sau cardiace.",
-      "În lipsa confirmării funcționale, încadrarea rămâne orientativă."
+      "În lipsa confirmării funcționale, încadrarea rămâne orientativă.",
+      "Dispneea fără wheezing clar, în context emoțional, poate orienta către atac de panică / hiperventilație."
     ],
     "recommended_tests": [
       "Spirometrie cu test de reversibilitate, când este disponibilă și indicată.",
@@ -225,11 +311,30 @@
       "prurit cronic",
       "eczeme"
     ],
+    "minimum_required_terms": [
+      "prurit",
+      "eczeme",
+      "piele uscată",
+      "leziuni flexurale"
+    ],
+    "high_value_terms": [
+      "piele uscată",
+      "leziuni flexurale",
+      "prurit cronic",
+      "eczeme"
+    ],
     "exclude_keywords": [
       "vezicule dureroase",
       "pustule extinse",
       "necroză",
       "febră mare"
+    ],
+    "contradiction_terms": [
+      "vezicule dureroase",
+      "pustule extinse",
+      "necroză",
+      "febră mare",
+      "purpură"
     ],
     "severity": "ușoară",
     "associated_diagnoses": [
@@ -291,9 +396,28 @@
       "edem pleoape",
       "erupție fugace"
     ],
+    "minimum_required_terms": [
+      "urticarie",
+      "angioedem",
+      "edem buze",
+      "edem pleoape",
+      "erupție fugace"
+    ],
+    "high_value_terms": [
+      "urticarie",
+      "angioedem",
+      "edem buze",
+      "edem pleoape"
+    ],
     "exclude_keywords": [
       "purpură",
       "leziuni fixe dureroase",
+      "febră mare persistentă"
+    ],
+    "contradiction_terms": [
+      "purpură",
+      "leziuni fixe dureroase",
+      "necroză",
       "febră mare persistentă"
     ],
     "severity": "moderată",
@@ -359,10 +483,29 @@
       "prurit oral",
       "wheezing după aliment"
     ],
+    "minimum_required_terms": [
+      "reacție după aliment",
+      "urticarie după masă",
+      "prurit oral",
+      "wheezing după aliment",
+      "edem buze"
+    ],
+    "high_value_terms": [
+      "reacție după aliment",
+      "urticarie după masă",
+      "prurit oral",
+      "wheezing după aliment"
+    ],
     "exclude_keywords": [
       "gastroenterită în colectivitate",
       "febră mare",
       "debut la distanță mare de ingestie"
+    ],
+    "contradiction_terms": [
+      "gastroenterită în colectivitate",
+      "febră mare",
+      "debut la distanță mare de ingestie",
+      "simptome fără legătură temporală cu ingestia"
     ],
     "severity": "moderată",
     "associated_diagnoses": [
@@ -431,7 +574,23 @@
       "stridor",
       "dispnee severă"
     ],
+    "minimum_required_terms": [
+      "hipotensiune",
+      "colaps",
+      "stridor",
+      "edem lingual",
+      "dispnee severă",
+      "șoc anafilactic"
+    ],
+    "high_value_terms": [
+      "hipotensiune",
+      "colaps",
+      "stridor",
+      "edem lingual",
+      "șoc anafilactic"
+    ],
     "exclude_keywords": [],
+    "contradiction_terms": [],
     "severity": "severă",
     "associated_diagnoses": [
       "Alergie alimentară",
@@ -486,18 +645,49 @@
       "febră",
       "subfebrilitate",
       "tuse",
-      "stare generală alterată"
+      "stare generală alterată",
+      "mialgii",
+      "frison",
+      "contact infecțios",
+      "debut acut"
     ],
     "strong_keywords": [
       "febră",
       "durere în gât",
       "stare generală alterată",
-      "subfebrilitate"
+      "subfebrilitate",
+      "mialgii",
+      "frison",
+      "debut acut"
+    ],
+    "minimum_required_terms": [
+      "febră",
+      "durere în gât",
+      "odinofagie",
+      "stare generală alterată",
+      "mialgii",
+      "frison"
+    ],
+    "high_value_terms": [
+      "febră",
+      "durere în gât",
+      "mialgii",
+      "frison",
+      "debut acut",
+      "contact infecțios"
     ],
     "exclude_keywords": [
       "prurit nazal intens",
       "prurit ocular intens",
       "expunere la polen"
+    ],
+    "contradiction_terms": [
+      "prurit nazal intens",
+      "prurit ocular intens",
+      "strănut în salve",
+      "expunere la polen",
+      "expunere la acarieni",
+      "pattern sezonier recurent"
     ],
     "severity": "ușoară",
     "associated_diagnoses": [
@@ -546,9 +736,24 @@
       "iritanți",
       "mirosuri puternice",
       "fum",
-      "schimbări de temperatură"
+      "schimbări de temperatură",
+      "parfum",
+      "detergenți"
     ],
     "strong_keywords": [
+      "iritanți",
+      "mirosuri puternice",
+      "fum",
+      "schimbări de temperatură",
+      "parfum"
+    ],
+    "minimum_required_terms": [
+      "iritanți",
+      "mirosuri puternice",
+      "fum",
+      "schimbări de temperatură"
+    ],
+    "high_value_terms": [
       "iritanți",
       "mirosuri puternice",
       "fum",
@@ -558,6 +763,14 @@
       "prurit ocular",
       "expunere la polen",
       "teste alergologice pozitive"
+    ],
+    "contradiction_terms": [
+      "prurit ocular",
+      "prurit nazal intens",
+      "strănut în salve",
+      "polen",
+      "acarieni",
+      "sezonier recurent"
     ],
     "severity": "ușoară",
     "associated_diagnoses": [
@@ -600,17 +813,39 @@
       "secreții purulente",
       "cefalee",
       "febră",
-      "obstrucție nazală"
+      "obstrucție nazală",
+      "durere maxilară",
+      "simptome persistente"
     ],
     "strong_keywords": [
       "durere facială",
       "presiune facială",
-      "secreții purulente"
+      "secreții purulente",
+      "durere maxilară"
+    ],
+    "minimum_required_terms": [
+      "durere facială",
+      "presiune facială",
+      "secreții purulente",
+      "durere maxilară"
+    ],
+    "high_value_terms": [
+      "durere facială",
+      "presiune facială",
+      "secreții purulente",
+      "durere maxilară"
     ],
     "exclude_keywords": [
       "prurit ocular",
       "strănut în salve",
       "expunere la polen"
+    ],
+    "contradiction_terms": [
+      "prurit ocular",
+      "strănut în salve",
+      "prurit nazal intens",
+      "expunere la polen",
+      "expunere la acarieni"
     ],
     "severity": "moderată",
     "associated_diagnoses": [
@@ -648,6 +883,110 @@
     "prevention_terms": [
       "monitorizare",
       "reevaluare"
+    ]
+  },
+  {
+    "name": "Atac de panică / Hiperventilație",
+    "keywords": [
+      "senzație de lipsă de aer",
+      "respirație rapidă",
+      "hiperventilație",
+      "palpitații",
+      "tremor",
+      "amețeală",
+      "furnicături",
+      "parestezii",
+      "nod în gât",
+      "teamă intensă",
+      "senzație de moarte iminentă",
+      "anxietate",
+      "panică",
+      "dispnee în context emoțional"
+    ],
+    "strong_keywords": [
+      "atac de panică",
+      "hiperventilație",
+      "senzație de moarte iminentă",
+      "parestezii",
+      "palpitații",
+      "debut în context emoțional"
+    ],
+    "minimum_required_terms": [
+      "hiperventilație",
+      "palpitații",
+      "parestezii",
+      "teamă intensă",
+      "senzație de moarte iminentă",
+      "anxietate"
+    ],
+    "high_value_terms": [
+      "atac de panică",
+      "hiperventilație",
+      "parestezii",
+      "senzație de moarte iminentă",
+      "palpitații",
+      "debut în context emoțional"
+    ],
+    "exclude_keywords": [
+      "wheezing",
+      "șuierături",
+      "tuse nocturnă",
+      "agravare la alergeni",
+      "urticarie",
+      "angioedem",
+      "hipotensiune"
+    ],
+    "contradiction_terms": [
+      "wheezing",
+      "șuierături",
+      "tuse nocturnă",
+      "agravare la alergeni",
+      "atopie cu simptome respiratorii tipice",
+      "urticarie",
+      "angioedem",
+      "edem lingual",
+      "stridor"
+    ],
+    "severity": "moderată",
+    "associated_diagnoses": [
+      "Astm alergic"
+    ],
+    "supports": [
+      "Dispneea asociată cu palpitații, frică intensă, hiperventilație și parestezii poate sugera atac de panică.",
+      "Absența semnelor bronșice tipice reduce probabilitatea unei cauze astmatice."
+    ],
+    "limits": [
+      "Dispneea trebuie evaluată atent pentru excluderea unei cauze respiratorii, cardiace sau alergice reale.",
+      "Diagnosticul nu trebuie stabilit exclusiv pe baza contextului emoțional fără excluderea red flags."
+    ],
+    "recommended_tests": [
+      "Evaluare clinică pentru excluderea cauzelor organice.",
+      "Corelare cu contextul emoțional și istoricul de episoade similare.",
+      "Reevaluare dacă apar semne respiratorii obiective sau agravare progresivă."
+    ],
+    "treatment_plan": [
+      "Evaluare clinică pentru excluderea unei urgențe respiratorii sau cardiace.",
+      "După excluderea cauzelor organice, abordare orientată pe controlul anxietății și managementul episoadelor recurente.",
+      "Reevaluare dacă simptomatologia se modifică sau apar semne obiective respiratorii."
+    ],
+    "red_flags": [
+      "Wheezing",
+      "Stridor",
+      "Cianoză",
+      "Hipotensiune",
+      "Alterarea stării de conștiență"
+    ],
+    "notes": [
+      "Poate mima astmul, dar absența wheezingului și prezența hiperventilației/paresteziilor orientează către componentă anxioasă."
+    ],
+    "treatment_terms": [
+      "atac de panică",
+      "hiperventilație",
+      "management"
+    ],
+    "prevention_terms": [
+      "control anxietate",
+      "prevenție episoade"
     ]
   }
 ]
