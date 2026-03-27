@@ -62,10 +62,23 @@ def split_sentences(text: str) -> List[str]:
 
     for part in parts:
         sentence = part.strip()
-        if len(sentence) >= 40:
+        if 40 <= len(sentence) <= 200:
             cleaned.append(sentence)
 
     return cleaned
+
+
+def clean_excerpt(text: str, max_len: int = 300) -> str:
+    text = text or ""
+    text = re.sub(r"read more", "", text, flags=re.IGNORECASE)
+    text = re.sub(r"position papers?", "", text, flags=re.IGNORECASE)
+    text = re.sub(r"guidelines?", "", text, flags=re.IGNORECASE)
+    text = re.sub(r"\s+", " ", text).strip()
+
+    if len(text) > max_len:
+        text = text[:max_len].rsplit(" ", 1)[0].strip() + "…"
+
+    return text
 
 
 def infer_topic_profile(
@@ -190,8 +203,8 @@ def summarize_eaaci_guidelines(
             ["rhinitis", "rhinoconjunctivitis", "allergic rhinitis", "conjunctivitis"],
             limit=2
         )
-        excerpt = " ".join(excerpt_candidates) if excerpt_candidates else (
-            "Secțiunea EAACI de ghiduri și position papers include resurse relevante pentru rinoconjunctivita alergică și evaluarea clinică orientată pe triggeri, controlul expunerii și management individualizat."
+        excerpt = clean_excerpt(" ".join(excerpt_candidates), 280) if excerpt_candidates else (
+            "Secțiunea EAACI include resurse relevante pentru rinoconjunctivita alergică și management individualizat."
         )
 
         results.append(make_card(
@@ -210,8 +223,8 @@ def summarize_eaaci_guidelines(
             ["food allergy", "ige-mediated", "allergy", "anaphylaxis"],
             limit=2
         )
-        excerpt = " ".join(excerpt_candidates) if excerpt_candidates else (
-            "EAACI publică resurse oficiale relevante pentru alergia alimentară, cu accent pe confirmarea diagnosticului, evitarea expunerii, educația pacientului și planul de acțiune pentru reacții severe."
+        excerpt = clean_excerpt(" ".join(excerpt_candidates), 280) if excerpt_candidates else (
+            "EAACI publică resurse relevante pentru alergia alimentară, cu accent pe confirmarea diagnosticului și prevenirea reacțiilor severe."
         )
 
         results.append(make_card(
@@ -230,8 +243,8 @@ def summarize_eaaci_guidelines(
             ["urticaria", "angioedema", "allergy"],
             limit=2
         )
-        excerpt = " ".join(excerpt_candidates) if excerpt_candidates else (
-            "Resursele EAACI pot fi utile pentru diferențierea urticariei și angioedemului, evaluarea triggerilor și orientarea managementului în funcție de severitate."
+        excerpt = clean_excerpt(" ".join(excerpt_candidates), 280) if excerpt_candidates else (
+            "Resursele EAACI pot fi utile pentru diferențierea urticariei și angioedemului și orientarea managementului."
         )
 
         results.append(make_card(
@@ -250,8 +263,8 @@ def summarize_eaaci_guidelines(
             ["anaphylaxis", "emergency", "adrenaline"],
             limit=2
         )
-        excerpt = " ".join(excerpt_candidates) if excerpt_candidates else (
-            "EAACI include resurse relevante pentru recunoașterea și managementul anafilaxiei, subliniind importanța identificării rapide a reacțiilor severe și a planului de acțiune."
+        excerpt = clean_excerpt(" ".join(excerpt_candidates), 280) if excerpt_candidates else (
+            "EAACI include resurse relevante pentru recunoașterea și managementul anafilaxiei."
         )
 
         results.append(make_card(
@@ -270,8 +283,8 @@ def summarize_eaaci_guidelines(
             ["atopic dermatitis", "eczema", "skin", "allergy"],
             limit=2
         )
-        excerpt = " ".join(excerpt_candidates) if excerpt_candidates else (
-            "Resursele EAACI pot susține orientarea clinică în dermatita atopică, în special prin integrarea contextului atopic, a barierei cutanate și a factorilor agravanți."
+        excerpt = clean_excerpt(" ".join(excerpt_candidates), 280) if excerpt_candidates else (
+            "Resursele EAACI pot susține orientarea clinică în dermatita atopică și identificarea factorilor agravanți."
         )
 
         results.append(make_card(
@@ -321,17 +334,16 @@ def summarize_gina_guidelines(
 
     results = []
 
-    excerpt_general = " ".join(
-        extract_relevant_sentences(
-            text,
-            ["asthma", "guide", "management", "treatment"],
-            limit=2
-        )
+    excerpt_general_candidates = extract_relevant_sentences(
+        text,
+        ["asthma", "guide", "management", "treatment"],
+        limit=2
     )
+    excerpt_general = clean_excerpt(" ".join(excerpt_general_candidates), 280)
 
     if not excerpt_general:
         excerpt_general = (
-            "GINA oferă resurse oficiale pentru managementul astmului, cu accent pe alegerea tratamentului în funcție de controlul simptomelor, severitate și reevaluare periodică."
+            "GINA oferă resurse oficiale pentru managementul astmului, cu accent pe alegerea tratamentului în funcție de controlul simptomelor și severitate."
         )
 
     results.append(make_card(
@@ -344,13 +356,12 @@ def summarize_gina_guidelines(
         url=GINA_HOME_URL
     ))
 
-    excerpt_step = " ".join(
-        extract_relevant_sentences(
-            text,
-            ["step", "controller", "reliever", "inhaled corticosteroid", "ics"],
-            limit=2
-        )
+    excerpt_step_candidates = extract_relevant_sentences(
+        text,
+        ["step", "controller", "reliever", "inhaled corticosteroid", "ics"],
+        limit=2
     )
+    excerpt_step = clean_excerpt(" ".join(excerpt_step_candidates), 280)
 
     if excerpt_step:
         results.append(make_card(
@@ -363,13 +374,12 @@ def summarize_gina_guidelines(
             url=GINA_HOME_URL
         ))
 
-    excerpt_severe = " ".join(
-        extract_relevant_sentences(
-            text,
-            ["severe asthma", "specialist", "expert", "phenotype"],
-            limit=2
-        )
+    excerpt_severe_candidates = extract_relevant_sentences(
+        text,
+        ["severe asthma", "specialist", "expert", "phenotype"],
+        limit=2
     )
+    excerpt_severe = clean_excerpt(" ".join(excerpt_severe_candidates), 280)
 
     if excerpt_severe:
         results.append(make_card(
@@ -404,13 +414,12 @@ def summarize_aria_guidelines(
     if not text:
         text = ""
 
-    excerpt = " ".join(
-        extract_relevant_sentences(
-            text,
-            ["rhinitis", "allergic rhinitis", "asthma", "control"],
-            limit=2
-        )
+    excerpt_candidates = extract_relevant_sentences(
+        text,
+        ["rhinitis", "allergic rhinitis", "asthma", "control"],
+        limit=2
     )
+    excerpt = clean_excerpt(" ".join(excerpt_candidates), 280)
 
     if not excerpt:
         excerpt = (
