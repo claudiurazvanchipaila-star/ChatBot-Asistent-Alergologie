@@ -644,6 +644,11 @@ def apply_manual_adjustments(name, text, base_score):
             norm_text,
             ["urticarie", "angioedem", "dispnee", "ameteli", "varsaturi"],
         ) >= 2:
+            score = max(score, 16)
+        elif count_keyword_hits(
+            norm_text,
+            ["dispnee", "urticarie", "angioedem", "ameteli"],
+        ) >= 2:
             score = max(score, 14)
         elif not contains_any(norm_text, ["dispnee", "stridor", "hipotensiune", "colaps", "angioedem", "urticarie"]):
             score -= 6
@@ -786,7 +791,7 @@ def enrich_primary_output(primary, alternatives, text):
         if not output["supports"]:
             output["supports"] = [
                 "Simptomatologia respiratorie inferioară este compatibilă cu hiperreactivitate bronșică.",
-                "Aggravarea la alergeni sau nocturn susține o componentă astmatică.",
+                "Agravarea la alergeni sau nocturn susține o componentă astmatică.",
             ]
         if not output["limits"]:
             output["limits"] = [
