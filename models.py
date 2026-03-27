@@ -649,7 +649,7 @@ def apply_manual_adjustments(name, text, base_score):
             norm_text,
             ["dispnee", "urticarie", "angioedem", "ameteli"],
         ) >= 2:
-            score = max(score, 14)
+            score = max(score, 16)
         elif not contains_any(norm_text, ["dispnee", "stridor", "hipotensiune", "colaps", "angioedem", "urticarie"]):
             score -= 6
 
