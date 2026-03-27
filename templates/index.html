@@ -366,14 +366,35 @@
 
             section.classList.remove("hidden");
 
-            el.innerHTML = arr.map(card => `
-                <div class="guide-card">
-                    <div class="guide-title">${escapeHtml(card.title || "Recomandare")}</div>
-                    ${card.source ? `<div class="guide-source">${escapeHtml(card.source)}</div>` : ""}
-                    ${card.excerpt ? `<div class="guide-text">${escapeHtml(card.excerpt)}</div>` : ""}
-                    ${card.recommendation ? `<div class="guide-note">${escapeHtml(card.recommendation)}</div>` : ""}
-                </div>
-            `).join("");
+            el.innerHTML = arr.map(card => {
+                const title = escapeHtml(card.title || "Recomandare");
+                const source = escapeHtml(card.source || "");
+                const excerpt = escapeHtml(card.excerpt || "");
+                const recommendation = escapeHtml(card.recommendation || "");
+                const url = card.url ? String(card.url).trim() : "";
+
+                const titleHtml = url
+                    ? `<a class="guide-link" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${title}</a>`
+                    : title;
+
+                const sourceHtml = source
+                    ? `<div class="guide-source">${source}</div>`
+                    : "";
+
+                const actionHtml = url
+                    ? `<div class="guide-action"><a class="guide-link-secondary" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">Deschide sursa oficială</a></div>`
+                    : "";
+
+                return `
+                    <div class="guide-card">
+                        <div class="guide-title">${titleHtml}</div>
+                        ${sourceHtml}
+                        ${excerpt ? `<div class="guide-text">${excerpt}</div>` : ""}
+                        ${recommendation ? `<div class="guide-note">${recommendation}</div>` : ""}
+                        ${actionHtml}
+                    </div>
+                `;
+            }).join("");
         }
 
         function renderSourceResults(results) {
