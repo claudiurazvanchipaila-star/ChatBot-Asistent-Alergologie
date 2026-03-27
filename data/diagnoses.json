@@ -3,35 +3,52 @@
     "name": "Rinită alergică",
     "keywords": [
       "strănut",
+      "strănut repetat",
+      "strănut în salve",
       "rinoree",
+      "rinoree apoasă",
+      "curge nasul",
+      "scurgeri nazale apoase",
       "nas înfundat",
+      "se înfundă nasul",
       "congestie nazală",
       "prurit nazal",
+      "mâncărime la nas",
       "mâncărime nazală",
-      "ochi care lăcrimează",
       "prurit ocular",
+      "mâncărime la ochi",
+      "ochi care lăcrimează",
       "lăcrimare",
+      "ochi roșii",
       "sezonier",
+      "simptome sezoniere",
+      "primăvara",
       "polen",
+      "praf",
       "acarieni",
-      "simptome la praf",
+      "pisică",
+      "expunere la polen",
+      "expunere la acarieni",
       "simptome la polen",
+      "simptome la praf",
       "simptome la pisică"
     ],
     "strong_keywords": [
       "strănut în salve",
       "prurit nazal",
       "prurit ocular",
+      "mâncărime la nas",
+      "mâncărime la ochi",
+      "rinoree apoasă",
       "simptome sezoniere",
       "expunere la polen",
-      "expunere la acarieni",
-      "rinoree apoasă",
-      "lăcrimare oculară"
+      "expunere la acarieni"
     ],
     "minimum_required_terms": [
       "strănut",
-      "prurit nazal",
       "rinoree",
+      "rinoree apoasă",
+      "prurit nazal",
       "prurit ocular",
       "lăcrimare",
       "polen",
@@ -41,6 +58,8 @@
       "strănut în salve",
       "prurit nazal",
       "prurit ocular",
+      "mâncărime la nas",
+      "mâncărime la ochi",
       "rinoree apoasă",
       "simptome sezoniere",
       "expunere la polen",
@@ -60,6 +79,7 @@
       "frison",
       "stare generală alterată",
       "secreții purulente",
+      "colegi răciți",
       "contact infecțios"
     ],
     "severity": "ușoară",
@@ -111,24 +131,34 @@
       "prurit ocular",
       "mâncărime la ochi",
       "ochi roșii",
+      "roșeață oculară",
+      "hiperemie oculară",
       "lăcrimare",
+      "ochi care lăcrimează",
       "edem palpebral",
-      "secreții apoase"
+      "pleoape umflate",
+      "secreții apoase",
+      "ochi iritați",
+      "ochi care ustură",
+      "ochi care mănâncă"
     ],
     "strong_keywords": [
       "prurit ocular intens",
+      "mâncărime la ochi",
       "lăcrimare",
       "secreții apoase",
       "edem palpebral"
     ],
     "minimum_required_terms": [
       "prurit ocular",
+      "mâncărime la ochi",
       "lăcrimare",
       "ochi roșii",
       "edem palpebral"
     ],
     "high_value_terms": [
       "prurit ocular intens",
+      "mâncărime la ochi",
       "lăcrimare",
       "secreții apoase"
     ],
@@ -192,12 +222,21 @@
     "keywords": [
       "wheezing",
       "șuierături",
-      "tuse",
+      "respirație șuierătoare",
       "dispnee",
-      "senzație de constricție toracică",
+      "lipsă de aer",
       "respirație grea",
+      "greu respiră",
+      "tuse",
+      "tuse seacă",
+      "tuse nocturnă",
+      "tuse noaptea",
+      "constricție toracică",
+      "strângere în piept",
       "agravare nocturnă",
       "agravare la alergeni",
+      "agravare la praf",
+      "agravare la polen",
       "episoade recurente",
       "atopie",
       "simptome la efort",
@@ -207,6 +246,7 @@
     "strong_keywords": [
       "wheezing",
       "șuierături",
+      "respirație șuierătoare",
       "dispnee",
       "agravare nocturnă",
       "constricție toracică",
@@ -224,6 +264,7 @@
     "high_value_terms": [
       "wheezing",
       "șuierături",
+      "respirație șuierătoare",
       "tuse nocturnă",
       "agravare nocturnă",
       "agravare la alergeni",
@@ -243,7 +284,11 @@
       "senzație de moarte iminentă",
       "hiperventilație",
       "debut exclusiv emoțional",
-      "anxietate acută fără wheezing"
+      "anxietate acută fără wheezing",
+      "fumător",
+      "tuse productivă",
+      "spută",
+      "ortopnee"
     ],
     "severity": "moderată",
     "associated_diagnoses": [
@@ -258,7 +303,8 @@
     "limits": [
       "Tusea și dispneea au multiple cauze și necesită diferențiere față de alte patologii respiratorii sau cardiace.",
       "În lipsa confirmării funcționale, încadrarea rămâne orientativă.",
-      "Dispneea fără wheezing clar, în context emoțional, poate orienta către atac de panică / hiperventilație."
+      "Dispneea fără wheezing clar, în context emoțional, poate orienta către atac de panică / hiperventilație.",
+      "Tusea productivă la fumător și ortopneea trebuie să ridice suspiciunea altor cauze decât astmul."
     ],
     "recommended_tests": [
       "Spirometrie cu test de reversibilitate, când este disponibilă și indicată.",
@@ -297,31 +343,61 @@
     "name": "Dermatită atopică",
     "keywords": [
       "prurit",
-      "eczeme",
-      "erupție",
-      "piele uscată",
-      "lichenificare",
-      "leziuni flexurale",
       "mâncărime",
-      "dermatită"
+      "mâncărime intensă",
+      "prurit cronic",
+      "eczeme",
+      "eczemă",
+      "eritem",
+      "roșeață",
+      "zone roșii pe piele",
+      "pete roșii",
+      "leziuni roșiatice",
+      "erupție",
+      "erupție pe piele",
+      "bubițe",
+      "piele uscată",
+      "piele foarte uscată",
+      "piele aspră",
+      "piele care se descuamează",
+      "coji",
+      "cruste",
+      "lichenificare",
+      "piele îngroșată",
+      "leziuni în pliuri",
+      "zone de flexie",
+      "în pliuri",
+      "la coate",
+      "la genunchi",
+      "coate",
+      "genunchi",
+      "dermatită",
+      "piele iritată"
     ],
     "strong_keywords": [
       "piele uscată",
-      "leziuni flexurale",
+      "mâncărime intensă",
       "prurit cronic",
-      "eczeme"
+      "eczeme",
+      "zone de flexie",
+      "leziuni în pliuri",
+      "zone roșii pe piele"
     ],
     "minimum_required_terms": [
       "prurit",
       "eczeme",
       "piele uscată",
-      "leziuni flexurale"
+      "zone de flexie"
     ],
     "high_value_terms": [
       "piele uscată",
-      "leziuni flexurale",
+      "mâncărime intensă",
       "prurit cronic",
-      "eczeme"
+      "eczeme",
+      "zone de flexie",
+      "leziuni în pliuri",
+      "zone roșii pe piele",
+      "leziuni roșiatice"
     ],
     "exclude_keywords": [
       "vezicule dureroase",
@@ -383,18 +459,32 @@
       "urticarie",
       "papule",
       "plăci pruriginoase",
-      "edem buze",
-      "edem pleoape",
-      "angioedem",
+      "plăci roșii",
+      "bubițe care apar și dispar",
+      "bubițe pe piele",
+      "umflături pe piele",
+      "erupție fugace",
+      "erupție care dispare",
       "mâncărime",
-      "erupție fugace"
+      "mâncărime intensă",
+      "edem buze",
+      "umflare buze",
+      "buză umflată",
+      "edem pleoape",
+      "pleoape umflate",
+      "umflare ochi",
+      "angioedem",
+      "umflături",
+      "față umflată"
     ],
     "strong_keywords": [
       "urticarie",
       "angioedem",
       "edem buze",
+      "umflare buze",
       "edem pleoape",
-      "erupție fugace"
+      "erupție fugace",
+      "bubițe care apar și dispar"
     ],
     "minimum_required_terms": [
       "urticarie",
@@ -407,7 +497,9 @@
       "urticarie",
       "angioedem",
       "edem buze",
-      "edem pleoape"
+      "umflare buze",
+      "edem pleoape",
+      "bubițe care apar și dispar"
     ],
     "exclude_keywords": [
       "purpură",
@@ -418,7 +510,9 @@
       "purpură",
       "leziuni fixe dureroase",
       "necroză",
-      "febră mare persistentă"
+      "febră mare persistentă",
+      "eritem local după detergent",
+      "substanțe chimice locale"
     ],
     "severity": "moderată",
     "associated_diagnoses": [
@@ -467,20 +561,30 @@
   {
     "name": "Alergie alimentară",
     "keywords": [
+      "reacție după aliment",
+      "după aliment",
+      "după masă",
+      "după ce a mâncat",
       "urticarie după masă",
       "prurit oral",
+      "mâncărime în gură",
       "furnicături orale",
+      "furnicături în gură",
       "edem buze",
+      "umflare buze",
       "vărsături",
+      "greață",
       "dureri abdominale",
+      "crampe abdominale",
       "diaree",
       "wheezing după aliment",
-      "reacție după aliment"
+      "respiră greu după masă"
     ],
     "strong_keywords": [
       "reacție după aliment",
       "urticarie după masă",
       "prurit oral",
+      "mâncărime în gură",
       "wheezing după aliment"
     ],
     "minimum_required_terms": [
@@ -494,6 +598,7 @@
       "reacție după aliment",
       "urticarie după masă",
       "prurit oral",
+      "mâncărime în gură",
       "wheezing după aliment"
     ],
     "exclude_keywords": [
@@ -505,7 +610,10 @@
       "gastroenterită în colectivitate",
       "febră mare",
       "debut la distanță mare de ingestie",
-      "simptome fără legătură temporală cu ingestia"
+      "simptome fără legătură temporală cu ingestia",
+      "balonare izolată",
+      "dureri abdominale după lactate fără urticarie",
+      "intoleranță"
     ],
     "severity": "moderată",
     "associated_diagnoses": [
@@ -555,13 +663,17 @@
     "name": "Anafilaxie",
     "keywords": [
       "dispnee severă",
+      "respiră foarte greu",
+      "nu poate respira",
       "wheezing",
       "stridor",
       "voce răgușită",
       "hipotensiune",
       "amețeală",
       "colaps",
+      "leșin",
       "edem lingual",
+      "limbă umflată",
       "dificultăți la înghițire",
       "reacție severă",
       "șoc anafilactic"
@@ -571,6 +683,7 @@
       "hipotensiune",
       "colaps",
       "edem lingual",
+      "limbă umflată",
       "stridor",
       "dispnee severă"
     ],
@@ -587,10 +700,17 @@
       "colaps",
       "stridor",
       "edem lingual",
+      "limbă umflată",
       "șoc anafilactic"
     ],
     "exclude_keywords": [],
-    "contradiction_terms": [],
+    "contradiction_terms": [
+      "pierdere conștiență după emoție fără urticarie",
+      "stres fără urticarie",
+      "stres fără dispnee obiectivă",
+      "panică fără urticarie",
+      "panică fără angioedem"
+    ],
     "severity": "severă",
     "associated_diagnoses": [
       "Alergie alimentară",
@@ -638,9 +758,11 @@
     "name": "Rinită virală / infecțioasă",
     "keywords": [
       "rinoree",
+      "curge nasul",
       "nas înfundat",
       "congestie nazală",
       "durere în gât",
+      "gât iritat",
       "odinofagie",
       "febră",
       "subfebrilitate",
@@ -648,7 +770,9 @@
       "stare generală alterată",
       "mialgii",
       "frison",
+      "colegi răciți",
       "contact infecțios",
+      "debut recent",
       "debut acut"
     ],
     "strong_keywords": [
@@ -674,7 +798,8 @@
       "mialgii",
       "frison",
       "debut acut",
-      "contact infecțios"
+      "contact infecțios",
+      "colegi răciți"
     ],
     "exclude_keywords": [
       "prurit nazal intens",
@@ -731,19 +856,24 @@
     "name": "Rinită non-alergică",
     "keywords": [
       "rinoree",
+      "curge nasul",
       "congestie nazală",
       "nas înfundat",
       "iritanți",
       "mirosuri puternice",
       "fum",
+      "aer rece",
       "schimbări de temperatură",
       "parfum",
-      "detergenți"
+      "detergenți",
+      "vasomotorie",
+      "rinită vasomotorie"
     ],
     "strong_keywords": [
       "iritanți",
       "mirosuri puternice",
       "fum",
+      "aer rece",
       "schimbări de temperatură",
       "parfum"
     ],
@@ -757,7 +887,10 @@
       "iritanți",
       "mirosuri puternice",
       "fum",
-      "schimbări de temperatură"
+      "aer rece",
+      "schimbări de temperatură",
+      "parfum",
+      "rinită vasomotorie"
     ],
     "exclude_keywords": [
       "prurit ocular",
@@ -808,13 +941,18 @@
     "name": "Sinuzită acută",
     "keywords": [
       "congestie nazală",
+      "nas înfundat",
       "durere facială",
       "presiune facială",
+      "durere în sinusuri",
+      "durere maxilară",
+      "durere la nivelul feței",
       "secreții purulente",
+      "muci galbeni",
+      "muci verzi",
       "cefalee",
       "febră",
       "obstrucție nazală",
-      "durere maxilară",
       "simptome persistente"
     ],
     "strong_keywords": [
@@ -833,7 +971,8 @@
       "durere facială",
       "presiune facială",
       "secreții purulente",
-      "durere maxilară"
+      "durere maxilară",
+      "durere în sinusuri"
     ],
     "exclude_keywords": [
       "prurit ocular",
@@ -889,19 +1028,25 @@
     "name": "Atac de panică / Hiperventilație",
     "keywords": [
       "senzație de lipsă de aer",
+      "nu poate trage aer",
       "respirație rapidă",
       "hiperventilație",
       "palpitații",
+      "inima bate tare",
       "tremor",
       "amețeală",
       "furnicături",
       "parestezii",
       "nod în gât",
       "teamă intensă",
+      "frică intensă",
       "senzație de moarte iminentă",
       "anxietate",
       "panică",
-      "dispnee în context emoțional"
+      "atac de panică",
+      "dispnee în context emoțional",
+      "după stres",
+      "debut în context emoțional"
     ],
     "strong_keywords": [
       "atac de panică",
@@ -925,7 +1070,8 @@
       "parestezii",
       "senzație de moarte iminentă",
       "palpitații",
-      "debut în context emoțional"
+      "debut în context emoțional",
+      "după stres"
     ],
     "exclude_keywords": [
       "wheezing",
@@ -987,6 +1133,496 @@
     "prevention_terms": [
       "control anxietate",
       "prevenție episoade"
+    ]
+  },
+  {
+    "name": "BPOC / Bronșită cronică",
+    "keywords": [
+      "dispnee",
+      "lipsă de aer",
+      "tuse productivă",
+      "tuse cu expectorație",
+      "spută",
+      "flegmă",
+      "fumător",
+      "expunere la fum",
+      "bronșită cronică",
+      "simptome la efort",
+      "tușește cu spută"
+    ],
+    "strong_keywords": [
+      "fumător",
+      "tuse productivă",
+      "tuse cu expectorație",
+      "spută",
+      "bronșită cronică"
+    ],
+    "minimum_required_terms": [
+      "fumător",
+      "tuse productivă",
+      "spută"
+    ],
+    "high_value_terms": [
+      "fumător",
+      "tuse productivă",
+      "tuse cu expectorație",
+      "spută",
+      "flegmă"
+    ],
+    "exclude_keywords": [
+      "prurit nazal",
+      "prurit ocular",
+      "strănut în salve"
+    ],
+    "contradiction_terms": [
+      "prurit nazal",
+      "prurit ocular",
+      "wheezing predominant alergic",
+      "agravare la polen",
+      "agravare la acarieni"
+    ],
+    "severity": "moderată",
+    "associated_diagnoses": [
+      "Astm alergic",
+      "Infecție respiratorie joasă"
+    ],
+    "supports": [
+      "Tusea productivă la fumător și dispneea de efort susțin o patologie obstructivă cronică non-alergică.",
+      "Sputa și istoricul tabagic reduc probabilitatea unui astm alergic pur."
+    ],
+    "limits": [
+      "Poate coexista cu astm sau alte patologii respiratorii; este necesară evaluare funcțională."
+    ],
+    "recommended_tests": [
+      "Spirometrie și evaluare pneumologică.",
+      "Anamneză privind expunerea tabagică și caracterul cronic al simptomelor."
+    ],
+    "treatment_plan": [
+      "Evaluare clinică și pneumologică pentru confirmare.",
+      "Reducerea expunerii la fum și factorii iritanți."
+    ],
+    "red_flags": [
+      "Dispnee severă",
+      "Cianoză",
+      "Hemoptizie"
+    ],
+    "notes": [
+      "Important în diferențierea față de astm atunci când există tuse productivă și tabagism."
+    ],
+    "treatment_terms": [
+      "bpoc",
+      "bronșită cronică",
+      "tratament"
+    ],
+    "prevention_terms": [
+      "renunțare la fumat",
+      "evitare fum"
+    ]
+  },
+  {
+    "name": "Insuficiență cardiacă",
+    "keywords": [
+      "dispnee",
+      "lipsă de aer",
+      "ortopnee",
+      "dispnee la decubit",
+      "nu poate sta întins",
+      "se sufocă culcat",
+      "edeme gambiere",
+      "picioare umflate",
+      "vârstnic",
+      "efort",
+      "oboseală",
+      "oboseală la efort"
+    ],
+    "strong_keywords": [
+      "ortopnee",
+      "dispnee la decubit",
+      "nu poate sta întins",
+      "se sufocă culcat",
+      "edeme gambiere"
+    ],
+    "minimum_required_terms": [
+      "ortopnee",
+      "dispnee la decubit",
+      "edeme gambiere"
+    ],
+    "high_value_terms": [
+      "ortopnee",
+      "dispnee la decubit",
+      "nu poate sta întins",
+      "se sufocă culcat",
+      "edeme gambiere"
+    ],
+    "exclude_keywords": [
+      "prurit nazal",
+      "prurit ocular",
+      "urticarie"
+    ],
+    "contradiction_terms": [
+      "wheezing alergic tipic",
+      "prurit nazal",
+      "polen",
+      "acarieni"
+    ],
+    "severity": "moderată",
+    "associated_diagnoses": [
+      "Astm alergic"
+    ],
+    "supports": [
+      "Ortopneea și edemele gambiere orientează mai degrabă către cauză cardiacă decât alergologică.",
+      "Dispneea la vârstnic la efort sau decubit necesită excluderea insuficienței cardiace."
+    ],
+    "limits": [
+      "Dispneea este nespecifică și necesită corelare clinică și paraclinică."
+    ],
+    "recommended_tests": [
+      "Evaluare cardiologică.",
+      "Examinare clinică, ECG și investigații orientate pe insuficiență cardiacă."
+    ],
+    "treatment_plan": [
+      "Evaluare medicală promptă pentru clarificarea etiologiei cardiace.",
+      "Conduita terapeutică se stabilește de medic în funcție de severitate."
+    ],
+    "red_flags": [
+      "Dispnee severă",
+      "Ortopnee marcată",
+      "Cianoză"
+    ],
+    "notes": [
+      "Diagnostic capcană important în diferențierea față de astm."
+    ],
+    "treatment_terms": [
+      "insuficiență cardiacă",
+      "tratament"
+    ],
+    "prevention_terms": [
+      "monitorizare cardiologică"
+    ]
+  },
+  {
+    "name": "Dermatită de contact iritativă",
+    "keywords": [
+      "eritem local",
+      "roșeață locală",
+      "prurit",
+      "mâncărime",
+      "după detergent nou",
+      "substanțe chimice",
+      "detergent",
+      "iritație locală",
+      "arsură locală",
+      "dermatită de contact",
+      "după contact cu detergent",
+      "după produse de curățenie",
+      "după săpun",
+      "după dezinfectant"
+    ],
+    "strong_keywords": [
+      "după detergent nou",
+      "substanțe chimice",
+      "eritem local",
+      "roșeață locală"
+    ],
+    "minimum_required_terms": [
+      "după detergent nou",
+      "substanțe chimice",
+      "eritem local"
+    ],
+    "high_value_terms": [
+      "după detergent nou",
+      "substanțe chimice",
+      "eritem local",
+      "roșeață locală"
+    ],
+    "exclude_keywords": [
+      "angioedem",
+      "urticarie generalizată",
+      "dispnee"
+    ],
+    "contradiction_terms": [
+      "urticarie generalizată",
+      "angioedem",
+      "dispnee",
+      "hipotensiune"
+    ],
+    "severity": "ușoară",
+    "associated_diagnoses": [
+      "Urticarie alergică / Angioedem"
+    ],
+    "supports": [
+      "Leziunile locale după contact cu detergent sau substanțe chimice susțin dermatita de contact iritativă.",
+      "Distribuția locală face mai puțin probabilă o urticarie sistemică."
+    ],
+    "limits": [
+      "Poate semăna cu alte dermatoze; este necesară corelare cu distribuția și triggerul."
+    ],
+    "recommended_tests": [
+      "Anamneză privind expunerea locală și produsele folosite.",
+      "Evaluare dermatologică dacă leziunile persistă."
+    ],
+    "treatment_plan": [
+      "Îndepărtarea agentului iritativ.",
+      "Protecția pielii și tratament local conform recomandării medicale."
+    ],
+    "red_flags": [
+      "Extindere rapidă",
+      "Semne de suprainfecție"
+    ],
+    "notes": [
+      "Importantă în diferențierea față de urticarie."
+    ],
+    "treatment_terms": [
+      "dermatită de contact",
+      "tratament"
+    ],
+    "prevention_terms": [
+      "evitare iritanți",
+      "mănuși",
+      "protecția pielii"
+    ]
+  },
+  {
+    "name": "Sincopă vasovagală",
+    "keywords": [
+      "amețeală",
+      "pierdere conștiență",
+      "leșin",
+      "lipotimie",
+      "emoție",
+      "stres",
+      "leșin după emoție",
+      "cădere după emoție"
+    ],
+    "strong_keywords": [
+      "pierdere conștiență",
+      "leșin",
+      "emoție",
+      "stres"
+    ],
+    "minimum_required_terms": [
+      "pierdere conștiență",
+      "emoție",
+      "stres"
+    ],
+    "high_value_terms": [
+      "pierdere conștiență",
+      "leșin",
+      "emoție",
+      "stres"
+    ],
+    "exclude_keywords": [
+      "urticarie",
+      "angioedem",
+      "dispnee",
+      "stridor"
+    ],
+    "contradiction_terms": [
+      "urticarie",
+      "angioedem",
+      "dispnee",
+      "stridor",
+      "edem lingual"
+    ],
+    "severity": "moderată",
+    "associated_diagnoses": [
+      "Anafilaxie",
+      "Atac de panică / Hiperventilație"
+    ],
+    "supports": [
+      "Pierderea conștienței după emoție sau stres, fără semne alergice sistemice, poate sugera sincopă vasovagală."
+    ],
+    "limits": [
+      "Sincopa necesită evaluare clinică pentru excluderea altor cauze."
+    ],
+    "recommended_tests": [
+      "Evaluare medicală pentru clarificarea cauzei pierderii conștienței."
+    ],
+    "treatment_plan": [
+      "Conduită în funcție de cauza identificată și contextul clinic."
+    ],
+    "red_flags": [
+      "Traumatism asociat",
+      "Persistența alterării conștienței",
+      "Dispnee",
+      "Hipotensiune severă"
+    ],
+    "notes": [
+      "Importantă în diferențierea față de anafilaxie când lipsesc semnele alergice."
+    ],
+    "treatment_terms": [
+      "sincopă vasovagală",
+      "tratament"
+    ],
+    "prevention_terms": [
+      "evitare declanșatori",
+      "hidratare"
+    ]
+  },
+  {
+    "name": "Intoleranță alimentară",
+    "keywords": [
+      "balonare",
+      "dureri abdominale",
+      "crampe abdominale",
+      "după lactate",
+      "după mâncare",
+      "aliment",
+      "disconfort digestiv",
+      "gaze",
+      "diaree după lactate",
+      "intoleranță",
+      "se umflă burta",
+      "face gaze după lapte"
+    ],
+    "strong_keywords": [
+      "după lactate",
+      "balonare",
+      "dureri abdominale",
+      "crampe abdominale"
+    ],
+    "minimum_required_terms": [
+      "după lactate",
+      "balonare",
+      "dureri abdominale"
+    ],
+    "high_value_terms": [
+      "după lactate",
+      "balonare",
+      "dureri abdominale",
+      "crampe abdominale"
+    ],
+    "exclude_keywords": [
+      "urticarie",
+      "edem buze",
+      "prurit oral",
+      "wheezing"
+    ],
+    "contradiction_terms": [
+      "urticarie",
+      "edem buze",
+      "prurit oral",
+      "wheezing",
+      "angioedem"
+    ],
+    "severity": "ușoară",
+    "associated_diagnoses": [
+      "Alergie alimentară"
+    ],
+    "supports": [
+      "Simptomele digestive izolate după lactate sau alte alimente, fără semne imune, sugerează intoleranță alimentară."
+    ],
+    "limits": [
+      "Necesită anamneză atentă pentru diferențiere față de alergia alimentară."
+    ],
+    "recommended_tests": [
+      "Corelare între aliment și simptomatologie.",
+      "Evaluare clinică și dietetică în funcție de context."
+    ],
+    "treatment_plan": [
+      "Evitarea sau reducerea alimentului responsabil, în funcție de toleranță.",
+      "Reevaluare dacă apar semne alergice reale."
+    ],
+    "red_flags": [
+      "Dispnee",
+      "Urticarie",
+      "Edem"
+    ],
+    "notes": [
+      "Diagnostic capcană important față de alergia alimentară."
+    ],
+    "treatment_terms": [
+      "intoleranță alimentară",
+      "dietă"
+    ],
+    "prevention_terms": [
+      "evitare aliment",
+      "monitorizare"
+    ]
+  },
+  {
+    "name": "Infecție respiratorie joasă",
+    "keywords": [
+      "tuse",
+      "febră",
+      "spută",
+      "tuse productivă",
+      "tuse cu expectorație",
+      "debut recent",
+      "infecție",
+      "bronșită",
+      "pneumonie",
+      "tuse cu spută",
+      "secreții în piept",
+      "flegmă",
+      "tușește cu mucus"
+    ],
+    "strong_keywords": [
+      "febră",
+      "spută",
+      "tuse productivă",
+      "debut recent",
+      "pneumonie"
+    ],
+    "minimum_required_terms": [
+      "febră",
+      "spută",
+      "tuse productivă"
+    ],
+    "high_value_terms": [
+      "febră",
+      "spută",
+      "tuse productivă",
+      "pneumonie",
+      "tuse cu expectorație"
+    ],
+    "exclude_keywords": [
+      "prurit nazal",
+      "prurit ocular",
+      "wheezing alergic tipic"
+    ],
+    "contradiction_terms": [
+      "prurit nazal",
+      "prurit ocular",
+      "sezonier recurent",
+      "agravare la polen"
+    ],
+    "severity": "moderată",
+    "associated_diagnoses": [
+      "Astm alergic",
+      "Rinită virală / infecțioasă"
+    ],
+    "supports": [
+      "Febra, sputa și tusea productivă cu debut recent susțin o infecție respiratorie joasă.",
+      "Acest tablou este mai puțin compatibil cu astmul alergic."
+    ],
+    "limits": [
+      "Necesită evaluare clinică pentru diferențiere între bronșită și pneumonie."
+    ],
+    "recommended_tests": [
+      "Evaluare clinică și auscultație pulmonară.",
+      "Investigații suplimentare în funcție de severitate."
+    ],
+    "treatment_plan": [
+      "Evaluare medicală pentru stabilirea conduitei corecte.",
+      "Monitorizarea semnelor de agravare."
+    ],
+    "red_flags": [
+      "Dispnee severă",
+      "Cianoză",
+      "Stare generală sever alterată"
+    ],
+    "notes": [
+      "Diagnostic capcană important față de astmul alergic."
+    ],
+    "treatment_terms": [
+      "bronșită",
+      "pneumonie",
+      "tratament"
+    ],
+    "prevention_terms": [
+      "igienă",
+      "monitorizare"
     ]
   }
 ]

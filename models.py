@@ -47,113 +47,138 @@ def normalize_text(text):
     replacements = {
         "nas infundat": "congestie nazala",
         "nas înfundat": "congestie nazala",
-        "n as infundat": "congestie nazala",
         "obstructie nazala": "congestie nazala",
-        "obstrucție nazală": "congestie nazala",
+        "obstructie": "congestie",
         "curge nasul": "rinoree",
         "scurgeri nazale": "rinoree",
         "scurgere nazala": "rinoree",
         "secretii nazale apoase": "rinoree apoasa",
-        "secreții nazale apoase": "rinoree apoasa",
-        "rinoree apoasă": "rinoree apoasa",
+        "secretii apoase": "secretii apoase",
+        "rinoree apoasa": "rinoree apoasa",
         "mancarime nazala": "prurit nazal",
-        "mâncărime nazală": "prurit nazal",
-        "prurit nasal": "prurit nazal",
         "mancarime la nas": "prurit nazal",
         "mancarime oculara": "prurit ocular",
-        "mâncărime oculară": "prurit ocular",
         "mancarime la ochi": "prurit ocular",
         "ochi rosii": "hiperemie oculara",
-        "ochi roșii": "hiperemie oculara",
         "ochi care lacrimeaza": "lacrimare",
-        "ochi care lăcrimează": "lacrimare",
         "lacrimare oculara": "lacrimare",
         "suieraturi": "wheezing",
-        "șuierături": "wheezing",
         "respiratie suieratoare": "wheezing",
-        "respirație șuierătoare": "wheezing",
         "dificultate la respiratie": "dispnee",
-        "dificultate la respirație": "dispnee",
         "greutate in respiratie": "dispnee",
-        "greutate în respirație": "dispnee",
+        "lipsa de aer": "dispnee",
         "strangere in piept": "constrictie toracica",
-        "strângere în piept": "constrictie toracica",
+        "apasare in piept": "constrictie toracica",
         "eczema": "eczeme",
         "eczematos": "eczeme",
         "eruptie cutanata": "eruptie",
-        "erupție cutanată": "eruptie",
         "reactie dupa aliment": "dupa aliment",
-        "reacție după aliment": "dupa aliment",
         "dupa masa": "dupa aliment",
-        "după masă": "dupa aliment",
         "dupa ingestie": "dupa aliment",
-        "după ingestie": "dupa aliment",
         "umflare buze": "edem buze",
         "umflare pleoape": "edem pleoape",
         "soc anafilactic": "anafilaxie",
-        "șoc anafilactic": "anafilaxie",
         "febra mare": "febra",
-        "febră mare": "febra",
         "subfebrilitate": "febra",
         "durere in gat": "odinofagie",
-        "durere în gât": "odinofagie",
         "gat iritat": "odinofagie",
-        "gât iritat": "odinofagie",
         "mirosuri puternice": "iritanti",
         "mirosuri intense": "iritanti",
         "fum de tigara": "fum",
-        "fum de țigară": "fum",
-        "polenuri": "polen",
         "praf de casa": "acarieni",
-        "praf de casă": "acarieni",
         "dispnee de repaus": "dispnee severa",
         "greu respira": "dispnee",
-        "greu respiră": "dispnee",
         "voce ingrosata": "voce ragusita",
-        "voce îngroșată": "voce ragusita",
         "lesin": "colaps",
-        "leșin": "colaps",
         "furnicaturi": "parestezii",
-        "furnicături": "parestezii",
         "frica intensa": "teama intensa",
-        "frică intensă": "teama intensa",
         "moarte iminenta": "senzatie de moarte iminenta",
-        "moarte iminentă": "senzatie de moarte iminenta",
         "criza de panica": "atac de panica",
-        "criză de panică": "atac de panica",
         "respiratie rapida": "hiperventilatie",
-        "respirație rapidă": "hiperventilatie",
         "simptome la polen": "polen",
         "simptome la praf": "acarieni",
         "simptome la pisica": "pisica",
-        "simptome la pisică": "pisica",
         "agravare nocturna": "tuse nocturna",
-        "agravare nocturnă": "tuse nocturna",
         "contact cu persoane racite": "contact infectios",
-        "contact cu persoane răcite": "contact infectios",
         "episod brusc": "debut brusc",
         "debut dupa stres": "debut in context emotional",
-        "debut după stres": "debut in context emotional",
         "dupa stres": "context emotional",
-        "după stres": "context emotional",
         "dupa emotie": "context emotional",
-        "după emoție": "context emotional",
         "stres": "context emotional",
+        "emotie": "context emotional",
         "aer rece": "schimbari de temperatura",
         "frig": "schimbari de temperatura",
         "tuse productiva": "tuse productiva",
-        "tuse productivă": "tuse productiva",
-        "sputa": "sputa",
         "fumator": "fumator",
-        "fumător": "fumator",
+        "taba gic": "fumator",
         "ortopnee": "ortopnee",
         "pierdere constienta": "colaps",
-        "pierdere conștiență": "colaps",
         "detergent nou": "detergent",
         "substante chimice": "substante chimice",
-        "substanțe chimice": "substante chimice",
         "balonare": "balonare",
         "lactate": "lactate",
+        "piele uscata": "piele uscata",
+        "piele foarte uscata": "piele uscata",
+        "piele aspra": "piele uscata",
+        "mancarime de piele": "prurit",
+        "mancarime pe piele": "prurit",
+        "mancarime intensa": "prurit",
+        "pete rosii": "eritem",
+        "pete rosiatice": "eritem",
+        "pete rosii pe piele": "eritem",
+        "leziuni rosiatice": "eritem",
+        "zone rosii": "eritem",
+        "roseata": "eritem",
+        "rosu pe piele": "eritem",
+        "leziune eritematoasa": "eritem",
+        "leziune eritematoasa tegumentara": "eritem",
+        "leziune tegumentara": "eritem",
+        "tegumentara": "tegument",
+        "coate": "zone de flexie",
+        "genunchi": "zone de flexie",
+        "pliuri": "zone de flexie",
+        "la incheieturi": "zone de flexie",
+        "pe gat": "zone de flexie",
+        "pe gatul": "zone de flexie",
+        "pe fata": "zone sensibile",
+        "in spatele genunchilor": "zone de flexie",
+        "in plica cotului": "zone de flexie",
+        "in pliuri": "zone de flexie",
+        "eczeme pe zone de flexie": "eczeme zone de flexie",
+        "leziuni pe zonele de flexie": "zone de flexie",
+        "eritem local": "eritem local",
+        "iritatie locala": "eritem local",
+        "iritatie": "iritatie",
+        "senzatie de sufocare": "dispnee",
+        "sufocare": "dispnee",
+        "amete li": "ameteli",
+        "ameteli": "ameteli",
+        "greata": "greata",
+        "varsaturi": "varsaturi",
+        "muci galbeni": "secretii nazale purulente",
+        "muci verzi": "secretii nazale purulente",
+        "durere in sinusuri": "durere faciala",
+        "durere la nivelul fetei": "durere faciala",
+        "picioare umflate": "edeme gambiere",
+        "nu poate sta intins": "dispnee la decubit",
+        "se sufoca culcat": "dispnee la decubit",
+        "tuse cu expectoratie": "tuse productiva",
+        "tuse cu sputa": "tuse productiva",
+        "flegma": "sputa",
+        "tuseste cu sputa": "tuse productiva",
+        "dupa ce a mancat": "dupa aliment",
+        "mancarime in gura": "prurit oral",
+        "crampe abdominale": "dureri abdominale",
+        "diaree dupa lactate": "lactate diaree",
+        "lesin dupa emotie": "colaps context emotional",
+        "cadere dupa emotie": "colaps context emotional",
+        "inima bate tare": "palpitatii",
+        "nu poate trage aer": "dispnee",
+        "respira foarte greu": "dispnee severa",
+        "nu poate respira": "dispnee severa",
+        "limba umflata": "edem lingual",
+        "pleoape umflate": "edem pleoape",
+        "zone de flexie": "zone de flexie",
     }
 
     for src, dst in replacements.items():
@@ -444,6 +469,34 @@ def get_default_diagnosis_knowledge(diagnosis_name):
     }
 
 
+def merge_weighted_terms(*weighted_lists):
+    merged = {}
+
+    for items in weighted_lists:
+        if not items:
+            continue
+        for item in items:
+            if isinstance(item, dict):
+                term = normalize_text(item.get("term", ""))
+                weight = item.get("weight", 1)
+            else:
+                term = normalize_text(item)
+                weight = 1
+
+            if not term:
+                continue
+
+            try:
+                weight = int(weight)
+            except Exception:
+                weight = 1
+
+            if term not in merged or weight > merged[term]:
+                merged[term] = weight
+
+    return [{"term": term, "weight": weight} for term, weight in merged.items()]
+
+
 def get_weighted_keywords_for_diagnosis(name, keywords, strong_keywords, high_value_terms=None):
     name_norm = normalize_text(name)
     high_value_terms = high_value_terms or []
@@ -489,14 +542,17 @@ def get_weighted_keywords_for_diagnosis(name, keywords, strong_keywords, high_va
             {"term": "simptome la efort", "weight": 3},
         ],
         "dermatita atopica": [
-            {"term": "prurit", "weight": 4},
-            {"term": "eczeme", "weight": 7},
+            {"term": "prurit", "weight": 5},
+            {"term": "eczeme", "weight": 8},
+            {"term": "eritem", "weight": 4},
             {"term": "eruptie", "weight": 2},
-            {"term": "piele uscata", "weight": 6},
-            {"term": "lichenificare", "weight": 6},
-            {"term": "leziuni flexurale", "weight": 8},
-            {"term": "dermatita", "weight": 2},
+            {"term": "piele uscata", "weight": 7},
+            {"term": "dermatita", "weight": 4},
+            {"term": "zone de flexie", "weight": 8},
+            {"term": "eczeme zone de flexie", "weight": 9},
             {"term": "atopie", "weight": 2},
+            {"term": "mancarime", "weight": 3},
+            {"term": "tegument", "weight": 1},
         ],
         "urticarie alergica / angioedem": [
             {"term": "urticarie", "weight": 8},
@@ -583,9 +639,57 @@ def get_weighted_keywords_for_diagnosis(name, keywords, strong_keywords, high_va
             {"term": "context emotional", "weight": 7},
             {"term": "debut brusc", "weight": 5},
         ],
+        "bpoc / bronsita cronica": [
+            {"term": "fumator", "weight": 10},
+            {"term": "tuse productiva", "weight": 9},
+            {"term": "sputa", "weight": 8},
+            {"term": "dispnee", "weight": 4},
+            {"term": "simptome la efort", "weight": 4},
+            {"term": "expunere la fum", "weight": 6},
+        ],
+        "insuficienta cardiaca": [
+            {"term": "ortopnee", "weight": 12},
+            {"term": "dispnee la decubit", "weight": 11},
+            {"term": "edeme gambiere", "weight": 10},
+            {"term": "dispnee", "weight": 3},
+            {"term": "efort", "weight": 2},
+            {"term": "virstnic", "weight": 2},
+            {"term": "varstnic", "weight": 2},
+        ],
+        "dermatita de contact iritativa": [
+            {"term": "detergent", "weight": 8},
+            {"term": "substante chimice", "weight": 8},
+            {"term": "eritem local", "weight": 9},
+            {"term": "prurit", "weight": 3},
+            {"term": "iritatie", "weight": 4},
+        ],
+        "sincopa vasovagala": [
+            {"term": "colaps", "weight": 6},
+            {"term": "ameteli", "weight": 3},
+            {"term": "context emotional", "weight": 6},
+            {"term": "lipotimie", "weight": 7},
+        ],
+        "intoleranta alimentara": [
+            {"term": "balonare", "weight": 9},
+            {"term": "dureri abdominale", "weight": 5},
+            {"term": "lactate", "weight": 10},
+            {"term": "intoleranta", "weight": 10},
+            {"term": "dupa aliment", "weight": 3},
+        ],
+        "infectie respiratorie joasa": [
+            {"term": "febra", "weight": 8},
+            {"term": "sputa", "weight": 9},
+            {"term": "tuse productiva", "weight": 9},
+            {"term": "debut recent", "weight": 5},
+            {"term": "infectie", "weight": 6},
+            {"term": "bronsita", "weight": 8},
+            {"term": "pneumonie", "weight": 10},
+            {"term": "tuse", "weight": 2},
+        ],
     }
 
-    return presets.get(name_norm, default_weighted)
+    preset_weighted = presets.get(name_norm, [])
+    return merge_weighted_terms(default_weighted, preset_weighted)
 
 
 def compute_pattern_bonus(name, text):
@@ -665,6 +769,46 @@ def compute_pattern_bonus(name, text):
         if contains_any(text, ["wheezing", "tuse nocturna", "agravare la alergeni", "urticarie", "angioedem", "hipotensiune", "stridor"]):
             bonus -= 12
 
+    elif name_norm == "bpoc / bronsita cronica":
+        if contains_any(text, ["fumator", "tuse productiva"]) and contains_any(text, ["sputa", "dispnee"]):
+            bonus += 10
+        if contains_any(text, ["wheezing", "prurit nazal", "polen", "acarieni"]):
+            bonus -= 6
+
+    elif name_norm == "insuficienta cardiaca":
+        if contains_any(text, ["ortopnee", "dispnee la decubit"]) or (
+            contains_any(text, ["dispnee"]) and contains_any(text, ["edeme gambiere"])
+        ):
+            bonus += 12
+        if contains_any(text, ["polen", "acarieni", "prurit nazal", "urticarie"]):
+            bonus -= 5
+
+    elif name_norm == "dermatita de contact iritativa":
+        if contains_any(text, ["detergent", "substante chimice"]) and contains_any(text, ["eritem local", "prurit", "iritatie"]):
+            bonus += 10
+        if contains_any(text, ["angioedem", "urticarie generalizata", "dispnee"]):
+            bonus -= 8
+
+    elif name_norm == "sincopa vasovagala":
+        if contains_any(text, ["context emotional", "stres"]) and contains_any(text, ["colaps", "ameteli", "lipotimie"]):
+            bonus += 10
+        if contains_any(text, ["urticarie", "angioedem", "stridor"]):
+            bonus -= 10
+
+    elif name_norm == "intoleranta alimentara":
+        if contains_any(text, ["balonare", "lactate"]) and contains_any(text, ["dureri abdominale", "dupa aliment"]):
+            bonus += 10
+        if contains_any(text, ["urticarie", "edem buze", "prurit oral", "angioedem"]):
+            bonus -= 10
+
+    elif name_norm == "infectie respiratorie joasa":
+        if contains_any(text, ["febra", "sputa", "tuse productiva"]):
+            bonus += 10
+        if contains_any(text, ["bronsita", "pneumonie"]):
+            bonus += 8
+        if contains_any(text, ["polen", "acarieni", "prurit nazal"]):
+            bonus -= 6
+
     return bonus
 
 
@@ -733,6 +877,65 @@ def compute_high_value_bonus(text, high_value_terms):
     return 0
 
 
+def compute_required_feature_penalty(name, text):
+    name_norm = normalize_text(name)
+    norm_text = normalize_text(text)
+
+    if name_norm == "rinita alergica":
+        if not contains_any(norm_text, ["prurit nazal", "prurit ocular", "stranut", "lacrimare", "polen", "acarieni", "rinoree apoasa"]):
+            return 18
+
+    elif name_norm == "astm alergic":
+        if not contains_any(norm_text, ["wheezing", "tuse nocturna", "constrictie toracica", "agravare la alergeni"]):
+            return 20
+
+    elif name_norm == "anafilaxie":
+        if not contains_any(norm_text, ["hipotensiune", "colaps", "stridor", "edem lingual", "urticarie", "angioedem", "dispnee severa"]):
+            return 22
+
+    elif name_norm == "alergie alimentara":
+        if not contains_any(norm_text, ["dupa aliment", "prurit oral", "urticarie", "edem buze", "angioedem", "wheezing dupa aliment"]):
+            return 18
+
+    elif name_norm == "dermatita atopica":
+        if not contains_any(norm_text, ["prurit", "eczeme", "piele uscata", "eritem", "dermatita", "zone de flexie", "tegument"]):
+            return 10
+
+    elif name_norm == "urticarie alergica / angioedem":
+        if not contains_any(norm_text, ["urticarie", "angioedem", "edem buze", "edem pleoape", "eruptie fugace"]):
+            return 18
+
+    elif name_norm == "atac de panica / hiperventilatie":
+        if not contains_any(norm_text, ["hiperventilatie", "palpitatii", "parestezii", "teama intensa", "senzatie de moarte iminenta", "context emotional"]):
+            return 14
+
+    elif name_norm == "bpoc / bronsita cronica":
+        if not contains_any(norm_text, ["fumator", "tuse productiva", "sputa"]):
+            return 18
+
+    elif name_norm == "insuficienta cardiaca":
+        if not contains_any(norm_text, ["ortopnee", "dispnee la decubit", "edeme gambiere"]):
+            return 18
+
+    elif name_norm == "dermatita de contact iritativa":
+        if not contains_any(norm_text, ["detergent", "substante chimice", "eritem local", "iritatie"]):
+            return 14
+
+    elif name_norm == "sincopa vasovagala":
+        if not contains_any(norm_text, ["colaps", "context emotional", "stres", "lipotimie"]):
+            return 14
+
+    elif name_norm == "intoleranta alimentara":
+        if not contains_any(norm_text, ["balonare", "lactate", "dureri abdominale"]):
+            return 14
+
+    elif name_norm == "infectie respiratorie joasa":
+        if not contains_any(norm_text, ["febra", "sputa", "tuse productiva", "bronsita", "pneumonie"]):
+            return 18
+
+    return 0
+
+
 def apply_manual_adjustments(name, text, base_score):
     name_norm = normalize_text(name)
     score = base_score
@@ -776,8 +979,6 @@ def apply_manual_adjustments(name, text, base_score):
             score += 5
         if count_keyword_hits(norm_text, ["wheezing", "tuse nocturna", "constrictie toracica", "agravare la alergeni"]) >= 2:
             score += 6
-        if not contains_any(norm_text, ["wheezing", "tuse nocturna", "constrictie toracica", "agravare la alergeni"]):
-            score -= 10
         if contains_any(norm_text, panic_markers) and not contains_any(norm_text, ["wheezing", "tuse nocturna"]):
             score -= 12
         if contains_any(norm_text, ["febra", "sputa", "tuse productiva", "fumator", "ortopnee"]) and not contains_any(norm_text, ["wheezing"]):
@@ -788,8 +989,6 @@ def apply_manual_adjustments(name, text, base_score):
             score += 5
         if contains_any(norm_text, ["stranut in salve", "rinoree apoasa"]):
             score += 4
-        if not contains_any(norm_text, ["prurit nazal", "prurit ocular", "stranut", "lacrimare", "polen", "acarieni"]):
-            score -= 10
         if contains_any(norm_text, infectious_markers):
             score -= 9
 
@@ -842,10 +1041,46 @@ def apply_manual_adjustments(name, text, base_score):
             score += 10
         if contains_any(norm_text, ["debut in context emotional", "dispnee in context emotional", "anxietate", "context emotional", "debut brusc"]):
             score += 5
-        if not contains_any(norm_text, ["hiperventilatie", "palpitatii", "parestezii", "teama intensa", "senzatie de moarte iminenta", "anxietate", "context emotional"]):
-            score -= 8
         if contains_any(norm_text, ["wheezing", "tuse nocturna", "agravare la alergeni", "urticarie", "angioedem", "hipotensiune", "stridor"]):
             score -= 12
+
+    elif name_norm == "bpoc / bronsita cronica":
+        if contains_any(norm_text, ["fumator", "tuse productiva", "sputa"]):
+            score += 8
+        if contains_any(norm_text, ["wheezing", "prurit nazal", "polen", "acarieni"]) and not contains_any(norm_text, ["fumator", "tuse productiva", "sputa"]):
+            score -= 8
+
+    elif name_norm == "insuficienta cardiaca":
+        if contains_any(norm_text, ["ortopnee", "dispnee la decubit", "edeme gambiere"]):
+            score += 10
+        if contains_any(norm_text, ["polen", "acarieni", "prurit nazal", "wheezing"]):
+            score -= 6
+
+    elif name_norm == "dermatita de contact iritativa":
+        if contains_any(norm_text, ["detergent", "substante chimice", "eritem local"]):
+            score += 8
+        if contains_any(norm_text, ["angioedem", "urticarie generalizata", "dispnee", "hipotensiune"]):
+            score -= 10
+
+    elif name_norm == "sincopa vasovagala":
+        if contains_any(norm_text, ["context emotional", "stres"]) and contains_any(norm_text, ["colaps", "ameteli", "lipotimie"]):
+            score += 8
+        if contains_any(norm_text, ["urticarie", "angioedem", "stridor", "edem lingual"]):
+            score -= 12
+
+    elif name_norm == "intoleranta alimentara":
+        if contains_any(norm_text, ["balonare", "lactate", "dureri abdominale"]):
+            score += 8
+        if contains_any(norm_text, ["urticarie", "edem buze", "prurit oral", "wheezing", "angioedem"]):
+            score -= 12
+
+    elif name_norm == "infectie respiratorie joasa":
+        if contains_any(norm_text, ["febra", "sputa", "tuse productiva"]):
+            score += 8
+        if contains_any(norm_text, ["pneumonie", "bronsita"]):
+            score += 8
+        if contains_any(norm_text, ["wheezing", "polen", "acarieni"]) and not contains_any(norm_text, ["febra", "sputa", "tuse productiva"]):
+            score -= 6
 
     return max(score, 0)
 
@@ -877,6 +1112,7 @@ def build_ranked_entry(diag, text):
     contradiction_penalty = compute_contradiction_penalty(text, contradiction_terms)
     minimum_adjustment = compute_minimum_terms_adjustment(text, minimum_required_terms)
     high_value_bonus = compute_high_value_bonus(text, high_value_terms)
+    required_feature_penalty = compute_required_feature_penalty(name, text)
 
     raw_score = (
         base_score
@@ -885,6 +1121,7 @@ def build_ranked_entry(diag, text):
         + high_value_bonus
         - exclude_penalty
         - contradiction_penalty
+        - required_feature_penalty
     )
 
     score = apply_manual_adjustments(name, text, raw_score)
@@ -911,7 +1148,7 @@ def build_ranked_entry(diag, text):
 
 def build_fallback_analysis(text):
     return {
-        "primary_diagnosis": "Nespecificat",
+        "primary_diagnosis": "Diagnostic neclar",
         "primary_probability": "foarte scăzută",
         "severity": infer_severity(text),
         "confidence": "foarte redusă",
@@ -1011,6 +1248,11 @@ def enrich_primary_output(primary, alternatives, text):
                 "Evaluare clinică pentru excluderea unei cauze respiratorii, cardiace sau alergice reale."
             )
 
+    elif primary_name == "dermatita atopica":
+        output["notes"] = output["notes"] + [
+            "Leziunile cutanate descrise vag necesită corelare cu distribuția, pruritul și istoricul de atopie."
+        ]
+
     if primary["score"] < 6:
         output["notes"] = output["notes"] + [
             "Scorul de potrivire este redus; concluzia are valoare orientativă limitată."
@@ -1043,7 +1285,7 @@ def rank_differential_diagnoses(full_text, diagnoses):
 
     if not text:
         return [], {
-            "primary_diagnosis": "Nespecificat",
+            "primary_diagnosis": "Diagnostic neclar",
             "primary_probability": "foarte scăzută",
             "severity": "ușoară",
             "confidence": "foarte redusă",
@@ -1086,20 +1328,23 @@ def rank_differential_diagnoses(full_text, diagnoses):
 
     positive_ranked = [item for item in ranked_all if item["score"] > 0]
 
-    if positive_ranked:
-        primary = positive_ranked[0]
-        alternatives_pool = positive_ranked[1:]
-    else:
+    if not positive_ranked:
         ranked_display = ranked_all[:5]
-        primary = ranked_display[0]
         for item in ranked_display:
             item.pop("has_any_match", None)
-        alternatives = [item["name"] for item in ranked_display[1:5]]
-        return ranked_display, enrich_primary_output(primary, alternatives, text)
+        return ranked_display, build_fallback_analysis(text)
+
+    primary = positive_ranked[0]
+
+    if primary["score"] < 6:
+        ranked_display = ranked_all[:5]
+        for item in ranked_display:
+            item.pop("has_any_match", None)
+        return ranked_display, build_fallback_analysis(text)
 
     ranked_display = [primary]
 
-    for item in alternatives_pool:
+    for item in positive_ranked[1:]:
         if item["name"] == primary["name"]:
             continue
         if len(ranked_display) >= 5:
