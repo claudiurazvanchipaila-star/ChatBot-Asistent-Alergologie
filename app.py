@@ -94,25 +94,36 @@ def register_pdf_fonts():
     font_set = {
         "regular": "Helvetica",
         "bold": "Helvetica-Bold",
-        "italic": "Helvetica-Oblique"
+        "italic": "Helvetica"
     }
 
     for regular_path, bold_path, italic_path in candidate_fonts:
         try:
+            regular_loaded = False
+            bold_loaded = False
+            italic_loaded = False
+
             if os.path.exists(regular_path):
                 pdfmetrics.registerFont(TTFont("AppRegular", regular_path))
                 font_set["regular"] = "AppRegular"
+                regular_loaded = True
 
             if os.path.exists(bold_path):
                 pdfmetrics.registerFont(TTFont("AppBold", bold_path))
                 font_set["bold"] = "AppBold"
+                bold_loaded = True
 
             if os.path.exists(italic_path):
                 pdfmetrics.registerFont(TTFont("AppItalic", italic_path))
                 font_set["italic"] = "AppItalic"
+                italic_loaded = True
 
-            if font_set["regular"] != "Helvetica":
+            if regular_loaded and not italic_loaded:
+                font_set["italic"] = font_set["regular"]
+
+            if regular_loaded or bold_loaded or italic_loaded:
                 break
+
         except Exception as e:
             print(f"[EROARE] register_pdf_fonts: {e}")
 
