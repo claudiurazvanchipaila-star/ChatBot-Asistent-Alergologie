@@ -131,6 +131,29 @@ def normalize_text(text):
         "agravare nocturnă": "tuse nocturna",
         "contact cu persoane racite": "contact infectios",
         "contact cu persoane răcite": "contact infectios",
+        "episod brusc": "debut brusc",
+        "debut dupa stres": "debut in context emotional",
+        "debut după stres": "debut in context emotional",
+        "dupa stres": "context emotional",
+        "după stres": "context emotional",
+        "dupa emotie": "context emotional",
+        "după emoție": "context emotional",
+        "stres": "context emotional",
+        "aer rece": "schimbari de temperatura",
+        "frig": "schimbari de temperatura",
+        "tuse productiva": "tuse productiva",
+        "tuse productivă": "tuse productiva",
+        "sputa": "sputa",
+        "fumator": "fumator",
+        "fumător": "fumator",
+        "ortopnee": "ortopnee",
+        "pierdere constienta": "colaps",
+        "pierdere conștiență": "colaps",
+        "detergent nou": "detergent",
+        "substante chimice": "substante chimice",
+        "substanțe chimice": "substante chimice",
+        "balonare": "balonare",
+        "lactate": "lactate",
     }
 
     for src, dst in replacements.items():
@@ -213,21 +236,21 @@ def count_weighted_hits(text, weighted_keywords):
 
 
 def infer_probability(score):
-    if score >= 18:
+    if score >= 22:
         return "mare"
-    if score >= 10:
+    if score >= 12:
         return "moderată"
-    if score >= 5:
+    if score >= 6:
         return "scăzută"
     return "foarte scăzută"
 
 
 def infer_confidence(score):
-    if score >= 18:
+    if score >= 22:
         return "mare"
-    if score >= 10:
+    if score >= 12:
         return "moderată"
-    if score >= 5:
+    if score >= 6:
         return "redusă"
     return "foarte redusă"
 
@@ -426,131 +449,139 @@ def get_weighted_keywords_for_diagnosis(name, keywords, strong_keywords, high_va
     high_value_terms = high_value_terms or []
 
     default_weighted = [{"term": kw, "weight": 1} for kw in keywords]
-    default_weighted += [{"term": kw, "weight": 2} for kw in strong_keywords]
-    default_weighted += [{"term": kw, "weight": 4} for kw in high_value_terms]
+    default_weighted += [{"term": kw, "weight": 3} for kw in strong_keywords]
+    default_weighted += [{"term": kw, "weight": 7} for kw in high_value_terms]
 
     presets = {
         "rinita alergica": [
             {"term": "stranut", "weight": 4},
-            {"term": "rinoree", "weight": 3},
-            {"term": "rinoree apoasa", "weight": 5},
-            {"term": "prurit nazal", "weight": 6},
+            {"term": "rinoree", "weight": 2},
+            {"term": "rinoree apoasa", "weight": 7},
+            {"term": "prurit nazal", "weight": 8},
             {"term": "congestie nazala", "weight": 2},
-            {"term": "prurit ocular", "weight": 5},
-            {"term": "lacrimare", "weight": 4},
-            {"term": "stranut in salve", "weight": 7},
-            {"term": "sezonier", "weight": 5},
-            {"term": "polen", "weight": 5},
-            {"term": "acarieni", "weight": 5},
-            {"term": "pisica", "weight": 4},
+            {"term": "prurit ocular", "weight": 7},
+            {"term": "lacrimare", "weight": 5},
+            {"term": "stranut in salve", "weight": 9},
+            {"term": "sezonier", "weight": 6},
+            {"term": "polen", "weight": 6},
+            {"term": "acarieni", "weight": 6},
+            {"term": "pisica", "weight": 5},
             {"term": "atopie", "weight": 2},
         ],
         "conjunctivita alergica": [
-            {"term": "prurit ocular", "weight": 6},
-            {"term": "lacrimare", "weight": 4},
-            {"term": "hiperemie oculara", "weight": 4},
-            {"term": "edem palpebral", "weight": 5},
-            {"term": "secretii apoase", "weight": 3},
+            {"term": "prurit ocular", "weight": 8},
+            {"term": "lacrimare", "weight": 5},
+            {"term": "hiperemie oculara", "weight": 5},
+            {"term": "edem palpebral", "weight": 6},
+            {"term": "secretii apoase", "weight": 4},
         ],
         "astm alergic": [
-            {"term": "wheezing", "weight": 8},
-            {"term": "dispnee", "weight": 3},
-            {"term": "tuse", "weight": 2},
-            {"term": "tuse nocturna", "weight": 6},
-            {"term": "constrictie toracica", "weight": 5},
+            {"term": "wheezing", "weight": 11},
+            {"term": "dispnee", "weight": 2},
+            {"term": "tuse", "weight": 1},
+            {"term": "tuse nocturna", "weight": 8},
+            {"term": "constrictie toracica", "weight": 7},
             {"term": "polen", "weight": 2},
             {"term": "acarieni", "weight": 2},
-            {"term": "atopie", "weight": 3},
-            {"term": "agravare la alergeni", "weight": 6},
-            {"term": "episoade recurente", "weight": 4},
+            {"term": "atopie", "weight": 4},
+            {"term": "agravare la alergeni", "weight": 8},
+            {"term": "episoade recurente", "weight": 5},
+            {"term": "simptome la efort", "weight": 3},
         ],
         "dermatita atopica": [
             {"term": "prurit", "weight": 4},
-            {"term": "eczeme", "weight": 6},
+            {"term": "eczeme", "weight": 7},
             {"term": "eruptie", "weight": 2},
-            {"term": "piele uscata", "weight": 5},
-            {"term": "lichenificare", "weight": 5},
-            {"term": "leziuni flexurale", "weight": 6},
+            {"term": "piele uscata", "weight": 6},
+            {"term": "lichenificare", "weight": 6},
+            {"term": "leziuni flexurale", "weight": 8},
             {"term": "dermatita", "weight": 2},
             {"term": "atopie", "weight": 2},
         ],
         "urticarie alergica / angioedem": [
-            {"term": "urticarie", "weight": 6},
+            {"term": "urticarie", "weight": 8},
             {"term": "papule", "weight": 2},
-            {"term": "placi pruriginoase", "weight": 4},
-            {"term": "edem buze", "weight": 5},
-            {"term": "edem pleoape", "weight": 5},
-            {"term": "angioedem", "weight": 7},
-            {"term": "eruptie fugace", "weight": 6},
+            {"term": "placi pruriginoase", "weight": 5},
+            {"term": "edem buze", "weight": 6},
+            {"term": "edem pleoape", "weight": 6},
+            {"term": "angioedem", "weight": 9},
+            {"term": "eruptie fugace", "weight": 8},
         ],
         "alergie alimentara": [
-            {"term": "dupa aliment", "weight": 8},
-            {"term": "prurit oral", "weight": 6},
+            {"term": "dupa aliment", "weight": 10},
+            {"term": "prurit oral", "weight": 7},
             {"term": "furnicaturi orale", "weight": 4},
-            {"term": "edem buze", "weight": 5},
+            {"term": "edem buze", "weight": 6},
             {"term": "varsaturi", "weight": 4},
-            {"term": "dureri abdominale", "weight": 4},
-            {"term": "diaree", "weight": 3},
-            {"term": "urticarie", "weight": 3},
-            {"term": "wheezing dupa aliment", "weight": 8},
+            {"term": "dureri abdominale", "weight": 3},
+            {"term": "diaree", "weight": 2},
+            {"term": "urticarie", "weight": 4},
+            {"term": "wheezing dupa aliment", "weight": 10},
+            {"term": "balonare", "weight": 0},
+            {"term": "lactate", "weight": 0},
         ],
         "anafilaxie": [
-            {"term": "dispnee severa", "weight": 9},
+            {"term": "dispnee severa", "weight": 11},
             {"term": "wheezing", "weight": 2},
-            {"term": "stridor", "weight": 10},
-            {"term": "voce ragusita", "weight": 7},
-            {"term": "hipotensiune", "weight": 10},
-            {"term": "ameteli", "weight": 3},
-            {"term": "colaps", "weight": 10},
-            {"term": "edem lingual", "weight": 10},
-            {"term": "dificultati la inghitire", "weight": 7},
+            {"term": "stridor", "weight": 12},
+            {"term": "voce ragusita", "weight": 8},
+            {"term": "hipotensiune", "weight": 12},
+            {"term": "ameteli", "weight": 2},
+            {"term": "colaps", "weight": 12},
+            {"term": "edem lingual", "weight": 12},
+            {"term": "dificultati la inghitire", "weight": 8},
             {"term": "reactie severa", "weight": 5},
             {"term": "dupa aliment", "weight": 4},
-            {"term": "urticarie", "weight": 2},
-            {"term": "angioedem", "weight": 3},
+            {"term": "urticarie", "weight": 3},
+            {"term": "angioedem", "weight": 4},
+            {"term": "context emotional", "weight": -3},
         ],
         "rinita virala / infectioasa": [
-            {"term": "rinoree", "weight": 1},
-            {"term": "congestie nazala", "weight": 1},
-            {"term": "febra", "weight": 8},
-            {"term": "odinofagie", "weight": 6},
+            {"term": "rinoree", "weight": 2},
+            {"term": "congestie nazala", "weight": 2},
+            {"term": "febra", "weight": 10},
+            {"term": "odinofagie", "weight": 8},
             {"term": "tuse", "weight": 3},
-            {"term": "stare generala alterata", "weight": 7},
-            {"term": "mialgii", "weight": 6},
-            {"term": "frison", "weight": 6},
-            {"term": "contact infectios", "weight": 5},
-            {"term": "debut acut", "weight": 5},
+            {"term": "stare generala alterata", "weight": 9},
+            {"term": "mialgii", "weight": 8},
+            {"term": "frison", "weight": 8},
+            {"term": "contact infectios", "weight": 7},
+            {"term": "debut acut", "weight": 7},
         ],
         "rinita non alergica": [
-            {"term": "rinoree", "weight": 1},
-            {"term": "congestie nazala", "weight": 1},
-            {"term": "iritanti", "weight": 6},
-            {"term": "fum", "weight": 6},
-            {"term": "mirosuri puternice", "weight": 6},
-            {"term": "schimbari de temperatura", "weight": 6},
-            {"term": "parfum", "weight": 6},
+            {"term": "rinoree", "weight": 2},
+            {"term": "congestie nazala", "weight": 2},
+            {"term": "iritanti", "weight": 8},
+            {"term": "fum", "weight": 8},
+            {"term": "mirosuri puternice", "weight": 8},
+            {"term": "schimbari de temperatura", "weight": 8},
+            {"term": "parfum", "weight": 8},
+            {"term": "detergent", "weight": 5},
         ],
         "sinuzita acuta": [
             {"term": "congestie nazala", "weight": 2},
-            {"term": "durere faciala", "weight": 8},
-            {"term": "presiune faciala", "weight": 8},
-            {"term": "secretii nazale purulente", "weight": 9},
+            {"term": "durere faciala", "weight": 10},
+            {"term": "presiune faciala", "weight": 10},
+            {"term": "secretii nazale purulente", "weight": 11},
             {"term": "cefalee", "weight": 3},
             {"term": "febra", "weight": 4},
-            {"term": "durere maxilara", "weight": 7},
+            {"term": "durere maxilara", "weight": 9},
+            {"term": "simptome persistente", "weight": 4},
         ],
         "atac de panica / hiperventilatie": [
-            {"term": "atac de panica", "weight": 9},
-            {"term": "hiperventilatie", "weight": 8},
-            {"term": "palpitatii", "weight": 6},
+            {"term": "atac de panica", "weight": 11},
+            {"term": "hiperventilatie", "weight": 10},
+            {"term": "palpitatii", "weight": 8},
             {"term": "tremor", "weight": 4},
-            {"term": "ameteli", "weight": 4},
-            {"term": "parestezii", "weight": 7},
+            {"term": "ameteli", "weight": 3},
+            {"term": "parestezii", "weight": 9},
             {"term": "nod in gat", "weight": 4},
-            {"term": "teama intensa", "weight": 7},
-            {"term": "senzatie de moarte iminenta", "weight": 8},
-            {"term": "anxietate", "weight": 5},
-            {"term": "dispnee in context emotional", "weight": 7},
+            {"term": "teama intensa", "weight": 9},
+            {"term": "senzatie de moarte iminenta", "weight": 10},
+            {"term": "anxietate", "weight": 6},
+            {"term": "dispnee in context emotional", "weight": 9},
+            {"term": "context emotional", "weight": 7},
+            {"term": "debut brusc", "weight": 5},
         ],
     }
 
@@ -563,70 +594,76 @@ def compute_pattern_bonus(name, text):
 
     if name_norm == "rinita alergica":
         if contains_any(text, ["stranut"]) and contains_any(text, ["rinoree", "rinoree apoasa"]):
-            bonus += 4
-        if contains_any(text, ["prurit nazal"]) and contains_any(text, ["lacrimare", "prurit ocular"]):
-            bonus += 6
-        if contains_any(text, ["polen", "acarieni", "sezonier"]):
             bonus += 5
+        if contains_any(text, ["prurit nazal"]) and contains_any(text, ["lacrimare", "prurit ocular"]):
+            bonus += 8
+        if contains_any(text, ["polen", "acarieni", "sezonier"]):
+            bonus += 6
         if contains_any(text, ["febra", "odinofagie", "secretii purulente", "stare generala alterata", "mialgii"]):
-            bonus -= 8
+            bonus -= 10
 
     elif name_norm == "conjunctivita alergica":
         if contains_any(text, ["prurit ocular"]) and contains_any(text, ["lacrimare", "hiperemie oculara"]):
-            bonus += 6
+            bonus += 7
         if contains_any(text, ["edem palpebral"]):
-            bonus += 2
+            bonus += 3
 
     elif name_norm == "astm alergic":
         if contains_any(text, ["wheezing"]) and contains_any(text, ["dispnee", "tuse", "tuse nocturna", "constrictie toracica"]):
-            bonus += 7
+            bonus += 9
         if contains_any(text, ["polen", "acarieni", "atopie", "agravare la alergeni"]):
-            bonus += 4
+            bonus += 5
         if contains_any(text, ["palpitatii", "parestezii", "teama intensa", "senzatie de moarte iminenta"]) and not contains_any(text, ["wheezing"]):
-            bonus -= 8
-        if contains_any(text, ["febra", "odinofagie"]) and not contains_any(text, ["wheezing"]):
-            bonus -= 4
+            bonus -= 12
+        if contains_any(text, ["febra", "odinofagie", "sputa", "tuse productiva", "fumator", "ortopnee"]) and not contains_any(text, ["wheezing"]):
+            bonus -= 10
 
     elif name_norm == "alergie alimentara":
         if contains_any(text, ["dupa aliment"]) and contains_any(text, ["prurit oral", "varsaturi", "diaree", "edem buze", "urticarie"]):
-            bonus += 8
+            bonus += 9
+        if contains_any(text, ["balonare", "lactate"]) and not contains_any(text, ["urticarie", "edem buze", "angioedem", "prurit oral"]):
+            bonus -= 8
 
     elif name_norm == "anafilaxie":
         if contains_any(text, ["hipotensiune", "colaps", "stridor", "edem lingual"]):
-            bonus += 10
+            bonus += 12
         if contains_any(text, ["dupa aliment", "dupa intepatura", "dupa medicament"]) and contains_any(
             text,
             ["dispnee", "urticarie", "angioedem", "colaps", "ameteli"],
         ):
             bonus += 8
+        if contains_any(text, ["context emotional"]) and not contains_any(text, ["urticarie", "angioedem", "hipotensiune", "stridor", "edem lingual"]):
+            bonus -= 12
 
     elif name_norm == "rinita virala / infectioasa":
         if contains_any(text, ["febra"]) and contains_any(text, ["odinofagie", "tuse", "stare generala alterata", "mialgii", "frison"]):
-            bonus += 8
+            bonus += 10
         if contains_any(text, ["contact infectios", "debut acut"]):
-            bonus += 4
+            bonus += 5
         if contains_any(text, ["prurit nazal", "prurit ocular", "polen", "acarieni", "sezonier", "stranut in salve"]):
-            bonus -= 6
+            bonus -= 8
 
     elif name_norm == "rinita non alergica":
         if contains_any(text, ["iritanti", "fum", "mirosuri puternice", "schimbari de temperatura", "parfum"]):
-            bonus += 6
+            bonus += 8
+        if not contains_any(text, ["prurit nazal", "prurit ocular", "stranut in salve", "polen", "acarieni", "sezonier"]):
+            bonus += 3
         if contains_any(text, ["prurit nazal", "prurit ocular", "polen", "acarieni", "sezonier"]):
-            bonus -= 4
+            bonus -= 6
 
     elif name_norm == "sinuzita acuta":
         if contains_any(text, ["durere faciala", "presiune faciala"]) and contains_any(text, ["secretii nazale purulente", "febra"]):
-            bonus += 8
+            bonus += 9
         if contains_any(text, ["stranut", "prurit nazal", "lacrimare"]):
-            bonus -= 4
+            bonus -= 5
 
     elif name_norm == "atac de panica / hiperventilatie":
         if contains_any(text, ["hiperventilatie", "palpitatii"]) and contains_any(text, ["parestezii", "teama intensa", "senzatie de moarte iminenta"]):
-            bonus += 10
-        if contains_any(text, ["anxietate", "debut in context emotional", "dispnee in context emotional"]):
-            bonus += 6
-        if contains_any(text, ["wheezing", "tuse nocturna", "agravare la alergeni", "urticarie", "angioedem"]):
-            bonus -= 8
+            bonus += 12
+        if contains_any(text, ["anxietate", "debut in context emotional", "dispnee in context emotional", "context emotional", "debut brusc"]):
+            bonus += 7
+        if contains_any(text, ["wheezing", "tuse nocturna", "agravare la alergeni", "urticarie", "angioedem", "hipotensiune", "stridor"]):
+            bonus -= 12
 
     return bonus
 
@@ -640,7 +677,7 @@ def compute_exclusion_penalty(text, exclude_keywords):
     for kw in exclude_keywords:
         kw_norm = normalize_text(kw)
         if kw_norm and kw_norm in norm_text:
-            penalty += 4
+            penalty += 5
 
     return penalty
 
@@ -655,7 +692,7 @@ def compute_contradiction_penalty(text, contradiction_terms):
     for kw in contradiction_terms:
         kw_norm = normalize_text(kw)
         if kw_norm and kw_norm in norm_text:
-            penalty += 5
+            penalty += 7
 
     return penalty
 
@@ -665,12 +702,35 @@ def compute_minimum_terms_adjustment(text, minimum_required_terms):
         return 0
 
     hits = count_keyword_hits(text, minimum_required_terms)
+    total = len(set(normalize_text(term) for term in minimum_required_terms if term))
 
-    if hits >= 2:
+    if total == 0:
+        return 0
+
+    ratio = hits / total
+
+    if hits >= 3 or ratio >= 0.5:
+        return 10
+    if hits == 2:
         return 4
     if hits == 1:
+        return -4
+    return -14
+
+
+def compute_high_value_bonus(text, high_value_terms):
+    if not high_value_terms:
         return 0
-    return -8
+
+    hits = count_keyword_hits(text, high_value_terms)
+
+    if hits >= 3:
+        return 14
+    if hits == 2:
+        return 8
+    if hits == 1:
+        return 3
+    return 0
 
 
 def apply_manual_adjustments(name, text, base_score):
@@ -708,71 +768,84 @@ def apply_manual_adjustments(name, text, base_score):
         "senzatie de moarte iminenta",
         "anxietate",
         "atac de panica",
+        "context emotional",
     ]
 
     if name_norm == "astm alergic":
         if contains_any(norm_text, ["wheezing"]):
-            score += 4
+            score += 5
         if count_keyword_hits(norm_text, ["wheezing", "tuse nocturna", "constrictie toracica", "agravare la alergeni"]) >= 2:
-            score += 4
+            score += 6
+        if not contains_any(norm_text, ["wheezing", "tuse nocturna", "constrictie toracica", "agravare la alergeni"]):
+            score -= 10
         if contains_any(norm_text, panic_markers) and not contains_any(norm_text, ["wheezing", "tuse nocturna"]):
-            score -= 8
-        if contains_any(norm_text, infectious_markers) and not contains_any(norm_text, ["wheezing"]):
-            score -= 4
+            score -= 12
+        if contains_any(norm_text, ["febra", "sputa", "tuse productiva", "fumator", "ortopnee"]) and not contains_any(norm_text, ["wheezing"]):
+            score -= 12
 
     elif name_norm == "rinita alergica":
         if count_keyword_hits(norm_text, ["stranut", "rinoree", "prurit nazal", "prurit ocular", "lacrimare"]) >= 2:
-            score += 4
+            score += 5
         if contains_any(norm_text, ["stranut in salve", "rinoree apoasa"]):
-            score += 3
+            score += 4
+        if not contains_any(norm_text, ["prurit nazal", "prurit ocular", "stranut", "lacrimare", "polen", "acarieni"]):
+            score -= 10
         if contains_any(norm_text, infectious_markers):
-            score -= 7
+            score -= 9
 
     elif name_norm == "rinita virala / infectioasa":
         if count_keyword_hits(norm_text, ["febra", "odinofagie", "stare generala alterata", "mialgii", "frison"]) >= 2:
-            score += 6
+            score += 7
         if contains_any(norm_text, ["contact infectios", "debut acut"]):
-            score += 3
+            score += 4
         if count_keyword_hits(norm_text, allergic_markers) >= 2:
-            score -= 6
+            score -= 8
 
     elif name_norm == "anafilaxie":
         if contains_any(norm_text, ["stridor", "hipotensiune", "colaps", "edem lingual"]):
-            score = max(score, 20)
+            score = max(score, 24)
         elif contains_any(norm_text, ["dupa aliment", "dupa intepatura", "dupa medicament"]) and count_keyword_hits(
             norm_text,
             ["urticarie", "angioedem", "dispnee", "ameteli", "varsaturi"],
         ) >= 2:
-            score = max(score, 17)
+            score = max(score, 18)
         elif count_keyword_hits(
             norm_text,
             ["dispnee", "urticarie", "angioedem", "ameteli"],
-        ) >= 2:
+        ) >= 2 and contains_any(norm_text, ["dupa aliment", "dupa intepatura", "dupa medicament"]):
             score = max(score, 16)
+        elif contains_any(norm_text, ["context emotional"]) and not contains_any(norm_text, ["urticarie", "angioedem", "hipotensiune", "stridor", "edem lingual"]):
+            score -= 14
         elif not contains_any(norm_text, ["dispnee", "stridor", "hipotensiune", "colaps", "angioedem", "urticarie"]):
-            score -= 6
+            score -= 8
 
     elif name_norm == "alergie alimentara":
         if contains_any(norm_text, ["dupa aliment"]):
-            score += 5
+            score += 6
         else:
-            score -= 4
+            score -= 5
+        if contains_any(norm_text, ["balonare", "lactate"]) and not contains_any(norm_text, ["urticarie", "edem buze", "angioedem", "prurit oral", "wheezing dupa aliment"]):
+            score -= 10
 
     elif name_norm == "rinita non alergica":
-        if contains_any(norm_text, ["iritanti", "fum", "mirosuri puternice", "parfum"]) and not contains_any(norm_text, allergic_markers):
-            score += 3
+        if contains_any(norm_text, ["iritanti", "fum", "mirosuri puternice", "parfum", "schimbari de temperatura"]) and not contains_any(norm_text, allergic_markers):
+            score += 5
+        if not contains_any(norm_text, ["prurit nazal", "prurit ocular", "stranut in salve", "polen", "acarieni", "sezonier"]):
+            score += 2
 
     elif name_norm == "sinuzita acuta":
         if count_keyword_hits(norm_text, ["durere faciala", "presiune faciala", "secretii nazale purulente"]) >= 2:
-            score += 5
+            score += 6
 
     elif name_norm == "atac de panica / hiperventilatie":
         if count_keyword_hits(norm_text, ["hiperventilatie", "palpitatii", "parestezii", "teama intensa", "senzatie de moarte iminenta"]) >= 2:
-            score += 8
-        if contains_any(norm_text, ["debut in context emotional", "dispnee in context emotional", "anxietate"]):
-            score += 4
-        if contains_any(norm_text, ["wheezing", "tuse nocturna", "agravare la alergeni", "urticarie", "angioedem"]):
-            score -= 9
+            score += 10
+        if contains_any(norm_text, ["debut in context emotional", "dispnee in context emotional", "anxietate", "context emotional", "debut brusc"]):
+            score += 5
+        if not contains_any(norm_text, ["hiperventilatie", "palpitatii", "parestezii", "teama intensa", "senzatie de moarte iminenta", "anxietate", "context emotional"]):
+            score -= 8
+        if contains_any(norm_text, ["wheezing", "tuse nocturna", "agravare la alergeni", "urticarie", "angioedem", "hipotensiune", "stridor"]):
+            score -= 12
 
     return max(score, 0)
 
@@ -803,8 +876,17 @@ def build_ranked_entry(diag, text):
     exclude_penalty = compute_exclusion_penalty(text, exclude_keywords)
     contradiction_penalty = compute_contradiction_penalty(text, contradiction_terms)
     minimum_adjustment = compute_minimum_terms_adjustment(text, minimum_required_terms)
+    high_value_bonus = compute_high_value_bonus(text, high_value_terms)
 
-    raw_score = base_score + pattern_bonus + minimum_adjustment - exclude_penalty - contradiction_penalty
+    raw_score = (
+        base_score
+        + pattern_bonus
+        + minimum_adjustment
+        + high_value_bonus
+        - exclude_penalty
+        - contradiction_penalty
+    )
+
     score = apply_manual_adjustments(name, text, raw_score)
     score = max(score, 0)
 
@@ -929,7 +1011,7 @@ def enrich_primary_output(primary, alternatives, text):
                 "Evaluare clinică pentru excluderea unei cauze respiratorii, cardiace sau alergice reale."
             )
 
-    if primary["score"] < 5:
+    if primary["score"] < 6:
         output["notes"] = output["notes"] + [
             "Scorul de potrivire este redus; concluzia are valoare orientativă limitată."
         ]
