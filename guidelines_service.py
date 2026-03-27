@@ -7,6 +7,7 @@ from bs4 import BeautifulSoup
 
 EAACI_GUIDELINES_URL = "https://eaaci.org/science/guidelines-position-papers/"
 GINA_HOME_URL = "https://ginasthma.org/"
+ARIA_INFO_URL = "https://www.whiar.org/"
 
 
 HEADERS = {
@@ -67,8 +68,15 @@ def split_sentences(text: str) -> List[str]:
     return cleaned
 
 
-def infer_topic_profile(diagnosis_name: str, symptoms: str, context: str, extra: str) -> Dict:
-    joined = normalize_text(f"{diagnosis_name} {symptoms} {context} {extra}")
+def infer_topic_profile(
+    diagnosis_name: str,
+    symptoms: str,
+    context: str,
+    triggers: str,
+    extra: str,
+    query: str = ""
+) -> Dict:
+    joined = normalize_text(f"{diagnosis_name} {symptoms} {context} {triggers} {extra} {query}")
 
     profile = {
         "rhinitis": False,
@@ -81,26 +89,27 @@ def infer_topic_profile(diagnosis_name: str, symptoms: str, context: str, extra:
     }
 
     if contains_any(joined, [
-        "rinit", "rinoree", "strănut", "prurit nazal", "nas înfundat",
-        "congestie nazală", "rhin", "rhinoconj"
+        "rinit", "rinoree", "stranut", "strănut", "prurit nazal", "nas infundat",
+        "nas înfundat", "congestie nazala", "congestie nazală", "rhin", "rhinoconj"
     ]):
         profile["rhinitis"] = True
 
     if contains_any(joined, [
-        "conjunctivit", "ochi roșii", "lăcrimare", "prurit ocular",
-        "mâncărime la ochi", "edem palpebral"
+        "conjunctivit", "ochi rosii", "ochi roșii", "lacrimare", "prurit ocular",
+        "mancarime la ochi", "mâncărime la ochi", "edem palpebral"
     ]):
         profile["conjunctivitis"] = True
 
     if contains_any(joined, [
-        "astm", "wheezing", "șuierături", "dispnee", "tuse nocturnă",
-        "constricție toracică", "respirație grea", "asthma"
+        "astm", "wheezing", "suieraturi", "șuierături", "dispnee", "tuse nocturna",
+        "tuse nocturnă", "constrictie toracica", "constricție toracică",
+        "respiratie grea", "respirație grea", "asthma"
     ]):
         profile["asthma"] = True
 
     if contains_any(joined, [
-        "aliment", "după masă", "prurit oral", "furnicături orale",
-        "vărsături", "diaree", "food allergy"
+        "aliment", "dupa masa", "după masă", "prurit oral", "furnicaturi orale",
+        "furnicături orale", "varsaturi", "vărsături", "diaree", "food allergy"
     ]):
         profile["food_allergy"] = True
 
@@ -110,14 +119,14 @@ def infer_topic_profile(diagnosis_name: str, symptoms: str, context: str, extra:
         profile["urticaria_angioedema"] = True
 
     if contains_any(joined, [
-        "anafilaxie", "șoc", "hipotensiune", "edem lingual",
+        "anafilaxie", "soc", "șoc", "hipotensiune", "edem lingual",
         "stridor", "colaps", "anaphylaxis"
     ]):
         profile["anaphylaxis"] = True
 
     if contains_any(joined, [
-        "dermatită", "eczeme", "prurit cutanat", "piele uscată",
-        "atopic dermatitis", "eczema"
+        "dermatita", "dermatită", "eczeme", "prurit cutanat", "piele uscata",
+        "piele uscată", "atopic dermatitis", "eczema"
     ]):
         profile["atopic_dermatitis"] = True
 
@@ -162,16 +171,18 @@ def summarize_eaaci_guidelines(
     diagnosis_name: str,
     symptoms: str,
     context: str,
-    extra: str
+    triggers: str,
+    extra: str,
+    query: str = ""
 ) -> List[Dict]:
     html = fetch_page(EAACI_GUIDELINES_URL)
     text = extract_text_from_html(html)
 
-    if not text:
-        return []
-
-    profile = infer_topic_profile(diagnosis_name, symptoms, context, extra)
+    profile = infer_topic_profile(diagnosis_name, symptoms, context, triggers, extra, query)
     results = []
+
+    if not text:
+        text = ""
 
     if profile["rhinitis"] or profile["conjunctivitis"]:
         excerpt_candidates = extract_relevant_sentences(
@@ -293,9 +304,11 @@ def summarize_gina_guidelines(
     diagnosis_name: str,
     symptoms: str,
     context: str,
-    extra: str
+    triggers: str,
+    extra: str,
+    query: str = ""
 ) -> List[Dict]:
-    profile = infer_topic_profile(diagnosis_name, symptoms, context, extra)
+    profile = infer_topic_profile(diagnosis_name, symptoms, context, triggers, extra, query)
 
     if not profile["asthma"]:
         return []
@@ -304,7 +317,7 @@ def summarize_gina_guidelines(
     text = extract_text_from_html(html)
 
     if not text:
-        return []
+        text = ""
 
     results = []
 
@@ -372,23 +385,71 @@ def summarize_gina_guidelines(
     return results[:3]
 
 
+def summarize_aria_guidelines(
+    diagnosis_name: str,
+    symptoms: str,
+    context: str,
+    triggers: str,
+    extra: str,
+    query: str = ""
+) -> List[Dict]:
+    profile = infer_topic_profile(diagnosis_name, symptoms, context, triggers, extra, query)
+
+    if not (profile["rhinitis"] or profile["conjunctivitis"]):
+        return []
+
+    html = fetch_page(ARIA_INFO_URL)
+    text = extract_text_from_html(html)
+
+    if not text:
+        text = ""
+
+    excerpt = " ".join(
+        extract_relevant_sentences(
+            text,
+            ["rhinitis", "allergic rhinitis", "asthma", "control"],
+            limit=2
+        )
+    )
+
+    if not excerpt:
+        excerpt = (
+            "ARIA oferă resurse orientative pentru rinita alergică și relația acesteia cu astmul, subliniind importanța controlului simptomelor și a evaluării expunerii la alergeni."
+        )
+
+    return [
+        make_card(
+            source="ARIA",
+            title="Allergic Rhinitis and its Impact on Asthma",
+            excerpt=excerpt,
+            recommendation=(
+                "În rinita alergică, sunt importante evaluarea controlului simptomelor, reducerea expunerii la alergeni și alegerea tratamentului în funcție de severitate și persistență."
+            ),
+            url=ARIA_INFO_URL
+        )
+    ]
+
+
 def get_guideline_recommendations(
     diagnosis_name: str = "",
     symptoms: str = "",
     context: str = "",
+    triggers: str = "",
     extra: str = "",
     age=None,
     weight=None,
-    severity: str = ""
+    severity: str = "",
+    query: str = ""
 ) -> List[Dict]:
     results = []
 
-    results.extend(summarize_eaaci_guidelines(diagnosis_name, symptoms, context, extra))
-    results.extend(summarize_gina_guidelines(diagnosis_name, symptoms, context, extra))
+    results.extend(summarize_eaaci_guidelines(diagnosis_name, symptoms, context, triggers, extra, query))
+    results.extend(summarize_gina_guidelines(diagnosis_name, symptoms, context, triggers, extra, query))
+    results.extend(summarize_aria_guidelines(diagnosis_name, symptoms, context, triggers, extra, query))
 
     severity_norm = normalize_text(severity)
 
-    if contains_any(severity_norm, ["sever", "severă", "severe"]):
+    if contains_any(severity_norm, ["sever", "severa", "severă", "severe"]):
         results.append(make_card(
             source="Clinical safety note",
             title="Atenționare clinică pentru forme severe",
