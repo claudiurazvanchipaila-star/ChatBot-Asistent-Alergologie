@@ -12,7 +12,7 @@
             <h1>Asistent clinic în alergologie</h1>
             <p>
                 Răspuns orientativ bazat pe informațiile introduse, diagnostice diferențiale,
-                interpretare clinică, recomandări orientative și surse PDF.
+                interpretare clinică și recomandări orientative.
             </p>
         </header>
 
@@ -189,16 +189,14 @@
                                 <div id="medicationFallbackList" class="simple-list"></div>
                             </div>
 
-                            <div class="section-block">
+                            <div id="guidelinesSection" class="section-block hidden">
                                 <div class="section-title">Fragmente orientative din ghiduri</div>
                                 <div id="guidelineCards" class="guideline-grid"></div>
-                                <div id="guidelinesEmpty" class="muted-empty hidden">Nu sunt disponibile recomandări suplimentare.</div>
                             </div>
 
-                            <div class="section-block">
+                            <div id="sourcesSection" class="section-block hidden">
                                 <div class="section-title">Fragmente relevante din surse</div>
                                 <div id="sourceResults" class="source-grid"></div>
-                                <div id="sourceResultsEmpty" class="muted-empty hidden">Nu sunt disponibile fragmente relevante.</div>
                             </div>
 
                             <div class="warning-box" id="treatmentWarning"></div>
@@ -355,18 +353,18 @@
         }
 
         function renderGuidelines(cards) {
+            const section = document.getElementById("guidelinesSection");
             const el = document.getElementById("guidelineCards");
-            const empty = document.getElementById("guidelinesEmpty");
             const arr = Array.isArray(cards) ? cards : [];
 
             el.innerHTML = "";
 
             if (!arr.length) {
-                empty.classList.remove("hidden");
+                section.classList.add("hidden");
                 return;
             }
 
-            empty.classList.add("hidden");
+            section.classList.remove("hidden");
 
             el.innerHTML = arr.map(card => `
                 <div class="guide-card">
@@ -379,18 +377,18 @@
         }
 
         function renderSourceResults(results) {
+            const section = document.getElementById("sourcesSection");
             const el = document.getElementById("sourceResults");
-            const empty = document.getElementById("sourceResultsEmpty");
             const arr = Array.isArray(results) ? results : [];
 
             el.innerHTML = "";
 
             if (!arr.length) {
-                empty.classList.remove("hidden");
+                section.classList.add("hidden");
                 return;
             }
 
-            empty.classList.add("hidden");
+            section.classList.remove("hidden");
 
             el.innerHTML = arr.map(item => {
                 const source = item?.source || item?.file_name || item?.document || "Sursă";
@@ -436,6 +434,8 @@
                 document.getElementById("emptyState").classList.add("hidden");
                 document.getElementById("resultsContainer").classList.remove("hidden");
                 document.getElementById("treatmentContainer").classList.add("hidden");
+                document.getElementById("guidelinesSection").classList.add("hidden");
+                document.getElementById("sourcesSection").classList.add("hidden");
 
                 const analysis = data.analysis || {};
                 const main = data.main_diagnosis || {};
