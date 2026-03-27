@@ -49,6 +49,9 @@
                     <label for="context">Antecedente / context clinic</label>
                     <textarea id="context" placeholder="Ex: astm, dermatită atopică, istoric de atopie, expunere sezonieră"></textarea>
 
+                    <label for="triggers">Expuneri și factori declanșatori</label>
+                    <textarea id="triggers" placeholder="Ex: polen primăvara, praf, acarieni, pisică, aliment suspect, antibiotic recent, fum, frig, efort"></textarea>
+
                     <label for="extra">Alte date clinice</label>
                     <textarea id="extra" placeholder="Ex: debut recent, simptome sezoniere, contact cu alergeni, conjunctivită asociată"></textarea>
 
@@ -408,6 +411,7 @@
                 sex: document.getElementById("sex").value.trim(),
                 weight: document.getElementById("weight").value.trim(),
                 context: document.getElementById("context").value.trim(),
+                triggers: document.getElementById("triggers").value.trim(),
                 extra: document.getElementById("extra").value.trim()
             };
 
@@ -486,6 +490,7 @@
                 weight: payload.weight || "",
                 symptoms: payload.symptoms || "",
                 context: payload.context || "",
+                triggers: payload.triggers || "",
                 extra: payload.extra || "",
                 severity: document.getElementById("mainSeverity").textContent.trim()
             };
