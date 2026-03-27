@@ -200,6 +200,16 @@
                             </div>
 
                             <div class="warning-box" id="treatmentWarning"></div>
+
+                            <div class="section-block">
+                                <div class="section-title">Export raport</div>
+                                <p class="muted-text">
+                                    Poți descărca un raport PDF orientativ al cazului curent.
+                                </p>
+                                <button id="exportPdfBtn" class="primary-btn secondary-action">
+                                    Exportă PDF
+                                </button>
+                            </div>
                         </div>
 
                         <div class="footer-warning" id="globalWarning"></div>
@@ -485,6 +495,7 @@
 
                 window.__latestClinicalPayload = payload;
                 window.__latestAnalyzeResponse = data;
+                window.__latestAnalysis = analysis;
             } catch (error) {
                 alert("Eroare de conexiune cu serverul.");
             } finally {
@@ -547,6 +558,7 @@
                 renderSourceResults(data.source_results || []);
 
                 document.getElementById("treatmentWarning").textContent = data.warning || "";
+                window.__latestTreatmentData = data;
             } catch (error) {
                 alert("Eroare de conexiune cu serverul.");
             } finally {
@@ -555,8 +567,59 @@
             }
         }
 
+        async function exportPdf() {
+            const payload = window.__latestClinicalPayload || {};
+            const analysis = window.__latestAnalysis || {};
+
+            if (!payload.symptoms && !analysis.primary_diagnosis) {
+                alert("Generează mai întâi analiza clinică înainte de export.");
+                return;
+            }
+
+            const exportBtn = document.getElementById("exportPdfBtn");
+            exportBtn.disabled = true;
+            exportBtn.textContent = "Se exportă...";
+
+            try {
+                const response = await fetch("/export_pdf", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        patient_summary: payload,
+                        analysis: analysis
+                    })
+                });
+
+                if (!response.ok) {
+                    let errorMessage = "A apărut o eroare la exportul PDF.";
+                    try {
+                        const errorData = await response.json();
+                        errorMessage = errorData.error || errorMessage;
+                    } catch (e) {}
+                    alert(errorMessage);
+                    return;
+                }
+
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "raport_alergologie_pacient.pdf";
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+            } catch (error) {
+                alert("Eroare de conexiune la exportul PDF.");
+            } finally {
+                exportBtn.disabled = false;
+                exportBtn.textContent = "Exportă PDF";
+            }
+        }
+
         document.getElementById("analyzeBtn").addEventListener("click", analyzeCase);
         document.getElementById("treatmentBtn").addEventListener("click", getTreatmentPlan);
+        document.getElementById("exportPdfBtn").addEventListener("click", exportPdf);
     </script>
 </body>
 </html>
