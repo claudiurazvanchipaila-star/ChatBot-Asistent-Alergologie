@@ -5,6 +5,7 @@ from datetime import datetime
 
 from flask import Flask, request, jsonify, render_template, send_file
 from reportlab.lib.pagesizes import A4
+from reportlab.lib import colors
 from reportlab.pdfgen import canvas
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
@@ -118,8 +119,9 @@ def register_pdf_fonts():
     return font_set
 
 
-def draw_wrapped_text(pdf, text, x, y, max_width=500, line_height=14, font_name="Helvetica", font_size=10):
+def draw_wrapped_text(pdf, text, x, y, max_width=500, line_height=14, font_name="Helvetica", font_size=10, color=colors.black):
     pdf.setFont(font_name, font_size)
+    pdf.setFillColor(color)
 
     words = (text or "").split()
     line = ""
@@ -138,6 +140,136 @@ def draw_wrapped_text(pdf, text, x, y, max_width=500, line_height=14, font_name=
         y -= line_height
 
     return y
+
+
+def estimate_text_height(text, max_width=500, font_name="Helvetica", font_size=10, line_height=14):
+    words = (text or "").split()
+    if not words:
+        return line_height
+
+    line = ""
+    lines = 0
+    for word in words:
+        test_line = f"{line} {word}".strip()
+        if pdfmetrics.stringWidth(test_line, font_name, font_size) <= max_width:
+            line = test_line
+        else:
+            lines += 1
+            line = word
+
+    if line:
+        lines += 1
+
+    return lines * line_height
+
+
+def ensure_page_space(pdf, y, needed_height, page_height, top_margin=40, bottom_margin=50):
+    if y - needed_height < bottom_margin:
+        pdf.showPage()
+        return page_height - top_margin
+    return y
+
+
+def draw_section_header(pdf, title, x, y, width, fonts):
+    pdf.setFillColor(colors.HexColor("#EAF2F8"))
+    pdf.roundRect(x, y - 18, width, 22, 6, fill=1, stroke=0)
+
+    pdf.setFillColor(colors.HexColor("#154360"))
+    pdf.setFont(fonts["bold"], 11)
+    pdf.drawString(x + 10, y - 4, title)
+
+    return y - 28
+
+
+def draw_bullet_list(pdf, items, x, y, width, fonts, page_height):
+    arr = items if isinstance(items, list) else []
+    if not arr:
+        y = ensure_page_space(pdf, y, 20, page_height)
+        return draw_wrapped_text(
+            pdf, "-",
+            x, y,
+            max_width=width,
+            line_height=14,
+            font_name=fonts["regular"],
+            font_size=10,
+            color=colors.black
+        )
+
+    for item in arr:
+        item_text = f"• {str(item).strip()}"
+        needed = estimate_text_height(
+            item_text,
+            max_width=width,
+            font_name=fonts["regular"],
+            font_size=10,
+            line_height=14
+        ) + 4
+        y = ensure_page_space(pdf, y, needed, page_height)
+        y = draw_wrapped_text(
+            pdf,
+            item_text,
+            x,
+            y,
+            max_width=width,
+            line_height=14,
+            font_name=fonts["regular"],
+            font_size=10,
+            color=colors.black
+        )
+        y -= 2
+
+    return y
+
+
+def draw_key_value_lines(pdf, rows, x, y, width, fonts, page_height):
+    for label, value in rows:
+        text = f"{label}: {value or '-'}"
+        needed = estimate_text_height(
+            text,
+            max_width=width,
+            font_name=fonts["regular"],
+            font_size=10,
+            line_height=14
+        ) + 4
+        y = ensure_page_space(pdf, y, needed, page_height)
+        y = draw_wrapped_text(
+            pdf,
+            text,
+            x,
+            y,
+            max_width=width,
+            line_height=14,
+            font_name=fonts["regular"],
+            font_size=10
+        )
+        y -= 2
+    return y
+
+
+def draw_summary_box(pdf, analysis, x, y, width, fonts, page_height):
+    box_height = 88
+    y = ensure_page_space(pdf, y, box_height + 10, page_height)
+
+    pdf.setFillColor(colors.HexColor("#F4F8FB"))
+    pdf.setStrokeColor(colors.HexColor("#D6E2EA"))
+    pdf.roundRect(x, y - box_height, width, box_height, 10, fill=1, stroke=1)
+
+    pdf.setFillColor(colors.HexColor("#154360"))
+    pdf.setFont(fonts["bold"], 13)
+    pdf.drawString(x + 12, y - 20, f"Diagnostic principal: {analysis.get('primary_diagnosis', '-')}")
+
+    pdf.setFillColor(colors.black)
+    pdf.setFont(fonts["regular"], 10)
+
+    left_x = x + 12
+    right_x = x + (width / 2)
+
+    pdf.drawString(left_x, y - 40, f"Probabilitate: {analysis.get('primary_probability', '-')}")
+    pdf.drawString(left_x, y - 56, f"Severitate: {analysis.get('severity', '-')}")
+    pdf.drawString(right_x, y - 40, f"Grad de încredere: {analysis.get('confidence', '-')}")
+    pdf.drawString(right_x, y - 56, f"Asociate: {', '.join(analysis.get('associated_diagnoses', [])[:2]) or '-'}")
+
+    return y - box_height - 14
 
 
 def to_clean_list(value):
@@ -669,83 +801,90 @@ def export_pdf():
 
         buffer = BytesIO()
         pdf = canvas.Canvas(buffer, pagesize=A4)
-        _, height = A4
+        page_width, page_height = A4
 
-        y = height - 40
+        left = 40
+        content_width = page_width - 80
+        y = page_height - 42
 
         pdf.setTitle("Raport orientativ alergologie")
+
+        pdf.setFillColor(colors.HexColor("#0F5F87"))
+        pdf.roundRect(left, y - 26, content_width, 34, 10, fill=1, stroke=0)
+
+        pdf.setFillColor(colors.white)
         pdf.setFont(fonts["bold"], 16)
-        pdf.drawString(40, y, "Raport orientativ - Asistent clinic în alergologie")
-        y -= 28
+        pdf.drawString(left + 14, y - 5, "Raport orientativ - Asistent clinic în alergologie")
 
-        pdf.setFont(fonts["regular"], 10)
-        y = draw_wrapped_text(
-            pdf,
-            f"Data generării: {datetime.now().strftime('%d.%m.%Y %H:%M')}",
-            40,
-            y,
-            font_name=fonts["regular"]
-        )
-        y -= 8
+        y -= 42
+        pdf.setFillColor(colors.HexColor("#5B6B7A"))
+        pdf.setFont(fonts["regular"], 9)
+        pdf.drawString(left, y, f"Data generării: {datetime.now().strftime('%d.%m.%Y %H:%M')}")
+        y -= 16
 
-        sections = [
-            ("Date introduse", [
-                f"Simptome: {patient.get('symptoms', '-')}",
-                f"Vârstă: {patient.get('age', '-')}",
-                f"Greutate: {patient.get('weight', '-')}",
-                f"Sex: {patient.get('sex', '-')}",
-                f"Context clinic: {patient.get('context', '-')}",
-                f"Expuneri și factori declanșatori: {patient.get('triggers', '-')}",
-                f"Alte date clinice: {patient.get('extra', '-')}"
-            ]),
-            ("Diagnostic principal", [
-                f"{analysis.get('primary_diagnosis', '-')}",
-                f"Probabilitate: {analysis.get('primary_probability', '-')}",
-                f"Severitate estimată: {analysis.get('severity', '-')}",
-                f"Grad de încredere: {analysis.get('confidence', '-')}"
-            ]),
-            ("Diagnostice alternative", analysis.get("alternatives", [])),
-            ("Elemente care susțin diagnosticul", analysis.get("supports", [])),
-            ("Elemente de interpretat cu prudență", analysis.get("limits", [])),
-            ("Investigații recomandate", analysis.get("recommended_tests", [])),
-            ("Conduită orientativă", analysis.get("treatment_plan", [])),
-            ("Red flags", analysis.get("red_flags", [])),
-            ("Note", analysis.get("notes", []))
+        y = draw_summary_box(pdf, analysis, left, y, content_width, fonts, page_height)
+
+        patient_rows = [
+            ("Simptome", patient.get("symptoms", "-")),
+            ("Vârstă", patient.get("age", "-")),
+            ("Greutate", patient.get("weight", "-")),
+            ("Sex", patient.get("sex", "-")),
+            ("Context clinic", patient.get("context", "-")),
+            ("Expuneri și factori declanșatori", patient.get("triggers", "-")),
+            ("Alte date clinice", patient.get("extra", "-")),
         ]
 
-        for title, items in sections:
-            if y < 100:
-                pdf.showPage()
-                y = height - 40
+        sections = [
+            ("Date introduse", patient_rows, "key_value"),
+            ("Diagnostice alternative", analysis.get("alternatives", []), "list"),
+            ("Elemente care susțin diagnosticul", analysis.get("supports", []), "list"),
+            ("Elemente de interpretat cu prudență", analysis.get("limits", []), "list"),
+            ("Investigații recomandate", analysis.get("recommended_tests", []), "list"),
+            ("Conduită orientativă", analysis.get("treatment_plan", []), "list"),
+            ("Red flags", analysis.get("red_flags", []), "list"),
+            ("Note clinice", analysis.get("notes", []), "list"),
+        ]
 
-            pdf.setFont(fonts["bold"], 12)
-            pdf.drawString(40, y, title)
-            y -= 18
-
-            pdf.setFont(fonts["regular"], 10)
-            if not items:
-                y = draw_wrapped_text(pdf, "-", 50, y, font_name=fonts["regular"])
+        for title, content, block_type in sections:
+            estimated = 40
+            if block_type == "key_value":
+                estimated += len(content) * 18
             else:
-                for item in items:
-                    if y < 80:
-                        pdf.showPage()
-                        y = height - 40
-                    y = draw_wrapped_text(pdf, f"- {item}", 50, y, font_name=fonts["regular"])
-            y -= 8
+                estimated += max(1, len(content)) * 18
 
+            y = ensure_page_space(pdf, y, estimated, page_height)
+            y = draw_section_header(pdf, title, left, y, content_width, fonts)
+
+            if block_type == "key_value":
+                y = draw_key_value_lines(pdf, content, left + 8, y, content_width - 16, fonts, page_height)
+            else:
+                y = draw_bullet_list(pdf, content, left + 8, y, content_width - 16, fonts, page_height)
+
+            y -= 10
+
+        disclaimer_box_height = 52
+        y = ensure_page_space(pdf, y, disclaimer_box_height + 10, page_height)
+
+        pdf.setFillColor(colors.HexColor("#FFF7E6"))
+        pdf.setStrokeColor(colors.HexColor("#E7C978"))
+        pdf.roundRect(left, y - disclaimer_box_height, content_width, disclaimer_box_height, 8, fill=1, stroke=1)
+
+        pdf.setFillColor(colors.HexColor("#8A5A00"))
         pdf.setFont(fonts["italic"], 9)
         disclaimer = (
             "Document orientativ. Nu înlocuiește consultul medical, examenul clinic și decizia terapeutică. "
             "Dozele medicamentoase trebuie verificate în funcție de produs, greutate, vârstă și severitate."
         )
-        y = draw_wrapped_text(
+        draw_wrapped_text(
             pdf,
             disclaimer,
-            40,
-            y,
-            max_width=500,
+            left + 10,
+            y - 16,
+            max_width=content_width - 20,
+            line_height=12,
             font_name=fonts["italic"],
-            font_size=9
+            font_size=9,
+            color=colors.HexColor("#8A5A00")
         )
 
         pdf.save()
