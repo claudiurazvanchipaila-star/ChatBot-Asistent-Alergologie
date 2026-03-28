@@ -362,10 +362,10 @@
             fallbackEl.innerHTML = fallbackArr.map(item => `<div class="pill-item">${escapeHtml(item)}</div>`).join("");
         }
 
-        function renderGuidelines(cards) {
+        function renderGuidelines(cardsOrResults) {
             const section = document.getElementById("guidelinesSection");
             const el = document.getElementById("guidelineCards");
-            const arr = Array.isArray(cards) ? cards : [];
+            const arr = Array.isArray(cardsOrResults) ? cardsOrResults : [];
 
             el.innerHTML = "";
 
@@ -374,9 +374,38 @@
                 return;
             }
 
+            const normalized = arr.map(item => {
+                if (typeof item === "string") {
+                    return {
+                        title: "Recomandare din ghid",
+                        source: "",
+                        excerpt: item,
+                        recommendation: "",
+                        url: ""
+                    };
+                }
+
+                return {
+                    title: item?.title || item?.name || "Recomandare din ghid",
+                    source: item?.source || item?.organization || item?.publisher || "",
+                    excerpt: item?.excerpt || item?.text || item?.snippet || item?.content || "",
+                    recommendation: item?.recommendation || item?.summary || "",
+                    url: item?.url || item?.link || ""
+                };
+            });
+
+            const visibleItems = normalized.filter(item =>
+                item.title || item.source || item.excerpt || item.recommendation || item.url
+            );
+
+            if (!visibleItems.length) {
+                section.classList.add("hidden");
+                return;
+            }
+
             section.classList.remove("hidden");
 
-            el.innerHTML = arr.map(card => {
+            el.innerHTML = visibleItems.map(card => {
                 const title = escapeHtml(card.title || "Recomandare");
                 const source = escapeHtml(card.source || "");
                 const excerpt = escapeHtml(card.excerpt || "");
@@ -545,6 +574,10 @@
                     return;
                 }
 
+                console.log("TREATMENT RESPONSE:", data);
+                console.log("guideline_cards:", data.guideline_cards);
+                console.log("guideline_results:", data.guideline_results);
+
                 document.getElementById("treatmentContainer").classList.remove("hidden");
                 document.getElementById("selectedDiagnosisName").textContent = data.diagnosis || diagnosis;
 
@@ -554,7 +587,13 @@
                 fillList("avoidanceList", data.allergen_avoidance || []);
 
                 renderMedicationCards(data.medication_cards || [], data.simple_medications || []);
-                renderGuidelines(data.guideline_cards || []);
+
+                renderGuidelines(
+                    (Array.isArray(data.guideline_cards) && data.guideline_cards.length)
+                        ? data.guideline_cards
+                        : (data.guideline_results || [])
+                );
+
                 renderSourceResults(data.source_results || []);
 
                 document.getElementById("treatmentWarning").textContent = data.warning || "";
