@@ -357,85 +357,62 @@ def normalize_differential_list(differential):
     return normalized
 
 
-def build_fallback_analysis_from_differential(differential):
-    primary = differential[0] if differential else {}
-
-    primary_name = primary.get("name", "Nespecificat")
-    severity = primary.get("severity", "ușoară")
-    probability = primary.get("probability", "moderată")
-    confidence = primary.get("confidence", "moderată")
-
-    supports = [
-        "Simptomatologia introdusă este compatibilă cu diagnosticul orientativ selectat.",
-        "Încadrarea este bazată pe potrivirea simptomelor cu logica diferențială disponibilă."
-    ]
-
-    limits = [
-        "Analiza este orientativă și nu poate înlocui anamneza completă, examenul clinic și investigațiile.",
-        "Absența unor detalii despre debut, durată, expuneri și comorbidități reduce specificitatea concluziei."
-    ]
-
-    recommended_tests = [
-        "Anamneză orientată pe sezonalitate, expuneri și contextul simptomelor.",
-        "Investigații alergologice și/sau evaluare suplimentară în funcție de contextul clinic."
-    ]
-
-    treatment_plan = [
-        "Evitarea expunerii la alergeni atunci când aceștia pot fi identificați.",
-        "Reevaluare clinică dacă tabloul se modifică sau persistă.",
-        "Individualizarea conduitei terapeutice în funcție de severitate și comorbidități."
-    ]
-
-    notes = [
-        "Rezultatul este orientativ și trebuie corelat cu datele clinice complete."
-    ]
-
-    alternatives = [d.get("name", "") for d in differential[1:] if d.get("name")]
-
+def build_neutral_fallback_analysis():
     return {
-        "primary_diagnosis": primary_name,
-        "primary_probability": probability,
-        "severity": severity,
-        "confidence": confidence,
-        "associated_diagnoses": alternatives,
-        "supports": supports,
-        "limits": limits,
-        "recommended_tests": recommended_tests,
-        "treatment_plan": treatment_plan,
+        "primary_diagnosis": "Nespecificat",
+        "primary_probability": "foarte scăzută",
+        "severity": "ușoară",
+        "confidence": "foarte redusă",
+        "associated_diagnoses": [],
+        "supports": [
+            "Nu au fost identificate suficiente criterii pentru un diagnostic diferențial robust."
+        ],
+        "limits": [
+            "Datele clinice introduse sunt insuficiente, prea nespecifice sau nu susțin clar una dintre entitățile din baza curentă."
+        ],
+        "recommended_tests": [
+            "Anamneză clinică mai detaliată.",
+            "Corelare cu examenul clinic și investigațiile relevante."
+        ],
+        "treatment_plan": [
+            "Reevaluare după completarea datelor clinice."
+        ],
         "red_flags": [],
-        "notes": notes,
-        "alternatives": alternatives
+        "notes": [
+            "Analiza este orientativă și nu a rezultat o potrivire clinică suficientă."
+        ],
+        "alternatives": []
     }
 
 
 def normalize_clinical_output(clinical_output, differential):
-    fallback = build_fallback_analysis_from_differential(differential)
+    neutral_fallback = build_neutral_fallback_analysis()
 
     if isinstance(clinical_output, dict):
         primary_diagnosis = (
             clinical_output.get("primary_diagnosis")
             or clinical_output.get("diagnostic_principal")
-            or fallback["primary_diagnosis"]
+            or neutral_fallback["primary_diagnosis"]
         )
 
         primary_probability = (
             clinical_output.get("primary_probability")
             or clinical_output.get("probability")
             or clinical_output.get("probabilitate")
-            or fallback["primary_probability"]
+            or neutral_fallback["primary_probability"]
         )
 
         severity = (
             clinical_output.get("severity")
             or clinical_output.get("severitate")
-            or fallback["severity"]
+            or neutral_fallback["severity"]
         )
 
         confidence = (
             clinical_output.get("confidence")
             or clinical_output.get("grad_incredere")
             or clinical_output.get("confidence_level")
-            or fallback["confidence"]
+            or neutral_fallback["confidence"]
         )
 
         associated_diagnoses = to_clean_list(
@@ -497,21 +474,21 @@ def normalize_clinical_output(clinical_output, differential):
             "severity": severity,
             "confidence": confidence,
             "associated_diagnoses": associated_diagnoses,
-            "supports": supports or fallback["supports"],
-            "limits": limits or fallback["limits"],
-            "recommended_tests": recommended_tests or fallback["recommended_tests"],
-            "treatment_plan": treatment_plan or fallback["treatment_plan"],
+            "supports": supports or neutral_fallback["supports"],
+            "limits": limits or neutral_fallback["limits"],
+            "recommended_tests": recommended_tests or neutral_fallback["recommended_tests"],
+            "treatment_plan": treatment_plan or neutral_fallback["treatment_plan"],
             "red_flags": red_flags,
-            "notes": notes or fallback["notes"],
+            "notes": notes or neutral_fallback["notes"],
             "alternatives": alternatives
         }
 
     if isinstance(clinical_output, str) and clinical_output.strip():
-        data = fallback.copy()
+        data = build_neutral_fallback_analysis()
         data["notes"] = [clinical_output.strip()]
         return data
 
-    return fallback
+    return build_neutral_fallback_analysis()
 
 
 def build_guideline_cards(guideline_results):
@@ -541,6 +518,27 @@ def build_guideline_cards(guideline_results):
                 })
 
     return cards
+
+
+def build_structured_full_text(symptoms="", age="", sex="", weight="", context="", triggers="", extra=""):
+    parts = []
+
+    if symptoms:
+        parts.append(f"simptome {symptoms}")
+    if context:
+        parts.append(f"context clinic {context}")
+    if triggers:
+        parts.append(f"expuneri si factori declansatori {triggers}")
+    if extra:
+        parts.append(f"alte date clinice {extra}")
+    if age:
+        parts.append(f"varsta {age}")
+    if sex:
+        parts.append(f"sex {sex}")
+    if weight:
+        parts.append(f"greutate {weight}")
+
+    return " ".join(parts).strip()
 
 
 @app.route("/")
@@ -599,7 +597,15 @@ def analyze():
         triggers = str(data.get("triggers", "")).strip()
         extra = str(data.get("extra", "")).strip()
 
-        full_text = " ".join(part for part in [symptoms, context, triggers, extra] if part).strip()
+        full_text = build_structured_full_text(
+            symptoms=symptoms,
+            age=age,
+            sex=sex,
+            weight=weight,
+            context=context,
+            triggers=triggers,
+            extra=extra
+        )
 
         if not full_text:
             return jsonify({
@@ -610,10 +616,16 @@ def analyze():
             raw_differential, raw_clinical_output = rank_differential_diagnoses(full_text, DIAGNOSES)
         except Exception as e:
             print(f"[EROARE] rank_differential_diagnoses: {e}")
-            raw_differential, raw_clinical_output = [], "Nu s-a putut genera analiza clinică."
+            raw_differential, raw_clinical_output = [], None
 
         differential = normalize_differential_list(raw_differential)
         analysis = normalize_clinical_output(raw_clinical_output, differential)
+
+        has_positive_match = any((item.get("score", 0) or 0) > 0 for item in differential)
+
+        if not has_positive_match:
+            analysis = build_neutral_fallback_analysis()
+            analysis["alternatives"] = [d.get("name", "") for d in differential[:4] if d.get("name")]
 
         response = {
             "analysis": analysis,

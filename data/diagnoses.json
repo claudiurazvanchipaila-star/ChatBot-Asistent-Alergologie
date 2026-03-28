@@ -8,6 +8,7 @@
       "rinoree",
       "rinoree apoasă",
       "curge nasul",
+      "îi curge nasul",
       "scurgeri nazale apoase",
       "nas înfundat",
       "se înfundă nasul",
@@ -15,6 +16,7 @@
       "prurit nazal",
       "mâncărime la nas",
       "mâncărime nazală",
+      "nas care mănâncă",
       "prurit ocular",
       "mâncărime la ochi",
       "ochi care lăcrimează",
@@ -27,6 +29,7 @@
       "praf",
       "acarieni",
       "pisică",
+      "păr de animale",
       "expunere la polen",
       "expunere la acarieni",
       "simptome la polen",
@@ -75,6 +78,7 @@
       "febră",
       "odinofagie",
       "durere în gât",
+      "gât iritat",
       "mialgii",
       "frison",
       "stare generală alterată",
@@ -130,6 +134,7 @@
     "keywords": [
       "prurit ocular",
       "mâncărime la ochi",
+      "ochi care mănâncă",
       "ochi roșii",
       "roșeață oculară",
       "hiperemie oculară",
@@ -140,7 +145,7 @@
       "secreții apoase",
       "ochi iritați",
       "ochi care ustură",
-      "ochi care mănâncă"
+      "ochi umflați"
     ],
     "strong_keywords": [
       "prurit ocular intens",
@@ -223,16 +228,20 @@
       "wheezing",
       "șuierături",
       "respirație șuierătoare",
+      "fluierat în piept",
       "dispnee",
       "lipsă de aer",
       "respirație grea",
       "greu respiră",
+      "se sufocă",
       "tuse",
       "tuse seacă",
       "tuse nocturnă",
       "tuse noaptea",
+      "tuse la efort",
       "constricție toracică",
       "strângere în piept",
+      "piept strâns",
       "agravare nocturnă",
       "agravare la alergeni",
       "agravare la praf",
@@ -353,6 +362,8 @@
       "zone roșii pe piele",
       "pete roșii",
       "leziuni roșiatice",
+      "leziune eritematoasă",
+      "leziune tegumentară",
       "erupție",
       "erupție pe piele",
       "bubițe",
@@ -371,8 +382,11 @@
       "la genunchi",
       "coate",
       "genunchi",
+      "în spatele genunchilor",
+      "în plica cotului",
       "dermatită",
-      "piele iritată"
+      "piele iritată",
+      "piele sensibilă"
     ],
     "strong_keywords": [
       "piele uscată",
@@ -381,7 +395,9 @@
       "eczeme",
       "zone de flexie",
       "leziuni în pliuri",
-      "zone roșii pe piele"
+      "zone roșii pe piele",
+      "leziune eritematoasă",
+      "leziune tegumentară"
     ],
     "minimum_required_terms": [
       "prurit",
@@ -397,7 +413,9 @@
       "zone de flexie",
       "leziuni în pliuri",
       "zone roșii pe piele",
-      "leziuni roșiatice"
+      "leziuni roșiatice",
+      "leziune eritematoasă",
+      "leziune tegumentară"
     ],
     "exclude_keywords": [
       "vezicule dureroase",
@@ -460,6 +478,7 @@
       "papule",
       "plăci pruriginoase",
       "plăci roșii",
+      "blânde",
       "bubițe care apar și dispar",
       "bubițe pe piele",
       "umflături pe piele",
@@ -665,6 +684,7 @@
       "dispnee severă",
       "respiră foarte greu",
       "nu poate respira",
+      "se sufocă",
       "wheezing",
       "stridor",
       "voce răgușită",
@@ -1033,6 +1053,7 @@
       "hiperventilație",
       "palpitații",
       "inima bate tare",
+      "inima bate repede",
       "tremor",
       "amețeală",
       "furnicături",
@@ -1142,13 +1163,16 @@
       "lipsă de aer",
       "tuse productivă",
       "tuse cu expectorație",
+      "tuse cu spută",
       "spută",
       "flegmă",
+      "mucus",
+      "tușește cu spută",
+      "tușește cu mucus",
       "fumător",
       "expunere la fum",
       "bronșită cronică",
-      "simptome la efort",
-      "tușește cu spută"
+      "simptome la efort"
     ],
     "strong_keywords": [
       "fumător",
@@ -1230,6 +1254,7 @@
       "se sufocă culcat",
       "edeme gambiere",
       "picioare umflate",
+      "glezne umflate",
       "vârstnic",
       "efort",
       "oboseală",
@@ -1316,7 +1341,10 @@
       "după contact cu detergent",
       "după produse de curățenie",
       "după săpun",
-      "după dezinfectant"
+      "după dezinfectant",
+      "după cremă",
+      "după soluție de curățat",
+      "iritație pe piele"
     ],
     "strong_keywords": [
       "după detergent nou",
@@ -1473,7 +1501,9 @@
       "diaree după lactate",
       "intoleranță",
       "se umflă burta",
-      "face gaze după lapte"
+      "face gaze după lapte",
+      "burtă umflată",
+      "deranj la burtă după lapte"
     ],
     "strong_keywords": [
       "după lactate",
@@ -1555,7 +1585,8 @@
       "tuse cu spută",
       "secreții în piept",
       "flegmă",
-      "tușește cu mucus"
+      "tușește cu mucus",
+      "mucus în piept"
     ],
     "strong_keywords": [
       "febră",
