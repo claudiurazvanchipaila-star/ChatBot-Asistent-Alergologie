@@ -9,7 +9,11 @@
       "rinoree apoasă",
       "curge nasul",
       "îi curge nasul",
+      "nas care curge",
+      "scurgeri nazale",
       "scurgeri nazale apoase",
+      "secreții nazale",
+      "secreții nazale apoase",
       "nas înfundat",
       "se înfundă nasul",
       "congestie nazală",
@@ -19,6 +23,7 @@
       "nas care mănâncă",
       "prurit ocular",
       "mâncărime la ochi",
+      "ochi care mănâncă",
       "ochi care lăcrimează",
       "lăcrimare",
       "ochi roșii",
@@ -38,11 +43,12 @@
     ],
     "strong_keywords": [
       "strănut în salve",
-      "prurit nazal",
-      "prurit ocular",
-      "mâncărime la nas",
-      "mâncărime la ochi",
       "rinoree apoasă",
+      "prurit nazal",
+      "mâncărime la nas",
+      "prurit ocular",
+      "mâncărime la ochi",
+      "ochi care mănâncă",
       "simptome sezoniere",
       "expunere la polen",
       "expunere la acarieni"
@@ -50,7 +56,6 @@
     "minimum_required_terms": [
       "strănut",
       "rinoree",
-      "rinoree apoasă",
       "prurit nazal",
       "prurit ocular",
       "lăcrimare",
@@ -59,11 +64,11 @@
     ],
     "high_value_terms": [
       "strănut în salve",
+      "rinoree apoasă",
       "prurit nazal",
       "prurit ocular",
       "mâncărime la nas",
       "mâncărime la ochi",
-      "rinoree apoasă",
       "simptome sezoniere",
       "expunere la polen",
       "expunere la acarieni"
@@ -83,8 +88,8 @@
       "frison",
       "stare generală alterată",
       "secreții purulente",
-      "colegi răciți",
-      "contact infecțios"
+      "contact infecțios",
+      "colegi răciți"
     ],
     "severity": "ușoară",
     "associated_diagnoses": [
@@ -142,17 +147,19 @@
       "ochi care lăcrimează",
       "edem palpebral",
       "pleoape umflate",
+      "ochi umflați",
       "secreții apoase",
       "ochi iritați",
-      "ochi care ustură",
-      "ochi umflați"
+      "ochi care ustură"
     ],
     "strong_keywords": [
-      "prurit ocular intens",
+      "prurit ocular",
       "mâncărime la ochi",
+      "ochi care mănâncă",
       "lăcrimare",
       "secreții apoase",
-      "edem palpebral"
+      "edem palpebral",
+      "pleoape umflate"
     ],
     "minimum_required_terms": [
       "prurit ocular",
@@ -162,8 +169,9 @@
       "edem palpebral"
     ],
     "high_value_terms": [
-      "prurit ocular intens",
+      "prurit ocular",
       "mâncărime la ochi",
+      "ochi care mănâncă",
       "lăcrimare",
       "secreții apoase"
     ],
@@ -256,10 +264,11 @@
       "wheezing",
       "șuierături",
       "respirație șuierătoare",
-      "dispnee",
-      "agravare nocturnă",
-      "constricție toracică",
+      "fluierat în piept",
       "tuse nocturnă",
+      "constricție toracică",
+      "strângere în piept",
+      "agravare nocturnă",
       "agravare la alergeni"
     ],
     "minimum_required_terms": [
@@ -389,10 +398,11 @@
       "piele sensibilă"
     ],
     "strong_keywords": [
-      "piele uscată",
+      "prurit",
       "mâncărime intensă",
       "prurit cronic",
       "eczeme",
+      "piele uscată",
       "zone de flexie",
       "leziuni în pliuri",
       "zone roșii pe piele",
@@ -498,6 +508,7 @@
     ],
     "strong_keywords": [
       "urticarie",
+      "blânde",
       "angioedem",
       "edem buze",
       "umflare buze",
@@ -514,6 +525,7 @@
     ],
     "high_value_terms": [
       "urticarie",
+      "blânde",
       "angioedem",
       "edem buze",
       "umflare buze",
@@ -584,6 +596,7 @@
       "după aliment",
       "după masă",
       "după ce a mâncat",
+      "după ce a băut",
       "urticarie după masă",
       "prurit oral",
       "mâncărime în gură",
@@ -601,10 +614,12 @@
     ],
     "strong_keywords": [
       "reacție după aliment",
+      "după aliment",
       "urticarie după masă",
       "prurit oral",
       "mâncărime în gură",
-      "wheezing după aliment"
+      "wheezing după aliment",
+      "respiră greu după masă"
     ],
     "minimum_required_terms": [
       "reacție după aliment",
@@ -615,6 +630,7 @@
     ],
     "high_value_terms": [
       "reacție după aliment",
+      "după aliment",
       "urticarie după masă",
       "prurit oral",
       "mâncărime în gură",
@@ -798,6 +814,7 @@
     "strong_keywords": [
       "febră",
       "durere în gât",
+      "gât iritat",
       "stare generală alterată",
       "subfebrilitate",
       "mialgii",
@@ -815,6 +832,7 @@
     "high_value_terms": [
       "febră",
       "durere în gât",
+      "gât iritat",
       "mialgii",
       "frison",
       "debut acut",
@@ -877,8 +895,8 @@
     "keywords": [
       "rinoree",
       "curge nasul",
-      "congestie nazală",
       "nas înfundat",
+      "congestie nazală",
       "iritanți",
       "mirosuri puternice",
       "fum",
@@ -895,7 +913,8 @@
       "fum",
       "aer rece",
       "schimbări de temperatură",
-      "parfum"
+      "parfum",
+      "rinită vasomotorie"
     ],
     "minimum_required_terms": [
       "iritanți",
@@ -979,7 +998,8 @@
       "durere facială",
       "presiune facială",
       "secreții purulente",
-      "durere maxilară"
+      "durere maxilară",
+      "durere în sinusuri"
     ],
     "minimum_required_terms": [
       "durere facială",
@@ -1075,7 +1095,8 @@
       "senzație de moarte iminentă",
       "parestezii",
       "palpitații",
-      "debut în context emoțional"
+      "debut în context emoțional",
+      "după stres"
     ],
     "minimum_required_terms": [
       "hiperventilație",
@@ -1265,7 +1286,9 @@
       "dispnee la decubit",
       "nu poate sta întins",
       "se sufocă culcat",
-      "edeme gambiere"
+      "edeme gambiere",
+      "picioare umflate",
+      "glezne umflate"
     ],
     "minimum_required_terms": [
       "ortopnee",
@@ -1277,7 +1300,9 @@
       "dispnee la decubit",
       "nu poate sta întins",
       "se sufocă culcat",
-      "edeme gambiere"
+      "edeme gambiere",
+      "picioare umflate",
+      "glezne umflate"
     ],
     "exclude_keywords": [
       "prurit nazal",
@@ -1349,8 +1374,10 @@
     "strong_keywords": [
       "după detergent nou",
       "substanțe chimice",
+      "detergent",
       "eritem local",
-      "roșeață locală"
+      "roșeață locală",
+      "iritație locală"
     ],
     "minimum_required_terms": [
       "după detergent nou",
@@ -1360,8 +1387,10 @@
     "high_value_terms": [
       "după detergent nou",
       "substanțe chimice",
+      "detergent",
       "eritem local",
-      "roșeață locală"
+      "roșeață locală",
+      "iritație locală"
     ],
     "exclude_keywords": [
       "angioedem",
@@ -1425,8 +1454,10 @@
     "strong_keywords": [
       "pierdere conștiență",
       "leșin",
+      "lipotimie",
       "emoție",
-      "stres"
+      "stres",
+      "leșin după emoție"
     ],
     "minimum_required_terms": [
       "pierdere conștiență",
@@ -1436,8 +1467,10 @@
     "high_value_terms": [
       "pierdere conștiență",
       "leșin",
+      "lipotimie",
       "emoție",
-      "stres"
+      "stres",
+      "leșin după emoție"
     ],
     "exclude_keywords": [
       "urticarie",
@@ -1509,7 +1542,8 @@
       "după lactate",
       "balonare",
       "dureri abdominale",
-      "crampe abdominale"
+      "crampe abdominale",
+      "diaree după lactate"
     ],
     "minimum_required_terms": [
       "după lactate",
@@ -1520,7 +1554,8 @@
       "după lactate",
       "balonare",
       "dureri abdominale",
-      "crampe abdominale"
+      "crampe abdominale",
+      "diaree după lactate"
     ],
     "exclude_keywords": [
       "urticarie",
@@ -1578,11 +1613,11 @@
       "spută",
       "tuse productivă",
       "tuse cu expectorație",
+      "tuse cu spută",
       "debut recent",
       "infecție",
       "bronșită",
       "pneumonie",
-      "tuse cu spută",
       "secreții în piept",
       "flegmă",
       "tușește cu mucus",
@@ -1592,6 +1627,7 @@
       "febră",
       "spută",
       "tuse productivă",
+      "tuse cu expectorație",
       "debut recent",
       "pneumonie"
     ],
