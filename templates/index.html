@@ -8,73 +8,94 @@
 </head>
 <body>
     <div class="page-shell">
-        <header class="top-header">
-            <div class="hero-eyebrow">Instrument clinic orientativ</div>
-            <h1>Asistent clinic în alergologie</h1>
-            <p>
-                Suport pentru medic în evaluarea simptomelor alergologice, cu diagnostic diferențial,
-                interpretare clinică, recomandări orientative și export PDF.
-            </p>
+        <header class="top-header premium-header">
+            <div class="hero-text">
+                <div class="hero-badge">Instrument clinic orientativ</div>
+                <h1>Asistent clinic în alergologie</h1>
+                <p>
+                    Suport pentru medic în evaluarea simptomelor alergologice, cu diagnostic diferențial,
+                    interpretare clinică, recomandări orientative și export PDF.
+                </p>
+            </div>
+            <div class="hero-decor" aria-hidden="true"></div>
         </header>
 
         <main class="app-grid">
             <aside class="left-panel">
-                <div class="panel-card sticky-card">
-                    <h2>Date clinice introduse</h2>
-                    <p class="panel-subtitle">
-                        Introdu simptomele și contextul clinic. Rezultatul trebuie corelat cu anamneza,
-                        examenul clinic și investigațiile relevante.
-                    </p>
-
-                    <div class="alert-box">
-                        <strong>Atenție:</strong> instrument de suport pentru medic. Nu înlocuiește consultul
-                        medical, judecata clinică sau decizia terapeutică finală.
+                <div class="panel-card form-panel sticky-panel">
+                    <div class="section-heading">
+                        <h2>Date clinice introduse</h2>
+                        <p class="panel-subtitle">
+                            Introdu simptomele, contextul clinic și factorii relevanți. Rezultatul trebuie
+                            corelat cu anamneza, examenul clinic și investigațiile relevante.
+                        </p>
                     </div>
 
-                    <label for="symptoms">Simptome</label>
-                    <textarea id="symptoms" placeholder="Ex: strănut, rinoree, prurit nazal, lăcrimare, wheezing, tuse nocturnă"></textarea>
+                    <div class="alert-box premium-alert">
+                        <strong>Atenție:</strong> instrument de suport pentru medic. Nu înlocuiește consultul medical,
+                        judecata clinică sau decizia terapeutică finală.
+                    </div>
+
+                    <div class="field-group">
+                        <label for="symptoms">Simptome</label>
+                        <textarea id="symptoms" placeholder="Ex: strănut, rinoree, prurit nazal, lăcrimare, wheezing, tuse nocturnă"></textarea>
+                    </div>
 
                     <div class="two-cols">
-                        <div>
+                        <div class="field-group">
                             <label for="age">Vârstă</label>
                             <input id="age" type="text" placeholder="Ex: 24">
                         </div>
-                        <div>
+                        <div class="field-group">
                             <label for="sex">Sex</label>
                             <input id="sex" type="text" placeholder="Ex: feminin">
                         </div>
                     </div>
 
-                    <label for="weight">Greutate (kg)</label>
-                    <input id="weight" type="text" placeholder="Ex: 60">
+                    <div class="field-group">
+                        <label for="weight">Greutate (kg)</label>
+                        <input id="weight" type="text" placeholder="Ex: 60">
+                    </div>
 
-                    <label for="context">Antecedente / context clinic</label>
-                    <textarea id="context" placeholder="Ex: astm, dermatită atopică, istoric de atopie, expunere sezonieră"></textarea>
+                    <div class="field-group">
+                        <label for="context">Antecedente / context clinic</label>
+                        <textarea id="context" placeholder="Ex: astm, dermatită atopică, istoric de atopie, expunere sezonieră"></textarea>
+                    </div>
 
-                    <label for="triggers">Expuneri și factori declanșatori</label>
-                    <textarea id="triggers" placeholder="Ex: polen primăvara, praf, acarieni, pisică, aliment suspect, antibiotic recent, fum, frig, efort"></textarea>
+                    <div class="field-group">
+                        <label for="triggers">Expuneri și factori declanșatori</label>
+                        <textarea id="triggers" placeholder="Ex: polen primăvara, praf, acarieni, pisică, aliment suspect, antibiotic recent, fum, frig, efort"></textarea>
+                    </div>
 
-                    <label for="extra">Alte date clinice</label>
-                    <textarea id="extra" placeholder="Ex: debut recent, simptome sezoniere, contact cu alergeni, conjunctivită asociată"></textarea>
+                    <div class="field-group">
+                        <label for="extra">Alte date clinice</label>
+                        <textarea id="extra" placeholder="Ex: debut recent, simptome sezoniere, contact cu alergeni, conjunctivită asociată"></textarea>
+                    </div>
 
-                    <button id="analyzeBtn" class="primary-btn">Generează diagnosticul diferențial</button>
+                    <button id="analyzeBtn" class="primary-btn premium-btn">Generează diagnostic diferențial</button>
                 </div>
             </aside>
 
             <section class="right-panel">
                 <div class="panel-card result-panel">
-                    <h2>Rezultat clinic orientativ</h2>
-                    <p class="panel-subtitle result-subtitle">
-                        Aici vor apărea diagnosticul diferențial, elementele de susținere, red flags,
-                        investigațiile recomandate și conduita orientativă.
-                    </p>
+                    <div class="section-heading result-heading">
+                        <h2>Rezultat clinic orientativ</h2>
+                        <p class="panel-subtitle">
+                            Aici vor apărea diagnosticul diferențial, elementele de susținere, red flags,
+                            investigațiile recomandate și conduita orientativă.
+                        </p>
+                    </div>
 
-                    <div id="emptyState" class="empty-state">
-                        Completează datele din stânga și apasă pe buton pentru a genera analiza clinică.
+                    <div id="emptyState" class="empty-state premium-empty">
+                        <div class="empty-icon">+</div>
+                        <div>
+                            <strong>Nu există încă o analiză clinică.</strong><br>
+                            Completează datele din stânga și apasă pe buton pentru a genera analiza.
+                        </div>
                     </div>
 
                     <div id="resultsContainer" class="hidden">
-                        <div class="main-diagnosis-box">
+                        <div class="main-diagnosis-box premium-main-box">
                             <div class="badge-row">
                                 <span class="soft-badge">Diagnostic principal</span>
                             </div>
@@ -83,147 +104,143 @@
                                 <h3 id="mainDiagnosisName">-</h3>
                             </div>
 
-                            <div class="metric-pills">
-                                <div class="metric-pill metric-pill-warning">
-                                    <span class="metric-pill-label">Probabilitate</span>
-                                    <span class="metric-pill-value" id="mainProbability">-</span>
+                            <div class="metrics-grid metrics-grid-premium">
+                                <div class="metric-card metric-card-probability">
+                                    <div class="metric-label">Probabilitate</div>
+                                    <div class="metric-value metric-highlight metric-highlight-warning" id="mainProbability">-</div>
                                 </div>
-                                <div class="metric-pill metric-pill-warning">
-                                    <span class="metric-pill-label">Severitate estimată</span>
-                                    <span class="metric-pill-value" id="mainSeverity">-</span>
+                                <div class="metric-card metric-card-severity">
+                                    <div class="metric-label">Severitate</div>
+                                    <div class="metric-value metric-highlight metric-highlight-danger" id="mainSeverity">-</div>
                                 </div>
-                                <div class="metric-pill metric-pill-success">
-                                    <span class="metric-pill-label">Încredere</span>
-                                    <span class="metric-pill-value" id="mainConfidence">-</span>
+                                <div class="metric-card metric-card-confidence">
+                                    <div class="metric-label">Grad de încredere</div>
+                                    <div class="metric-value metric-highlight metric-highlight-success" id="mainConfidence">-</div>
                                 </div>
-                            </div>
-
-                            <div class="associated-inline">
-                                <strong>Asociere probabilă:</strong>
-                                <span id="mainAssociated">-</span>
+                                <div class="metric-card metric-card-associated">
+                                    <div class="metric-label">Diagnostice asociate</div>
+                                    <div class="metric-value" id="mainAssociated">-</div>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="section-block section-soft">
+                        <div class="section-block premium-section">
                             <div class="section-title">Diagnostic diferențial</div>
-                            <div id="differentialCards" class="differential-grid"></div>
+                            <div id="differentialCards" class="differential-grid premium-differential-grid"></div>
                         </div>
 
-                        <div class="section-block section-soft">
+                        <div class="section-block premium-section">
                             <div class="section-title">Diagnostice alternative</div>
-                            <div id="alternativesList" class="simple-list"></div>
+                            <div id="alternativesList" class="simple-list premium-pill-list"></div>
                         </div>
 
-                        <div class="stack-grid">
-                            <div class="info-card full-width-card">
+                        <div class="info-grid premium-info-grid">
+                            <div class="info-card emphasis-card supports-card">
                                 <h4>Elemente care susțin diagnosticul</h4>
                                 <ul id="supportsList"></ul>
                             </div>
 
-                            <div class="info-card full-width-card">
+                            <div class="info-card emphasis-card caution-card">
                                 <h4>Elemente de interpretat cu prudență</h4>
                                 <ul id="limitsList"></ul>
                             </div>
 
-                            <div class="info-card full-width-card">
+                            <div class="info-card emphasis-card tests-card">
                                 <h4>Investigații recomandate</h4>
                                 <ul id="testsList"></ul>
                             </div>
 
-                            <div class="info-card full-width-card">
+                            <div class="info-card emphasis-card plan-card">
                                 <h4>Conduită orientativă</h4>
                                 <ul id="planList"></ul>
                             </div>
+                        </div>
 
-                            <div class="info-card half-width-card">
+                        <div class="info-grid bottom-grid premium-info-grid">
+                            <div class="info-card emphasis-card redflag-card">
                                 <h4>Red flags</h4>
                                 <ul id="redFlagsList"></ul>
                                 <div id="redFlagsEmpty" class="muted-empty hidden">Nu sunt disponibile informații.</div>
                             </div>
 
-                            <div class="info-card half-width-card">
+                            <div class="info-card emphasis-card notes-card">
                                 <h4>Note clinice</h4>
                                 <ul id="notesList"></ul>
                             </div>
                         </div>
 
-                        <div class="section-block select-section">
+                        <div class="section-block premium-section diagnosis-select-block">
                             <div class="section-title">Alege diagnosticul final</div>
                             <p class="muted-text">
-                                Selectează diagnosticul final pe care dorești să îl folosești pentru recomandările orientative.
+                                Diagnosticul final trebuie ales pe baza corelării tabloului clinic cu examenul obiectiv și investigațiile relevante.
                             </p>
 
-                            <label class="select-label" for="diagnosisSelect">Diagnostic final</label>
-                            <select id="diagnosisSelect" class="select-input">
+                            <label class="inline-label" for="diagnosisSelect">Diagnostic final</label>
+                            <select id="diagnosisSelect" class="select-input premium-select">
                                 <option value="">Alege diagnosticul</option>
                             </select>
 
-                            <button id="treatmentBtn" class="primary-btn secondary-action">
+                            <button id="treatmentBtn" class="primary-btn secondary-action premium-btn">
                                 Generează tratament și prevenție
                             </button>
                         </div>
 
                         <div id="treatmentContainer" class="treatment-block hidden">
-                            <div class="section-block selected-diagnosis-panel">
-                                <div class="badge-row">
-                                    <span class="soft-badge">Recomandări orientative</span>
-                                </div>
+                            <div class="section-block premium-section selected-diagnosis-block">
+                                <div class="section-title">Diagnostic selectat</div>
                                 <div id="selectedDiagnosisName" class="selected-diagnosis-name">-</div>
-                                <div class="selected-diagnosis-meta">
-                                    <span><strong>Grupă de vârstă folosită:</strong> <span id="ageGroupUsed">-</span></span>
-                                </div>
                             </div>
 
-                            <div class="section-block">
-                                <div class="section-title">Tablou clinic</div>
+                            <div class="section-block premium-section">
+                                <div class="section-title">Tablou clinic util</div>
                                 <ul id="clinicalPictureList"></ul>
                             </div>
 
-                            <div class="section-block">
+                            <div class="section-block premium-section">
                                 <div class="section-title">Tratament orientativ</div>
                                 <ul id="treatmentList"></ul>
                             </div>
 
-                            <div class="section-block">
+                            <div class="section-block premium-section">
                                 <div class="section-title">Măsuri de prevenție</div>
                                 <ul id="preventionList"></ul>
                             </div>
 
-                            <div class="section-block">
-                                <div class="section-title">Evitarea alergenului</div>
+                            <div class="section-block premium-section">
+                                <div class="section-title">Evitarea alergenului / măsuri utile</div>
                                 <ul id="avoidanceList"></ul>
                             </div>
 
-                            <div class="section-block">
+                            <div class="section-block premium-section">
                                 <div class="section-title">Opțiuni medicamentoase orientative</div>
-                                <div id="medicationCards" class="medication-grid"></div>
+                                <div id="medicationCards" class="medication-grid premium-medication-grid"></div>
                                 <div id="medicationFallbackList" class="simple-list"></div>
                             </div>
 
-                            <div id="guidelinesSection" class="section-block hidden guidelines-block">
+                            <div id="guidelinesSection" class="section-block premium-section hidden guidelines-premium-section">
                                 <div class="section-title">Fragmente orientative din ghiduri</div>
-                                <div id="guidelineCards" class="guideline-grid"></div>
+                                <div id="guidelineCards" class="guideline-grid premium-guideline-grid"></div>
                             </div>
 
-                            <div id="sourcesSection" class="section-block hidden">
+                            <div id="sourcesSection" class="section-block premium-section hidden">
                                 <div class="section-title">Fragmente relevante din surse</div>
                                 <div id="sourceResults" class="source-grid"></div>
                             </div>
 
-                            <div class="warning-box" id="treatmentWarning"></div>
+                            <div class="warning-box premium-warning-box" id="treatmentWarning"></div>
 
-                            <div class="section-block export-block">
+                            <div class="section-block premium-section export-section">
                                 <div class="section-title">Export raport</div>
                                 <p class="muted-text">
                                     Poți descărca un raport PDF orientativ al cazului curent.
                                 </p>
-                                <button id="exportPdfBtn" class="primary-btn secondary-action">
+                                <button id="exportPdfBtn" class="primary-btn secondary-action premium-btn">
                                     Exportă PDF
                                 </button>
                             </div>
                         </div>
 
-                        <div class="footer-warning" id="globalWarning"></div>
+                        <div class="footer-warning premium-footer-warning" id="globalWarning"></div>
                     </div>
                 </div>
             </section>
@@ -294,13 +311,38 @@
             el.innerHTML = arr.map(item => `<div class="pill-item">${escapeHtml(item)}</div>`).join("");
         }
 
-        function probabilityClass(probability) {
-            const p = (probability || "").toLowerCase();
+        function getBadgeClassByProbability(probability) {
+            const value = (probability || "").toLowerCase();
+            if (value.includes("mare")) return "metric-highlight-success";
+            if (value.includes("moder")) return "metric-highlight-warning";
+            if (value.includes("scăzut") || value.includes("scazut")) return "metric-highlight-danger";
+            return "metric-highlight-neutral";
+        }
 
-            if (p.includes("mare")) return "prob-high";
-            if (p.includes("moder")) return "prob-medium";
-            if (p.includes("scăzută") || p.includes("scazuta") || p.includes("redus")) return "prob-low";
-            return "prob-neutral";
+        function getBadgeClassBySeverity(severity) {
+            const value = (severity || "").toLowerCase();
+            if (value.includes("sever")) return "metric-highlight-danger";
+            if (value.includes("moder")) return "metric-highlight-warning";
+            if (value.includes("ușo") || value.includes("uso")) return "metric-highlight-success";
+            return "metric-highlight-neutral";
+        }
+
+        function getBadgeClassByConfidence(confidence) {
+            const value = (confidence || "").toLowerCase();
+            if (value.includes("mare")) return "metric-highlight-success";
+            if (value.includes("moder")) return "metric-highlight-warning";
+            if (value.includes("redus")) return "metric-highlight-danger";
+            return "metric-highlight-neutral";
+        }
+
+        function applyMainMetricStyles() {
+            const probabilityEl = document.getElementById("mainProbability");
+            const severityEl = document.getElementById("mainSeverity");
+            const confidenceEl = document.getElementById("mainConfidence");
+
+            probabilityEl.className = "metric-value metric-highlight " + getBadgeClassByProbability(probabilityEl.textContent.trim());
+            severityEl.className = "metric-value metric-highlight " + getBadgeClassBySeverity(severityEl.textContent.trim());
+            confidenceEl.className = "metric-value metric-highlight " + getBadgeClassByConfidence(confidenceEl.textContent.trim());
         }
 
         function renderDifferential(differential) {
@@ -312,22 +354,27 @@
                 return;
             }
 
-            el.innerHTML = arr.slice(0, 5).map((item, index) => {
+            el.innerHTML = arr.map((item, index) => {
                 const name = item?.name || "-";
                 const score = item?.score ?? "-";
                 const probability = item?.probability || "-";
                 const severity = item?.severity || "-";
-                const probClass = probabilityClass(probability);
+                const rank = index + 1;
+
+                const probabilityClass = getBadgeClassByProbability(probability);
+                const severityClass = getBadgeClassBySeverity(severity);
 
                 return `
-                    <div class="diff-card ${index === 0 ? "diff-card-primary" : ""}">
-                        <div class="diff-card-top">
+                    <div class="diff-card premium-diff-card">
+                        <div class="diff-top-row">
                             <div class="diff-name">${escapeHtml(name)}</div>
-                            <div class="rank-badge">#${index + 1}</div>
+                            <div class="diff-rank">#${rank}</div>
                         </div>
-                        <div class="diff-pill ${probClass}">Probabilitate: ${escapeHtml(probability)}</div>
+                        <div class="diff-badges">
+                            <span class="inline-status ${probabilityClass}">Probabilitate: ${escapeHtml(probability)}</span>
+                            <span class="inline-status ${severityClass}">Severitate: ${escapeHtml(severity)}</span>
+                        </div>
                         <div class="diff-meta"><strong>Scor clinic:</strong> ${escapeHtml(score)}</div>
-                        <div class="diff-meta"><strong>Severitate:</strong> ${escapeHtml(severity)}</div>
                     </div>
                 `;
             }).join("");
@@ -360,51 +407,38 @@
 
             if (arr.length) {
                 cardsEl.innerHTML = arr.map(card => `
-                    <div class="med-card">
+                    <div class="med-card premium-med-card">
                         <div class="med-chip">${escapeHtml(card.class || "Medicație")}</div>
-                        <div class="med-name">${escapeHtml(card.name || "-")}</div>
-                        ${card.substance ? `<div class="med-substance">${escapeHtml(card.substance)}</div>` : ""}
+                        <div class="med-title">${escapeHtml(card.name || "-")}</div>
+                        <div class="med-subtitle">${escapeHtml(card.substance || "")}</div>
 
-                        <div class="med-divider"></div>
-
-                        <div class="med-field">
-                            <div class="med-label">Mod de administrare</div>
-                            <div class="med-value">${escapeHtml(card.route || "-")}</div>
-                        </div>
-
-                        <div class="med-field">
-                            <div class="med-label">Frecvență</div>
-                            <div class="med-value">${escapeHtml(card.frequency || "-")}</div>
-                        </div>
-
-                        <div class="med-field">
-                            <div class="med-label">Doză adult</div>
-                            <div class="med-value">${escapeHtml(card.dose_adult || card.dose || "-")}</div>
-                        </div>
-
-                        <div class="med-field">
-                            <div class="med-label">Doză copil</div>
-                            <div class="med-value">${escapeHtml(card.dose_child || "-")}</div>
-                        </div>
-
-                        ${card.duration ? `
-                            <div class="med-field">
-                                <div class="med-label">Durată</div>
-                                <div class="med-value">${escapeHtml(card.duration || "-")}</div>
+                        <div class="med-details-grid">
+                            <div class="med-detail-box">
+                                <div class="med-detail-label">Mod de administrare</div>
+                                <div class="med-detail-value">${escapeHtml(card.route || "-")}</div>
                             </div>
-                        ` : ""}
 
-                        ${card.notes ? `
-                            <div class="med-note-box">
-                                <strong>Observații:</strong> ${escapeHtml(card.notes)}
+                            <div class="med-detail-box">
+                                <div class="med-detail-label">Frecvență</div>
+                                <div class="med-detail-value">${escapeHtml(card.frequency || "-")}</div>
                             </div>
-                        ` : ""}
 
-                        ${card.adverse_reactions ? `
-                            <div class="med-reactions">
-                                <strong>Reacții adverse:</strong> ${escapeHtml(card.adverse_reactions)}
+                            <div class="med-detail-box">
+                                <div class="med-detail-label">Doză adult</div>
+                                <div class="med-detail-value">${escapeHtml(card.dose_adult || "-")}</div>
                             </div>
-                        ` : ""}
+
+                            <div class="med-detail-box">
+                                <div class="med-detail-label">Doză copil</div>
+                                <div class="med-detail-value">${escapeHtml(card.dose_child || "-")}</div>
+                            </div>
+                        </div>
+
+                        <div class="med-row"><strong>Substanță activă:</strong> ${escapeHtml(card.substance || "-")}</div>
+                        <div class="med-row"><strong>Doză generală:</strong> ${escapeHtml(card.dose || "-")}</div>
+                        <div class="med-row"><strong>Durată:</strong> ${escapeHtml(card.duration || "-")}</div>
+                        <div class="med-row"><strong>Note:</strong> ${escapeHtml(card.notes || "-")}</div>
+                        <div class="med-row"><strong>Reacții adverse:</strong> ${escapeHtml(card.adverse_reactions || "-")}</div>
                     </div>
                 `).join("");
                 return;
@@ -482,15 +516,14 @@
                     : "";
 
                 return `
-                    <div class="guide-card">
+                    <div class="guide-card premium-guide-card">
                         <div class="guide-card-header">
-                            <div class="guide-card-icon">GHID</div>
-                            <div class="guide-card-source-wrap">
+                            <div class="guide-card-icon">G</div>
+                            <div>
                                 <div class="guide-title">${titleHtml}</div>
                                 ${sourceHtml}
                             </div>
                         </div>
-
                         ${excerpt ? `<div class="guide-text">${excerpt}</div>` : ""}
                         ${recommendation ? `<div class="guide-note">${recommendation}</div>` : ""}
                         ${actionHtml}
@@ -569,9 +602,11 @@
                 document.getElementById("mainConfidence").textContent = main.confidence || "-";
 
                 const associated = Array.isArray(main.associated_diagnoses) && main.associated_diagnoses.length
-                    ? main.associated_diagnoses.join(" + ")
+                    ? main.associated_diagnoses.join(", ")
                     : "-";
                 document.getElementById("mainAssociated").textContent = associated;
+
+                applyMainMetricStyles();
 
                 renderDifferential(data.differential || []);
                 fillAlternatives(analysis.alternatives || []);
@@ -592,7 +627,7 @@
                 alert("Eroare de conexiune cu serverul.");
             } finally {
                 analyzeBtn.disabled = false;
-                analyzeBtn.textContent = "Generează diagnosticul diferențial";
+                analyzeBtn.textContent = "Generează diagnostic diferențial";
             }
         }
 
@@ -639,7 +674,6 @@
 
                 document.getElementById("treatmentContainer").classList.remove("hidden");
                 document.getElementById("selectedDiagnosisName").textContent = data.diagnosis || diagnosis;
-                document.getElementById("ageGroupUsed").textContent = data.age_group_used || "nespecificat";
 
                 fillList("clinicalPictureList", data.clinical_picture || []);
                 fillList("treatmentList", data.treatment || []);
@@ -647,11 +681,13 @@
                 fillList("avoidanceList", data.allergen_avoidance || []);
 
                 renderMedicationCards(data.medication_cards || [], data.simple_medications || []);
+
                 renderGuidelines(
                     (Array.isArray(data.guideline_cards) && data.guideline_cards.length)
                         ? data.guideline_cards
                         : (data.guideline_results || [])
                 );
+
                 renderSourceResults(data.source_results || []);
 
                 document.getElementById("treatmentWarning").textContent = data.warning || "";
