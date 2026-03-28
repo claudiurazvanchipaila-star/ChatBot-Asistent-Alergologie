@@ -46,13 +46,17 @@ def get_normalization_replacements():
         "se infunda nasul": "congestie nazala",
         "se înfundă nasul": "congestie nazala",
         "obstructie nazala": "congestie nazala",
+        "obstrucție nazală": "congestie nazala",
         "obstructie": "congestie",
         "curge nasul": "rinoree",
+        "ii curge nasul": "rinoree",
+        "îi curge nasul": "rinoree",
         "nas care curge": "rinoree",
         "nas care picura": "rinoree",
         "nas care picură": "rinoree",
         "scurgeri nazale": "rinoree",
         "scurgere nazala": "rinoree",
+        "scurgere nazală": "rinoree",
         "hipersecretie nazala": "rinoree",
         "hipersecreție nazală": "rinoree",
         "secretii nazale": "rinoree",
@@ -84,12 +88,16 @@ def get_normalization_replacements():
         "lacrimare oculara": "lacrimare",
         "pleoape umflate": "edem pleoape",
         "umflare ochi": "edem pleoape",
+        "ochi umflati": "edem pleoape",
+        "ochi umflați": "edem pleoape",
 
         # prurit
         "mancarime nazala": "prurit nazal",
         "mâncărime nazală": "prurit nazal",
         "mancarime la nas": "prurit nazal",
         "mâncărime la nas": "prurit nazal",
+        "nas care mananca": "prurit nazal",
+        "nas care mănâncă": "prurit nazal",
         "mancarime de piele": "prurit",
         "mâncărime de piele": "prurit",
         "mancarime pe piele": "prurit",
@@ -104,6 +112,12 @@ def get_normalization_replacements():
         "șuierături": "wheezing",
         "respiratie suieratoare": "wheezing",
         "respirație șuierătoare": "wheezing",
+        "fluierat in piept": "wheezing",
+        "fluierat în piept": "wheezing",
+        "se aude un suierat": "wheezing",
+        "se aude un șuierat": "wheezing",
+        "respira greu": "dispnee",
+        "respiră greu": "dispnee",
         "dificultate la respiratie": "dispnee",
         "dificultate la respirație": "dispnee",
         "greutate in respiratie": "dispnee",
@@ -124,6 +138,14 @@ def get_normalization_replacements():
         "strângere în piept": "constrictie toracica",
         "apasare in piept": "constrictie toracica",
         "apăsare în piept": "constrictie toracica",
+        "piept strans": "constrictie toracica",
+        "piept strâns": "constrictie toracica",
+        "tuse noaptea": "tuse nocturna",
+        "tuse nocturna": "tuse nocturna",
+        "tuse nocturnă": "tuse nocturna",
+        "tuse la efort": "simptome la efort",
+        "agravare nocturna": "tuse nocturna",
+        "agravare nocturnă": "tuse nocturna",
         "tuse cu expectoratie": "tuse productiva",
         "tuse cu expectorație": "tuse productiva",
         "tuse cu sputa": "tuse productiva",
@@ -136,6 +158,8 @@ def get_normalization_replacements():
         "tușește cu spută": "tuse productiva",
         "tuseste cu mucus": "tuse productiva",
         "tușește cu mucus": "tuse productiva",
+        "mucus in piept": "sputa",
+        "mucus în piept": "sputa",
 
         # infectios
         "febra mare": "febra",
@@ -162,6 +186,7 @@ def get_normalization_replacements():
         "furnicaturi": "parestezii",
         "furnicături": "parestezii",
         "inima bate tare": "palpitatii",
+        "inima bate repede": "palpitatii",
         "episod brusc": "debut brusc",
         "debut dupa stres": "debut in context emotional",
         "debut după stres": "debut in context emotional",
@@ -177,6 +202,8 @@ def get_normalization_replacements():
         "umflare buze": "edem buze",
         "buza umflata": "edem buze",
         "buza umflată": "edem buze",
+        "fata umflata": "angioedem",
+        "față umflată": "angioedem",
         "umflare pleoape": "edem pleoape",
         "soc anafilactic": "anafilaxie",
         "șoc anafilactic": "anafilaxie",
@@ -196,6 +223,8 @@ def get_normalization_replacements():
         "simptome la pisică": "pisica",
         "praf de casa": "acarieni",
         "praf de casă": "acarieni",
+        "par de animale": "pisica",
+        "păr de animale": "pisica",
         "mirosuri puternice": "iritanti",
         "mirosuri intense": "iritanti",
         "fum de tigara": "fum",
@@ -217,6 +246,8 @@ def get_normalization_replacements():
         "după ce a mâncat": "dupa aliment",
         "mancarime in gura": "prurit oral",
         "mâncărime în gură": "prurit oral",
+        "furnicaturi in gura": "furnicaturi orale",
+        "furnicături în gură": "furnicaturi orale",
         "crampe abdominale": "dureri abdominale",
         "greața": "greata",
         "greaţă": "greata",
@@ -227,6 +258,14 @@ def get_normalization_replacements():
         "lactate": "lactate",
         "diaree dupa lactate": "lactate diaree",
         "diaree după lactate": "lactate diaree",
+        "se umfla burta": "balonare",
+        "se umflă burta": "balonare",
+        "burta umflata": "balonare",
+        "burtă umflată": "balonare",
+        "face gaze dupa lapte": "lactate balonare",
+        "face gaze după lapte": "lactate balonare",
+        "deranj la burta dupa lapte": "lactate balonare",
+        "deranj la burtă după lapte": "lactate balonare",
 
         # cutanat
         "eczema": "eczeme",
@@ -290,6 +329,7 @@ def get_normalization_replacements():
 
         # cardio
         "picioare umflate": "edeme gambiere",
+        "glezne umflate": "edeme gambiere",
         "nu poate sta intins": "dispnee la decubit",
         "nu poate sta întins": "dispnee la decubit",
         "se sufoca culcat": "dispnee la decubit",
@@ -312,7 +352,6 @@ def normalize_text(text):
 
     replacements = get_normalization_replacements()
 
-    # cele mai lungi expresii se înlocuiesc primele
     for src in sorted(replacements.keys(), key=len, reverse=True):
         text = text.replace(strip_diacritics(src.lower()), replacements[src])
 
@@ -343,7 +382,6 @@ def fuzzy_phrase_in_text(norm_text, norm_phrase, threshold_phrase=0.88, threshol
     if not text_tokens or not phrase_tokens:
         return False
 
-    # 1 cuvânt
     if len(phrase_tokens) == 1:
         target = phrase_tokens[0]
         for token in text_tokens:
@@ -353,7 +391,6 @@ def fuzzy_phrase_in_text(norm_text, norm_phrase, threshold_phrase=0.88, threshol
                 return True
         return False
 
-    # expresie cu mai multe cuvinte
     n = len(phrase_tokens)
     for i in range(len(text_tokens) - n + 1):
         window = " ".join(text_tokens[i:i + n])
@@ -362,7 +399,6 @@ def fuzzy_phrase_in_text(norm_text, norm_phrase, threshold_phrase=0.88, threshol
         if similarity_ratio(window, norm_phrase) >= threshold_phrase:
             return True
 
-    # fallback mai permisiv pentru expresii scurte
     compact_text = " ".join(text_tokens)
     if similarity_ratio(compact_text, norm_phrase) >= 0.93:
         return True
@@ -705,17 +741,17 @@ def get_weighted_keywords_for_diagnosis(name, keywords, strong_keywords, high_va
             {"term": "secretii apoase", "weight": 4},
         ],
         "astm alergic": [
-            {"term": "wheezing", "weight": 11},
-            {"term": "dispnee", "weight": 2},
+            {"term": "wheezing", "weight": 12},
+            {"term": "dispnee", "weight": 3},
             {"term": "tuse", "weight": 1},
-            {"term": "tuse nocturna", "weight": 8},
-            {"term": "constrictie toracica", "weight": 7},
+            {"term": "tuse nocturna", "weight": 9},
+            {"term": "constrictie toracica", "weight": 8},
             {"term": "polen", "weight": 2},
             {"term": "acarieni", "weight": 2},
             {"term": "atopie", "weight": 4},
             {"term": "agravare la alergeni", "weight": 8},
             {"term": "episoade recurente", "weight": 5},
-            {"term": "simptome la efort", "weight": 3},
+            {"term": "simptome la efort", "weight": 4},
         ],
         "dermatita atopica": [
             {"term": "prurit", "weight": 5},
@@ -887,13 +923,15 @@ def compute_pattern_bonus(name, text):
     elif name_norm == "conjunctivita alergica":
         if contains_any(text, ["prurit ocular"]) and contains_any(text, ["lacrimare", "hiperemie oculara"]):
             bonus += 7
-        if contains_any(text, ["edem palpebral"]):
+        if contains_any(text, ["edem palpebral", "edem pleoape"]):
             bonus += 3
 
     elif name_norm == "astm alergic":
         if contains_any(text, ["wheezing"]) and contains_any(text, ["dispnee", "tuse", "tuse nocturna", "constrictie toracica"]):
-            bonus += 9
-        if contains_any(text, ["polen", "acarieni", "atopie", "agravare la alergeni"]):
+            bonus += 10
+        if contains_any(text, ["tuse nocturna"]) and contains_any(text, ["dispnee", "constrictie toracica", "wheezing"]):
+            bonus += 6
+        if contains_any(text, ["polen", "acarieni", "atopie", "agravare la alergeni", "simptome la efort"]):
             bonus += 5
         if contains_any(text, ["palpitatii", "parestezii", "teama intensa", "senzatie de moarte iminenta"]) and not contains_any(text, ["wheezing"]):
             bonus -= 12
@@ -1066,8 +1104,9 @@ def compute_required_feature_penalty(name, text):
             return 18
 
     elif name_norm == "astm alergic":
-        if not contains_any(norm_text, ["wheezing", "tuse nocturna", "constrictie toracica", "agravare la alergeni"]):
-            return 20
+        # mai permisiv decât înainte
+        if not contains_any(norm_text, ["wheezing", "tuse nocturna", "constrictie toracica", "dispnee", "simptome la efort"]):
+            return 10
 
     elif name_norm == "anafilaxie":
         if not contains_any(norm_text, ["hipotensiune", "colaps", "stridor", "edem lingual", "urticarie", "angioedem", "dispnee severa"]):
@@ -1078,7 +1117,6 @@ def compute_required_feature_penalty(name, text):
             return 18
 
     elif name_norm == "dermatita atopica":
-        # mai permisivă decât înainte
         if not contains_any(norm_text, ["prurit", "eczeme", "piele uscata", "eritem", "dermatita", "zone de flexie", "iritatie", "tegument"]):
             return 8
 
@@ -1157,10 +1195,14 @@ def apply_manual_adjustments(name, text, base_score):
 
     if name_norm == "astm alergic":
         if contains_any(norm_text, ["wheezing"]):
-            score += 5
-        if count_keyword_hits(norm_text, ["wheezing", "tuse nocturna", "constrictie toracica", "agravare la alergeni"]) >= 2:
-            score += 6
-        if contains_any(norm_text, panic_markers) and not contains_any(norm_text, ["wheezing", "tuse nocturna"]):
+            score += 8
+        if contains_any(norm_text, ["tuse nocturna"]):
+            score += 4
+        if contains_any(norm_text, ["dispnee"]):
+            score += 3
+        if count_keyword_hits(norm_text, ["wheezing", "tuse nocturna", "constrictie toracica", "dispnee", "simptome la efort"]) >= 2:
+            score += 8
+        if contains_any(norm_text, panic_markers) and not contains_any(norm_text, ["wheezing", "tuse nocturna", "constrictie toracica"]):
             score -= 12
         if contains_any(norm_text, ["febra", "sputa", "tuse productiva", "fumator", "ortopnee"]) and not contains_any(norm_text, ["wheezing"]):
             score -= 12
@@ -1269,7 +1311,6 @@ def apply_manual_adjustments(name, text, base_score):
             score -= 6
 
     elif name_norm == "dermatita atopica":
-        # ajută când sunt descrieri vagi, dar cutanate
         if contains_any(norm_text, ["eritem", "tegument", "prurit", "iritatie", "piele uscata"]):
             score += 4
         if contains_any(norm_text, ["febra", "hipotensiune", "dispnee severa"]) and not contains_any(norm_text, ["prurit", "piele uscata", "eczeme"]):
