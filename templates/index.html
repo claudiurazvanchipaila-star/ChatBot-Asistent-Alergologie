@@ -18,7 +18,7 @@
             </div>
 
             <nav class="sidebar-nav">
-                <div class="sidebar-nav-item active">
+                <div id="newCaseBtn" class="sidebar-nav-item active">
                     <span class="nav-icon">▣</span>
                     <span>Evaluare caz nou</span>
                 </div>
@@ -275,6 +275,13 @@
                     </section>
                 </section>
             </main>
+        </div>
+    </div>
+
+    <div id="loadingOverlay" class="loading-overlay hidden">
+        <div class="loading-box">
+            <div class="spinner"></div>
+            <div class="loading-text">Se analizează cazul clinic...</div>
         </div>
     </div>
 
@@ -589,7 +596,69 @@
             }).join("");
         }
 
+        function clearListContent(elementId) {
+            const el = document.getElementById(elementId);
+            if (el) {
+                el.innerHTML = "";
+            }
+        }
+
+        function resetCaseView() {
+            document.getElementById("symptoms").value = "";
+            document.getElementById("age").value = "";
+            document.getElementById("sex").value = "";
+            document.getElementById("weight").value = "";
+            document.getElementById("context").value = "";
+            document.getElementById("triggers").value = "";
+            document.getElementById("extra").value = "";
+
+            document.getElementById("mainDiagnosisName").textContent = "-";
+            document.getElementById("mainProbability").textContent = "-";
+            document.getElementById("mainSeverity").textContent = "-";
+            document.getElementById("mainConfidence").textContent = "-";
+            document.getElementById("mainAssociated").textContent = "-";
+            document.getElementById("selectedDiagnosisName").textContent = "-";
+            document.getElementById("treatmentWarning").textContent = "";
+            document.getElementById("globalWarning").textContent = "";
+
+            clearListContent("differentialCards");
+            clearListContent("alternativesList");
+            clearListContent("supportsList");
+            clearListContent("limitsList");
+            clearListContent("testsList");
+            clearListContent("planList");
+            clearListContent("redFlagsList");
+            clearListContent("notesList");
+            clearListContent("clinicalPictureList");
+            clearListContent("treatmentList");
+            clearListContent("preventionList");
+            clearListContent("avoidanceList");
+            clearListContent("medicationCards");
+            clearListContent("medicationFallbackList");
+            clearListContent("guidelineCards");
+            clearListContent("sourceResults");
+
+            document.getElementById("diagnosisSelect").innerHTML = '<option value="">Alege diagnosticul</option>';
+
+            document.getElementById("redFlagsEmpty").classList.add("hidden");
+            document.getElementById("treatmentContainer").classList.add("hidden");
+            document.getElementById("guidelinesSection").classList.add("hidden");
+            document.getElementById("sourcesSection").classList.add("hidden");
+            document.getElementById("resultsContainer").classList.add("hidden");
+            document.getElementById("emptyState").classList.remove("hidden");
+
+            applyMainMetricStyles();
+
+            window.__latestClinicalPayload = null;
+            window.__latestAnalyzeResponse = null;
+            window.__latestAnalysis = null;
+            window.__latestTreatmentData = null;
+        }
+
         async function analyzeCase() {
+            const overlay = document.getElementById("loadingOverlay");
+            overlay.classList.remove("hidden");
+
             const payload = {
                 symptoms: document.getElementById("symptoms").value.trim(),
                 age: document.getElementById("age").value.trim(),
@@ -659,6 +728,7 @@
             } finally {
                 analyzeBtn.disabled = false;
                 analyzeBtn.textContent = "Generează diagnostic diferențial";
+                overlay.classList.add("hidden");
             }
         }
 
@@ -729,61 +799,3 @@
                 treatmentBtn.disabled = false;
                 treatmentBtn.textContent = "Generează tratament și prevenție";
             }
-        }
-
-        async function exportPdf() {
-            const payload = window.__latestClinicalPayload || {};
-            const analysis = window.__latestAnalysis || {};
-
-            if (!payload.symptoms && !analysis.primary_diagnosis) {
-                alert("Generează mai întâi analiza clinică înainte de export.");
-                return;
-            }
-
-            const exportBtn = document.getElementById("exportPdfBtn");
-            exportBtn.disabled = true;
-            exportBtn.textContent = "Se exportă...";
-
-            try {
-                const response = await fetch("/export_pdf", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        patient_summary: payload,
-                        analysis: analysis
-                    })
-                });
-
-                if (!response.ok) {
-                    let errorMessage = "A apărut o eroare la exportul PDF.";
-                    try {
-                        const errorData = await response.json();
-                        errorMessage = errorData.error || errorMessage;
-                    } catch (e) {}
-                    alert(errorMessage);
-                    return;
-                }
-
-                const blob = await response.blob();
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement("a");
-                a.href = url;
-                a.download = "raport_alergologie_pacient.pdf";
-                document.body.appendChild(a);
-                a.click();
-                a.remove();
-                window.URL.revokeObjectURL(url);
-            } catch (error) {
-                alert("Eroare de conexiune la exportul PDF.");
-            } finally {
-                exportBtn.disabled = false;
-                exportBtn.textContent = "Exportă PDF";
-            }
-        }
-
-        document.getElementById("analyzeBtn").addEventListener("click", analyzeCase);
-        document.getElementById("treatmentBtn").addEventListener("click", getTreatmentPlan);
-        document.getElementById("exportPdfBtn").addEventListener("click", exportPdf);
-    </script>
-</body>
-</html>
