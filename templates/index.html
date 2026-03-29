@@ -95,7 +95,7 @@
                                 <textarea id="extra" placeholder="Ex: debut recent, simptome sezoniere, contact cu alergeni, conjunctivită asociată"></textarea>
                             </div>
 
-                            <button id="analyzeBtn" class="primary-btn premium-btn">
+                            <button id="analyzeBtn" class="primary-btn premium-btn" type="button">
                                 Generează diagnostic diferențial
                             </button>
                         </div>
@@ -209,7 +209,7 @@
                                         <option value="">Alege diagnosticul</option>
                                     </select>
 
-                                    <button id="treatmentBtn" class="primary-btn secondary-action premium-btn">
+                                    <button id="treatmentBtn" class="primary-btn secondary-action premium-btn" type="button">
                                         Generează tratament și prevenție
                                     </button>
                                 </div>
@@ -263,7 +263,7 @@
                                         <p class="muted-text">
                                             Poți descărca un raport PDF orientativ al cazului curent.
                                         </p>
-                                        <button id="exportPdfBtn" class="primary-btn secondary-action premium-btn">
+                                        <button id="exportPdfBtn" class="primary-btn secondary-action premium-btn" type="button">
                                             Exportă PDF
                                         </button>
                                     </div>
@@ -657,7 +657,11 @@
 
         async function analyzeCase() {
             const overlay = document.getElementById("loadingOverlay");
+            const analyzeBtn = document.getElementById("analyzeBtn");
+
             overlay.classList.remove("hidden");
+            analyzeBtn.disabled = true;
+            analyzeBtn.textContent = "Se analizează...";
 
             const payload = {
                 symptoms: document.getElementById("symptoms").value.trim(),
@@ -668,10 +672,6 @@
                 triggers: document.getElementById("triggers").value.trim(),
                 extra: document.getElementById("extra").value.trim()
             };
-
-            const analyzeBtn = document.getElementById("analyzeBtn");
-            analyzeBtn.disabled = true;
-            analyzeBtn.textContent = "Se analizează...";
 
             try {
                 const response = await fetch("/analyze", {
@@ -799,3 +799,82 @@
                 treatmentBtn.disabled = false;
                 treatmentBtn.textContent = "Generează tratament și prevenție";
             }
+        }
+
+        async function exportPdf() {
+            const payload = window.__latestClinicalPayload || {};
+            const analysis = window.__latestAnalysis || {};
+
+            if (!payload || (!payload.symptoms && !analysis?.primary_diagnosis)) {
+                alert("Generează mai întâi analiza clinică înainte de export.");
+                return;
+            }
+
+            const exportBtn = document.getElementById("exportPdfBtn");
+            exportBtn.disabled = true;
+            exportBtn.textContent = "Se exportă...";
+
+            try {
+                const response = await fetch("/export_pdf", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        patient_summary: payload,
+                        analysis: analysis
+                    })
+                });
+
+                if (!response.ok) {
+                    let errorMessage = "A apărut o eroare la exportul PDF.";
+                    try {
+                        const errorData = await response.json();
+                        errorMessage = errorData.error || errorMessage;
+                    } catch (e) {}
+                    alert(errorMessage);
+                    return;
+                }
+
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "raport_alergologie_pacient.pdf";
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+            } catch (error) {
+                alert("Eroare de conexiune la exportul PDF.");
+            } finally {
+                exportBtn.disabled = false;
+                exportBtn.textContent = "Exportă PDF";
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const analyzeBtn = document.getElementById("analyzeBtn");
+            const treatmentBtn = document.getElementById("treatmentBtn");
+            const exportPdfBtn = document.getElementById("exportPdfBtn");
+            const newCaseBtn = document.getElementById("newCaseBtn");
+
+            if (analyzeBtn) {
+                analyzeBtn.addEventListener("click", analyzeCase);
+            }
+
+            if (treatmentBtn) {
+                treatmentBtn.addEventListener("click", getTreatmentPlan);
+            }
+
+            if (exportPdfBtn) {
+                exportPdfBtn.addEventListener("click", exportPdf);
+            }
+
+            if (newCaseBtn) {
+                newCaseBtn.addEventListener("click", resetCaseView);
+            }
+
+            applyMainMetricStyles();
+        });
+    </script>
+</body>
+</html>
